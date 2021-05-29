@@ -21,7 +21,7 @@
     "mockery/mockery": "^1.0",
     "friendsofphp/php-cs-fixer": "^2.4",
     "squizlabs/php_codesniffer": "^3",
-    "phpstan/phpstan": "^0.10.1",
+    "phpstan/phpstan": "^0.12",
     "orchestra/testbench": "^3.8",
     "orchestra/database": "^3.8"
   },
