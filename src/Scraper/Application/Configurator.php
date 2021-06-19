@@ -39,7 +39,7 @@ class Configurator
         $this->configuration    = $configuration;
     }
 
-    public function configureFromDataset(array $scrapedDataset): Collection
+    public function configureFromDataset(Collection $scrapedDataset): Collection
     {
         $type                 = $scrapedDataset[0]['type'];
         $currentConfiguration = $this->configuration->findByType($type);

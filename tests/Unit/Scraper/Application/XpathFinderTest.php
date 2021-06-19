@@ -9,6 +9,7 @@ use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Support\Facades\Log;
 use Softonic\LaravelIntelligentScraper\Scraper\Exceptions\MissingXpathValueException;
 use Softonic\LaravelIntelligentScraper\Scraper\Models\Configuration;
+use Symfony\Component\DomCrawler\Crawler;
 use Tests\TestCase;
 
 class XpathFinderTest extends TestCase
@@ -55,7 +56,7 @@ class XpathFinderTest extends TestCase
         $this->expectExceptionMessage('Response error from \'url\' with \'404\' http code');
 
         $xpathFinder = new XpathFinder($client, $variantGenerator);
-        $xpathFinder->extract('url', $config);
+        $xpathFinder->extract('url', collect($config));
     }
 
     /**
@@ -87,7 +88,7 @@ class XpathFinderTest extends TestCase
         $this->expectExceptionMessage('Unavailable url \'url\'');
 
         $xpathFinder = new XpathFinder($client, $variantGenerator);
-        $xpathFinder->extract('url', $config);
+        $xpathFinder->extract('url', collect($config));
     }
 
     /**
@@ -133,7 +134,7 @@ class XpathFinderTest extends TestCase
         $this->expectExceptionMessage('Xpath \'//*[@id="title"]\', \'//*[@id="title2"]\' for field \'title\' not found in \'url\'.');
 
         $xpathFinder = new XpathFinder($client, $variantGenerator);
-        $xpathFinder->extract('url', $config);
+        $xpathFinder->extract('url', collect($config));
     }
 
     /**
@@ -160,9 +161,9 @@ class XpathFinderTest extends TestCase
             ]),
         ];
 
-        $internalXpathFinder = \Mockery::mock(\Symfony\Component\DomXpathFinder\XpathFinder::class);
-        $titleXpathFinder    = \Mockery::mock(\Symfony\Component\DomXpathFinder\XpathFinder::class);
-        $authorXpathFinder   = \Mockery::mock(\Symfony\Component\DomXpathFinder\XpathFinder::class);
+        $internalXpathFinder = \Mockery::mock(Crawler::class);
+        $titleXpathFinder    = \Mockery::mock(Crawler::class);
+        $authorXpathFinder   = \Mockery::mock(Crawler::class);
 
         $variantGenerator = \Mockery::mock(VariantGenerator::class);
         $variantGenerator->shouldReceive('addConfig')
@@ -206,7 +207,7 @@ class XpathFinderTest extends TestCase
             ->andReturn(['My Title']);
 
         $xpathFinder   = new XpathFinder($client, $variantGenerator);
-        $extractedData = $xpathFinder->extract('url', $config);
+        $extractedData = $xpathFinder->extract('url', collect($config));
 
         self::assertEquals(
             [

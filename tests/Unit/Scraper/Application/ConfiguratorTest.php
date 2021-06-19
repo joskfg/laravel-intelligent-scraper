@@ -7,12 +7,14 @@ use GuzzleHttp\Exception\ConnectException;
 use GuzzleHttp\Exception\RequestException;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Support\Facades\Log;
+use Mockery;
 use Mockery\Mock;
 use Softonic\LaravelIntelligentScraper\Scraper\Events\ConfigurationScraped;
 use Softonic\LaravelIntelligentScraper\Scraper\Exceptions\ConfigurationException;
 use Softonic\LaravelIntelligentScraper\Scraper\Models\Configuration as ConfigurationModel;
 use Softonic\LaravelIntelligentScraper\Scraper\Models\ScrapedDataset;
 use Softonic\LaravelIntelligentScraper\Scraper\Repositories\Configuration;
+use Symfony\Component\DomCrawler\Crawler;
 use Tests\TestCase;
 
 class ConfiguratorTest extends TestCase
@@ -68,7 +70,7 @@ class ConfiguratorTest extends TestCase
      */
     public function whenTryToFindNewXpathButUrlFromDatasetIsNotFoundThrowAnExceptionAndRemoveIt(): void
     {
-        $posts = [
+        $posts = collect([
             new ScrapedDataset([
                 'url'  => 'https://test.c/123456789012',
                 'type' => 'post',
@@ -77,7 +79,7 @@ class ConfiguratorTest extends TestCase
                     'author' => 'My author',
                 ],
             ]),
-        ];
+        ]);
 
         $requestException = \Mockery::mock(RequestException::class);
         $requestException->shouldReceive('getResponse->getStatusCode')
@@ -109,7 +111,7 @@ class ConfiguratorTest extends TestCase
      */
     public function whenTryToFindNewXpathButUrlFromDatasetIsNotAvailableThrowAnExceptionAndRemoveIt(): void
     {
-        $posts = [
+        $posts = collect([
             new ScrapedDataset([
                 'url'  => 'https://test.c/123456789012',
                 'type' => 'post',
@@ -118,7 +120,7 @@ class ConfiguratorTest extends TestCase
                     'author' => 'My author',
                 ],
             ]),
-        ];
+        ]);
 
         $connectException = \Mockery::mock(ConnectException::class);
         $this->client->shouldReceive('request')
@@ -147,7 +149,7 @@ class ConfiguratorTest extends TestCase
      */
     public function whenTryToFindNewXpathButNotFoundItShouldLogItAndResetVariant(): void
     {
-        $posts = [
+        $posts = collect([
             ScrapedDataset::create([
                 'url'     => 'https://test.c/123456789012',
                 'type'    => 'post',
@@ -157,22 +159,23 @@ class ConfiguratorTest extends TestCase
                     'author' => 'My author',
                 ],
             ]),
-        ];
+        ]);
 
+        $crawler = Mockery::mock(Crawler::class);
         $this->client->shouldReceive('request')
             ->once()
             ->with(
                 'GET',
                 'https://test.c/123456789012'
             )
-            ->andReturnSelf();
+            ->andReturn($crawler);
 
         $rootElement = new \DOMElement('test');
-        $this->client->shouldReceive('getNode')
+        $crawler->shouldReceive('getUri')
+            ->andReturn('https://test.c/123456789012');
+        $crawler->shouldReceive('getNode')
             ->with(0)
             ->andReturn($rootElement);
-        $this->client->shouldReceive('getUri')
-            ->andReturn('https://test.c/123456789012');
 
         $this->xpathBuilder->shouldReceive('find')
             ->with($rootElement, 'My Title')
@@ -210,7 +213,7 @@ class ConfiguratorTest extends TestCase
      */
     public function whenUseSomeOldXpathButNotFoundNewsItShouldLogItAndResetVariant(): void
     {
-        $posts = [
+        $posts = collect([
             ScrapedDataset::create([
                 'url'     => 'https://test.c/123456789012',
                 'type'    => 'post',
@@ -220,25 +223,26 @@ class ConfiguratorTest extends TestCase
                     'author' => 'My author',
                 ],
             ]),
-        ];
+        ]);
 
+        $crawler = Mockery::mock(Crawler::class);
         $this->client->shouldReceive('request')
             ->once()
             ->with(
                 'GET',
                 'https://test.c/123456789012'
             )
-            ->andReturnSelf();
+            ->andReturn($crawler);
 
         $rootElement = new \DOMElement('test');
-        $this->client->shouldReceive('getNode')
+        $crawler->shouldReceive('getUri')
+            ->andReturn('https://test.c/123456789012');
+        $crawler->shouldReceive('getNode')
             ->with(0)
             ->andReturn($rootElement);
-        $this->client->shouldReceive('filterXpath->count')
+        $crawler->shouldReceive('filterXpath->count')
             ->once()
             ->andReturn(1);
-        $this->client->shouldReceive('getUri')
-            ->andReturn('https://test.c/123456789012');
 
         $this->xpathBuilder->shouldReceive('find')
             ->never()
@@ -282,7 +286,7 @@ class ConfiguratorTest extends TestCase
      */
     public function whenTryToFindXpathInMultiplePostsAndNotFoundInAnyItShouldThrowAnExceptionAndLogItAndResetVariant(): void
     {
-        $posts = [
+        $posts = collect([
             ScrapedDataset::make([
                 'url'     => 'https://test.c/123456789012',
                 'type'    => 'post',
@@ -301,27 +305,28 @@ class ConfiguratorTest extends TestCase
                     'author' => 'My author',
                 ],
             ]),
-        ];
+        ]);
 
+        $crawler = Mockery::mock(Crawler::class);
         $this->client->shouldReceive('request')
             ->once()
             ->with(
                 'GET',
                 'https://test.c/123456789012'
             )
-            ->andReturnSelf();
+            ->andReturn($crawler);
         $this->client->shouldReceive('request')
             ->once()
             ->with(
                 'GET',
                 'https://test.c/123456789022'
             )
-            ->andReturnSelf();
-        $this->client->shouldReceive('getUri')
-            ->andReturn('https://test.c/123456789012');
+            ->andReturn($crawler);
 
         $rootElement = new \DOMElement('test');
-        $this->client->shouldReceive('getNode')
+        $crawler->shouldReceive('getUri')
+            ->andReturn('https://test.c/123456789012');
+        $crawler->shouldReceive('getNode')
             ->with(0)
             ->andReturn($rootElement);
 
@@ -364,7 +369,7 @@ class ConfiguratorTest extends TestCase
      */
     public function whenDiscoverDifferentXpathItShouldGetAllOfThemAndUpdateTheVariants(): void
     {
-        $posts = [
+        $posts = collect([
             ScrapedDataset::make([
                 'url'     => 'https://test.c/123456789012',
                 'type'    => 'post',
@@ -392,32 +397,33 @@ class ConfiguratorTest extends TestCase
                     'author' => 'My author2',
                 ],
             ]),
-        ];
+        ]);
 
+        $crawler = Mockery::mock(Crawler::class);
         $this->client->shouldReceive('request')
             ->once()
             ->with(
                 'GET',
                 'https://test.c/123456789012'
             )
-            ->andReturnSelf();
+            ->andReturn($crawler);
         $this->client->shouldReceive('request')
             ->once()
             ->with(
                 'GET',
                 'https://test.c/123456789022'
             )
-            ->andReturnSelf();
+            ->andReturn($crawler);
         $this->client->shouldReceive('request')
             ->once()
             ->with(
                 'GET',
                 'https://test.c/123456789033'
             )
-            ->andReturnSelf();
+            ->andReturn($crawler);
 
         $rootElement = new \DOMElement('test');
-        $this->client->shouldReceive('getNode')
+        $crawler->shouldReceive('getNode')
             ->with(0)
             ->andReturn($rootElement);
 
