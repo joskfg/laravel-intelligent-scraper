@@ -60,7 +60,7 @@ class Configurator
         return $finalConfig;
     }
 
-    private function getCrawler($scrapedData): ?Crawler
+    private function getCrawler(ScrapedDataset $scrapedData): ?Crawler
     {
         try {
             Log::info("Request {$scrapedData['url']}");
