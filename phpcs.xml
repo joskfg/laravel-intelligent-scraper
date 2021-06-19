@@ -4,6 +4,7 @@
 
     <file>src</file>
     <file>tests</file>
+    <exclude-pattern>src/database/*</exclude-pattern>
 
     <arg name="basepath" value="."/>
     <arg name="colors"/>
@@ -25,6 +26,4 @@
     <rule ref="Generic.WhiteSpace.ScopeIndent"/>
 
     <rule ref="PSR12.Files.OpenTag"/>
-
-    <rule ref="Squiz.PHP.DisallowInlineIf"/>
 </ruleset>
