@@ -13,7 +13,7 @@ class TestCase extends \Orchestra\Testbench\TestCase
         $this->withFactories(__DIR__ . '/../src/database/factories');
     }
 
-    protected function getPackageProviders($app)
+    protected function getPackageProviders($app): array
     {
         return [ScraperProvider::class];
     }

@@ -4,7 +4,7 @@ namespace Softonic\LaravelIntelligentScraper\Scraper\Traits;
 
 trait VariantId
 {
-    protected function getVariantId(string $type, array $variant)
+    protected function getVariantId(string $type, array $variant): ?string
     {
         if (empty($variant)) {
             return null;

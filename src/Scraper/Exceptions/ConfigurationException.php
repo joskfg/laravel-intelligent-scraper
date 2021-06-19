@@ -2,6 +2,8 @@
 
 namespace Softonic\LaravelIntelligentScraper\Scraper\Exceptions;
 
-class ConfigurationException extends \RuntimeException
+use RuntimeException;
+
+class ConfigurationException extends RuntimeException
 {
 }

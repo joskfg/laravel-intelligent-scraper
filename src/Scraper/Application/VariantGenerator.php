@@ -2,34 +2,36 @@
 
 namespace Softonic\LaravelIntelligentScraper\Scraper\Application;
 
+use InvalidArgumentException;
+
 class VariantGenerator
 {
-    protected $type = null;
+    protected string $type;
 
-    protected $configPerField = [];
+    protected array $configPerField = [];
 
-    protected $allFieldsFound = true;
+    protected bool $allFieldsFound = true;
 
-    public function setType($type): void
+    public function setType(string $type): void
     {
         $this->type = $type;
     }
 
-    public function addConfig($field, $xpath)
+    public function addConfig($field, $xpath): void
     {
         $this->configPerField[] = $field . $xpath;
     }
 
-    public function fieldNotFound()
+    public function fieldNotFound(): void
     {
         $this->allFieldsFound = false;
     }
 
-    public function getId($type = null)
+    public function getId(?string $type = null): string
     {
         $type = $type ?? $this->type;
         if (empty($type)) {
-            throw new \InvalidArgumentException('Type should be provided in the getVariantId call or setType');
+            throw new InvalidArgumentException('Type should be provided in the getVariantId call or setType');
         }
 
         if (empty($this->configPerField) || !$this->allFieldsFound) {
@@ -44,7 +46,7 @@ class VariantGenerator
         return $id;
     }
 
-    public function reset()
+    public function reset(): void
     {
         $this->setType(null);
         $this->configPerField = [];

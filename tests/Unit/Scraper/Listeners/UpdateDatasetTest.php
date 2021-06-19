@@ -29,7 +29,7 @@ class UpdateDatasetTest extends \Tests\TestCase
     /**
      * @test
      */
-    public function whenDatasetExistsItShouldBeUpdated()
+    public function whenDatasetExistsItShouldBeUpdated(): void
     {
         $seeder  = new \ScrapedDatasetSeeder();
         $dataset = $seeder->createScrapedDatasets(2)->first();
@@ -48,14 +48,14 @@ class UpdateDatasetTest extends \Tests\TestCase
             )
         );
 
-        $this->assertEquals($data, ScrapedDataset::where('url', $dataset->url)->first()->toArray()['data']);
-        $this->assertEquals(2, ScrapedDataset::all()->count());
+        self::assertEquals($data, ScrapedDataset::where('url', $dataset->url)->first()->toArray()['data']);
+        self::assertEquals(2, ScrapedDataset::all()->count());
     }
 
     /**
      * @test
      */
-    public function whenDatasetDoesNotExistAndTheDatasetsLimitHasNotBeenReachedItShouldBeSaved()
+    public function whenDatasetDoesNotExistAndTheDatasetsLimitHasNotBeenReachedItShouldBeSaved(): void
     {
         factory(ScrapedDataset::class, UpdateDataset::DATASET_AMOUNT_LIMIT - 1)->create([
             'variant' => 'b265521fc089ac61b794bfa3a5ce8a657f6833ce',
@@ -79,14 +79,14 @@ class UpdateDatasetTest extends \Tests\TestCase
             )
         );
 
-        $this->assertEquals($data, ScrapedDataset::where('url', $url)->first()->toArray()['data']);
-        $this->assertEquals(101, ScrapedDataset::count());
+        self::assertEquals($data, ScrapedDataset::where('url', $url)->first()->toArray()['data']);
+        self::assertEquals(101, ScrapedDataset::count());
     }
 
     /**
      * @test
      */
-    public function whenDatasetDoesNotExistAndTheDatasetsLimitHasReachedItShouldDeleteTheExcess()
+    public function whenDatasetDoesNotExistAndTheDatasetsLimitHasReachedItShouldDeleteTheExcess(): void
     {
         factory(ScrapedDataset::class, UpdateDataset::DATASET_AMOUNT_LIMIT + 10)->create([
             'variant' => 'b265521fc089ac61b794bfa3a5ce8a657f6833ce',
@@ -107,7 +107,7 @@ class UpdateDatasetTest extends \Tests\TestCase
             )
         );
 
-        $this->assertEquals($data, ScrapedDataset::where('url', $url)->first()->toArray()['data']);
-        $this->assertEquals(UpdateDataset::DATASET_AMOUNT_LIMIT, ScrapedDataset::withType($type)->count());
+        self::assertEquals($data, ScrapedDataset::where('url', $url)->first()->toArray()['data']);
+        self::assertEquals(UpdateDataset::DATASET_AMOUNT_LIMIT, ScrapedDataset::withType($type)->count());
     }
 }

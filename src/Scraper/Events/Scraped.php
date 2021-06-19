@@ -13,17 +13,17 @@ class Scraped
     /**
      * @var ScrapeRequest
      */
-    public $scrapeRequest;
+    public ScrapeRequest $scrapeRequest;
 
     /**
      * @var array
      */
-    public $data;
+    public array $data;
 
     /**
      * @var string
      */
-    public $variant;
+    public string $variant;
 
     /**
      * Create a new event instance.
@@ -48,11 +48,11 @@ class Scraped
      *
      * @return array
      */
-    public function tags()
+    public function tags(): array
     {
         return [
             "scraped_type:{$this->scrapeRequest->type}",
-            "scraped_variant:{$this->variant}",
+            "scraped_variant:$this->variant",
         ];
     }
 }

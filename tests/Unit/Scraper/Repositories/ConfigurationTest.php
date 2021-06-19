@@ -17,7 +17,7 @@ class ConfigurationTest extends TestCase
     /**
      * @test
      */
-    public function whenRetrieveAllConfigurationItShouldReturnIt()
+    public function whenRetrieveAllConfigurationItShouldReturnIt(): void
     {
         ConfigurationModel::create([
             'name'   => 'title',
@@ -38,13 +38,13 @@ class ConfigurationTest extends TestCase
         $configuration = new Configuration();
         $data          = $configuration->findByType('post');
 
-        $this->assertCount(2, $data);
+        self::assertCount(2, $data);
     }
 
     /**
      * @test
      */
-    public function whenRecalculateButThereIsNotApostDatasetItShouldThrowAnException()
+    public function whenRecalculateButThereIsNotAPostDatasetItShouldThrowAnException(): void
     {
         $this->expectException(\UnexpectedValueException::class);
         $this->expectExceptionMessage('A dataset example is needed to recalculate xpaths for type post.');
@@ -59,7 +59,7 @@ class ConfigurationTest extends TestCase
     /**
      * @test
      */
-    public function whenRecalculateItShouldStoreTheNewXpaths()
+    public function whenRecalculateItShouldStoreTheNewXpaths(): void
     {
         ScrapedDataset::create([
             'url'  => 'https://test.c/123456789222',
@@ -75,7 +75,7 @@ class ConfigurationTest extends TestCase
             'type' => 'list',
             'variant' => 'b265521fc089ac61b794bfa3a5ce8a657f6833ce',
             'data' => [
-                'cateogry' => 'Entertaiment',
+                'category' => 'Entertainment',
                 'author'   => 'Jhon Doe',
             ],
         ]);
@@ -112,25 +112,25 @@ class ConfigurationTest extends TestCase
         App::instance(Configurator::class, $configurator);
         $configurator->shouldReceive('configureFromDataset')
             ->withArgs(function ($posts) {
-                return 2 == $posts->count();
+                return 2 === $posts->count();
             })
             ->andReturn($config);
 
         $configuration = new Configuration();
         $configs       = $configuration->calculate('post');
 
-        $this->assertEquals($configs[0]['name'], 'title');
-        $this->assertEquals($configs[0]['type'], 'post');
-        $this->assertEquals($configs[0]['xpaths'][0], '//*[@id="title"]');
-        $this->assertEquals($configs[1]['name'], 'author');
-        $this->assertEquals($configs[1]['type'], 'post');
-        $this->assertEquals($configs[1]['xpaths'][0], '//*[@id="author"]');
+        self::assertEquals('title', $configs[0]['name']);
+        self::assertEquals('post', $configs[0]['type']);
+        self::assertEquals('//*[@id="title"]', $configs[0]['xpaths'][0]);
+        self::assertEquals('author', $configs[1]['name']);
+        self::assertEquals('post', $configs[1]['type']);
+        self::assertEquals('//*[@id="author"]', $configs[1]['xpaths'][0]);
     }
 
     /**
      * @test
      */
-    public function whenRecalculateFailsItShouldThrowAnException()
+    public function whenRecalculateFailsItShouldThrowAnException(): void
     {
         ScrapedDataset::create([
             'url'  => 'https://test.c/123456789222',
@@ -146,7 +146,7 @@ class ConfigurationTest extends TestCase
             'type' => 'list',
             'variant' => 'b265521fc089ac61b794bfa3a5ce8a657f6833ce',
             'data' => [
-                'cateogry' => 'Entertaiment',
+                'category' => 'Entertainment',
                 'author'   => 'Jhon Doe',
             ],
         ]);
@@ -168,7 +168,7 @@ class ConfigurationTest extends TestCase
         App::instance(Configurator::class, $configurator);
         $configurator->shouldReceive('configureFromDataset')
             ->withArgs(function ($posts) {
-                return 2 == $posts->count();
+                return 2 === $posts->count();
             })
             ->andThrow(new \UnexpectedValueException('Recalculate fail'));
 
@@ -182,7 +182,7 @@ class ConfigurationTest extends TestCase
     /**
      * @test
      */
-    public function whenCalculateAfterAnotherCalculateItShouldUseThePrecalclatedConfig()
+    public function whenCalculateAfterAnotherCalculateItShouldUseThePrecalculatedConfig(): void
     {
         $configurator = \Mockery::mock(Configurator::class);
         App::instance(Configurator::class, $configurator);
@@ -196,7 +196,7 @@ class ConfigurationTest extends TestCase
             ->andReturn($config);
 
         $configuration = new Configuration();
-        $this->assertEquals(
+        self::assertEquals(
             $config,
             $configuration->calculate('post')
         );

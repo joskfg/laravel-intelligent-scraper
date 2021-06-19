@@ -3,6 +3,7 @@
 namespace Softonic\LaravelIntelligentScraper\Scraper\Listeners;
 
 use Illuminate\Contracts\Queue\ShouldQueue;
+use JsonException;
 use Psr\Log\LoggerInterface;
 use Softonic\LaravelIntelligentScraper\Scraper\Application\XpathFinder;
 use Softonic\LaravelIntelligentScraper\Scraper\Events\InvalidConfiguration;
@@ -12,6 +13,7 @@ use Softonic\LaravelIntelligentScraper\Scraper\Events\ScrapeRequest;
 use Softonic\LaravelIntelligentScraper\Scraper\Exceptions\ConfigurationException;
 use Softonic\LaravelIntelligentScraper\Scraper\Exceptions\MissingXpathValueException;
 use Softonic\LaravelIntelligentScraper\Scraper\Repositories\Configuration;
+use UnexpectedValueException;
 
 class ConfigureScraper implements ShouldQueue
 {
@@ -20,22 +22,22 @@ class ConfigureScraper implements ShouldQueue
      *
      * @var string
      */
-    public $queue = 'configure';
+    public string $queue = 'configure';
 
     /**
      * @var Configuration
      */
-    private $configuration;
+    private Configuration $configuration;
 
     /**
      * @var LoggerInterface
      */
-    private $logger;
+    private LoggerInterface $logger;
 
     /**
      * @var XpathFinder
      */
-    private $xpathFinder;
+    private XpathFinder $xpathFinder;
 
     public function __construct(
         Configuration $configuration,
@@ -47,7 +49,10 @@ class ConfigureScraper implements ShouldQueue
         $this->logger        = $logger;
     }
 
-    public function handle(InvalidConfiguration $invalidConfiguration)
+    /**
+     * @throws JsonException
+     */
+    public function handle(InvalidConfiguration $invalidConfiguration): void
     {
         try {
             $scrapeRequest = $invalidConfiguration->scrapeRequest;
@@ -59,9 +64,7 @@ class ConfigureScraper implements ShouldQueue
                 "Configuration not available for '$scrapeRequest->url' and type '$scrapeRequest->type', error: {$e->getMessage()}."
             );
             event(new ScrapeFailed($invalidConfiguration->scrapeRequest));
-        } catch (\UnexpectedValueException $e) {
-            $this->scrapeFailed($invalidConfiguration, $scrapeRequest, $e);
-        } catch (ConfigurationException $e) {
+        } catch (UnexpectedValueException | ConfigurationException $e) {
             $this->scrapeFailed($invalidConfiguration, $scrapeRequest, $e);
         }
     }
@@ -74,7 +77,7 @@ class ConfigureScraper implements ShouldQueue
     {
         $this->logger->info("Extracting data from $scrapeRequest->url for type '$scrapeRequest->type'");
 
-        list('data' => $data, 'variant' => $variant) = $this->xpathFinder->extract($scrapeRequest->url, $config);
+        ['data' => $data, 'variant' => $variant] = $this->xpathFinder->extract($scrapeRequest->url, $config);
         event(new Scraped($scrapeRequest, $data, $variant));
     }
 
@@ -86,7 +89,7 @@ class ConfigureScraper implements ShouldQueue
     private function scrapeFailed(InvalidConfiguration $invalidConfiguration, $scrapeRequest, $e): void
     {
         $this->logger->error(
-            "Error scraping '{$scrapeRequest->url}'",
+            "Error scraping '$scrapeRequest->url'",
             ['message' => $e->getMessage()]
         );
         event(new ScrapeFailed($invalidConfiguration->scrapeRequest));

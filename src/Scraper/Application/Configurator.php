@@ -7,34 +7,36 @@ use GuzzleHttp\Exception\ConnectException;
 use GuzzleHttp\Exception\RequestException;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
+use JsonException;
 use Softonic\LaravelIntelligentScraper\Scraper\Events\ConfigurationScraped;
 use Softonic\LaravelIntelligentScraper\Scraper\Events\ScrapeRequest;
 use Softonic\LaravelIntelligentScraper\Scraper\Exceptions\ConfigurationException;
 use Softonic\LaravelIntelligentScraper\Scraper\Models\Configuration;
 use Softonic\LaravelIntelligentScraper\Scraper\Models\ScrapedDataset;
 use Symfony\Component\DomCrawler\Crawler;
+use UnexpectedValueException;
 
 class Configurator
 {
     /**
      * @var Client
      */
-    private $client;
+    private Client $client;
 
     /**
      * @var XpathBuilder
      */
-    private $xpathBuilder;
+    private XpathBuilder $xpathBuilder;
 
     /**
      * @var VariantGenerator
      */
-    private $variantGenerator;
+    private VariantGenerator $variantGenerator;
 
     /**
      * @var \Softonic\LaravelIntelligentScraper\Scraper\Repositories\Configuration
      */
-    private $configuration;
+    private \Softonic\LaravelIntelligentScraper\Scraper\Repositories\Configuration $configuration;
 
     public function __construct(
         Client $client,
@@ -51,9 +53,10 @@ class Configurator
     /**
      * @param ScrapedDataset[] $scrapedDataset
      *
-     * @return \Illuminate\Support\Collection
+     * @return Collection
+     * @throws JsonException
      */
-    public function configureFromDataset($scrapedDataset): Collection
+    public function configureFromDataset(array $scrapedDataset): Collection
     {
         $type                 = $scrapedDataset[0]['type'];
         $currentConfiguration = $this->configuration->findByType($type);
@@ -61,7 +64,7 @@ class Configurator
         $result        = [];
         $totalDatasets = count($scrapedDataset);
         foreach ($scrapedDataset as $key => $scrapedData) {
-            Log::info("Finding config {$key}/{$totalDatasets}");
+            Log::info("Finding config $key/$totalDatasets");
             if ($crawler = $this->getCrawler($scrapedData)) {
                 $result[] = $this->findConfigByScrapedData($scrapedData, $crawler, $currentConfiguration);
             }
@@ -74,7 +77,7 @@ class Configurator
         return $finalConfig;
     }
 
-    private function getCrawler($scrapedData)
+    private function getCrawler($scrapedData): ?Crawler
     {
         try {
             Log::info("Request {$scrapedData['url']}");
@@ -87,33 +90,29 @@ class Configurator
             );
             $scrapedData->delete();
         } catch (RequestException $e) {
-            $httpCode = $e->getResponse()->getStatusCode() ?? null;
+            $httpCode = $e->getResponse()->getStatusCode();
             Log::notice(
-                "Response status ({$httpCode}) invalid, so proceeding to delete the scraped data.",
+                "Response status ($httpCode) invalid, so proceeding to delete the scraped data.",
                 compact('scrapedData')
             );
             $scrapedData->delete();
         }
+
+        return null;
     }
 
     /**
      * Tries to find a new config.
      *
      * If the data is not valid anymore, it is deleted from dataset.
-     *
-     * @param ScrapedDataset  $scrapedData
-     * @param Crawler         $crawler
-     * @param Configuration[] $currentConfiguration
-     *
-     * @return array
      */
-    private function findConfigByScrapedData($scrapedData, $crawler, $currentConfiguration)
+    private function findConfigByScrapedData(ScrapedDataset $scrapedData, Crawler $crawler, Collection $currentConfiguration): array
     {
         $result = [];
 
         foreach ($scrapedData['data'] as $field => $value) {
             try {
-                Log::info("Searching xpath for field {$field}");
+                Log::info("Searching xpath for field $field");
                 $result[$field] = $this->getOldXpath($currentConfiguration, $field, $crawler);
                 if (!$result[$field]) {
                     Log::debug('Trying to find a new xpath.');
@@ -124,10 +123,13 @@ class Configurator
                 }
                 $this->variantGenerator->addConfig($field, $result[$field]);
                 Log::info('Added found xpath to the config');
-            } catch (\UnexpectedValueException $e) {
+            } catch (UnexpectedValueException $e) {
                 $this->variantGenerator->fieldNotFound();
-                $value = is_array($value) ? json_encode($value) : $value;
-                Log::notice("Field '{$field}' with value '{$value}' not found for '{$crawler->getUri()}'.");
+                try {
+                    $value = is_array($value) ? json_encode($value, JSON_THROW_ON_ERROR) : $value;
+                } catch (JsonException $e) {
+                }
+                Log::notice("Field '$field' with value '$value' not found for '{$crawler->getUri()}'.");
             }
         }
 
@@ -148,7 +150,7 @@ class Configurator
         Log::debug('Checking old Xpaths');
         $config = $currentConfiguration->firstWhere('name', $field);
         foreach ($config['xpaths'] ?? [] as $xpath) {
-            Log::debug("Checking xpath {$xpath}");
+            Log::debug("Checking xpath $xpath");
             $isFound = $crawler->filterXPath($xpath)->count();
             if ($isFound) {
                 return $xpath;
@@ -168,9 +170,9 @@ class Configurator
      * @param array  $result
      * @param string $type
      *
-     * @return \Illuminate\Support\Collection
+     * @return Collection
      */
-    private function mergeConfiguration($result, string $type): Collection
+    private function mergeConfiguration(array $result, string $type): Collection
     {
         $fieldConfig = [];
         foreach ($result as $configs) {
@@ -193,14 +195,14 @@ class Configurator
         return $finalConfig;
     }
 
-    private function checkConfiguration($data, Collection $finalConfig)
+    private function checkConfiguration($data, Collection $finalConfig): void
     {
-        if (count($finalConfig) != count($data)) {
+        if (count($finalConfig) !== count($data)) {
             $fieldsFound    = $finalConfig->pluck('name')->toArray();
             $fieldsExpected = array_keys($data);
 
             $fieldsMissing = implode(',', array_diff($fieldsExpected, $fieldsFound));
-            throw new ConfigurationException("Field(s) \"{$fieldsMissing}\" not found.", 0);
+            throw new ConfigurationException("Field(s) \"$fieldsMissing\" not found.", 0);
         }
     }
 }

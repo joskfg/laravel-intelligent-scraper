@@ -10,10 +10,7 @@ class ScrapeFailed
     use Dispatchable;
     use SerializesModels;
 
-    /**
-     * @var ScrapeRequest
-     */
-    public $scrapeRequest;
+    public ScrapeRequest $scrapeRequest;
 
     /**
      * Create a new event instance.
@@ -34,7 +31,7 @@ class ScrapeFailed
      *
      * @return array
      */
-    public function tags()
+    public function tags(): array
     {
         return [
             "failed_type:{$this->scrapeRequest->type}",

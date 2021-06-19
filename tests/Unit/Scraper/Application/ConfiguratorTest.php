@@ -66,7 +66,7 @@ class ConfiguratorTest extends TestCase
     /**
      * @test
      */
-    public function whenTryToFindNewXpathButUrlFromDatasetIsNotFoundThrowAnExceptionAndRemoveIt()
+    public function whenTryToFindNewXpathButUrlFromDatasetIsNotFoundThrowAnExceptionAndRemoveIt(): void
     {
         $posts = [
             new ScrapedDataset([
@@ -99,7 +99,7 @@ class ConfiguratorTest extends TestCase
         try {
             $this->configurator->configureFromDataset($posts);
         } catch (ConfigurationException $e) {
-            $this->assertEquals('Field(s) "title,author" not found.', $e->getMessage());
+            self::assertEquals('Field(s) "title,author" not found.', $e->getMessage());
             $this->assertDatabaseMissing('scraped_datasets', ['url' => 'https://test.c/123456789012']);
         }
     }
@@ -107,7 +107,7 @@ class ConfiguratorTest extends TestCase
     /**
      * @test
      */
-    public function whenTryToFindNewXpathButUrlFromDatasetIsNotAvailableThrowAnExceptionAndRemoveIt()
+    public function whenTryToFindNewXpathButUrlFromDatasetIsNotAvailableThrowAnExceptionAndRemoveIt(): void
     {
         $posts = [
             new ScrapedDataset([
@@ -137,7 +137,7 @@ class ConfiguratorTest extends TestCase
         try {
             $this->configurator->configureFromDataset($posts);
         } catch (ConfigurationException $e) {
-            $this->assertEquals('Field(s) "title,author" not found.', $e->getMessage());
+            self::assertEquals('Field(s) "title,author" not found.', $e->getMessage());
             $this->assertDatabaseMissing('scraped_datasets', ['url' => 'https://test.c/123456789012']);
         }
     }
@@ -145,7 +145,7 @@ class ConfiguratorTest extends TestCase
     /**
      * @test
      */
-    public function whenTryToFindNewXpathButNotFoundItShouldLogItAndResetVariant()
+    public function whenTryToFindNewXpathButNotFoundItShouldLogItAndResetVariant(): void
     {
         $posts = [
             ScrapedDataset::create([
@@ -201,14 +201,14 @@ class ConfiguratorTest extends TestCase
         try {
             $this->configurator->configureFromDataset($posts);
         } catch (ConfigurationException $e) {
-            $this->assertEquals('Field(s) "author" not found.', $e->getMessage());
+            self::assertEquals('Field(s) "author" not found.', $e->getMessage());
         }
     }
 
     /**
      * @test
      */
-    public function whenUseSomeOldXpathButNotFoundNewsItShouldLogItAndResetVariant()
+    public function whenUseSomeOldXpathButNotFoundNewsItShouldLogItAndResetVariant(): void
     {
         $posts = [
             ScrapedDataset::create([
@@ -273,14 +273,14 @@ class ConfiguratorTest extends TestCase
         try {
             $this->configurator->configureFromDataset($posts);
         } catch (ConfigurationException $e) {
-            $this->assertEquals('Field(s) "author" not found.', $e->getMessage());
+            self::assertEquals('Field(s) "author" not found.', $e->getMessage());
         }
     }
 
     /**
      * @test
      */
-    public function whenTryToFindXpathInMultiplepostsAndNotFoundInAnyItShouldThrowAnExceptionAndLogItAndResetVariant()
+    public function whenTryToFindXpathInMultiplePostsAndNotFoundInAnyItShouldThrowAnExceptionAndLogItAndResetVariant(): void
     {
         $posts = [
             ScrapedDataset::make([
@@ -355,14 +355,14 @@ class ConfiguratorTest extends TestCase
         try {
             $this->configurator->configureFromDataset($posts);
         } catch (ConfigurationException $e) {
-            $this->assertEquals('Field(s) "title,author" not found.', $e->getMessage());
+            self::assertEquals('Field(s) "title,author" not found.', $e->getMessage());
         }
     }
 
     /**
      * @test
      */
-    public function whenDiscoverDifferentXpathItShouldGetAllOfThemAndUpdateTheVariants()
+    public function whenDiscoverDifferentXpathItShouldGetAllOfThemAndUpdateTheVariants(): void
     {
         $posts = [
             ScrapedDataset::make([
@@ -450,10 +450,10 @@ class ConfiguratorTest extends TestCase
 
         $configurations = $this->configurator->configureFromDataset($posts);
 
-        $this->assertInstanceOf(ConfigurationModel::class, $configurations[0]);
-        $this->assertEquals('title', $configurations[0]['name']);
-        $this->assertEquals('post', $configurations[0]['type']);
-        $this->assertEquals(
+        self::assertInstanceOf(ConfigurationModel::class, $configurations[0]);
+        self::assertEquals('title', $configurations[0]['name']);
+        self::assertEquals('post', $configurations[0]['type']);
+        self::assertEquals(
             [
                 '//*[|id="title"]',
                 '//*[|id="title2"]',
@@ -461,10 +461,10 @@ class ConfiguratorTest extends TestCase
             array_values($configurations[0]['xpaths'])
         );
 
-        $this->assertInstanceOf(ConfigurationModel::class, $configurations[1]);
-        $this->assertEquals('author', $configurations[1]['name']);
-        $this->assertEquals('post', $configurations[1]['type']);
-        $this->assertEquals(
+        self::assertInstanceOf(ConfigurationModel::class, $configurations[1]);
+        self::assertEquals('author', $configurations[1]['name']);
+        self::assertEquals('post', $configurations[1]['type']);
+        self::assertEquals(
             [
                 '//*[|id="author"]',
                 '//*[|id="author2"]',

@@ -25,7 +25,7 @@ class XpathFinderTest extends TestCase
     /**
      * @test
      */
-    public function whenExtractUsingAnInvalidUrlStatusItShouldThrowAnException()
+    public function whenExtractUsingAnInvalidUrlStatusItShouldThrowAnException(): void
     {
         $config = [
             Configuration::create([
@@ -61,7 +61,7 @@ class XpathFinderTest extends TestCase
     /**
      * @test
      */
-    public function whenExtractUsingAnUnavailableUrlItShouldThrowAnException()
+    public function whenExtractUsingAnUnavailableUrlItShouldThrowAnException(): void
     {
         $config = [
             Configuration::create([
@@ -93,7 +93,7 @@ class XpathFinderTest extends TestCase
     /**
      * @test
      */
-    public function whenXpathIsMissingAValueItShouldThrowAnException()
+    public function whenXpathIsMissingAValueItShouldThrowAnException(): void
     {
         $config = [
             Configuration::create([
@@ -139,7 +139,7 @@ class XpathFinderTest extends TestCase
     /**
      * @test
      */
-    public function whenXpathsAreFoundItShouldReturnTheFoundValues()
+    public function whenXpathsAreFoundItShouldReturnTheFoundValues(): void
     {
         $config = [
             Configuration::create([
@@ -208,7 +208,7 @@ class XpathFinderTest extends TestCase
         $xpathFinder   = new XpathFinder($client, $variantGenerator);
         $extractedData = $xpathFinder->extract('url', $config);
 
-        $this->assertEquals(
+        self::assertEquals(
             [
                 'variant' => 10,
                 'data'    => [

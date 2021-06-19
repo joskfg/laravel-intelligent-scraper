@@ -59,7 +59,7 @@ class ScrapeTest extends TestCase
     /**
      * @test
      */
-    public function whenConfigurationDoesNotExistItShouldThrowAnEvent()
+    public function whenConfigurationDoesNotExistItShouldThrowAnEvent(): void
     {
         $this->config->shouldReceive('findByType')
             ->once()
@@ -80,7 +80,7 @@ class ScrapeTest extends TestCase
     /**
      * @test
      */
-    public function whenScrappingConnectionFailsItShouldThrowAConnectionException()
+    public function whenScrappingConnectionFailsItShouldThrowAConnectionException(): void
     {
         $xpathConfig = collect([
             'title'   => '//*[@id="page-title"]',
@@ -109,7 +109,7 @@ class ScrapeTest extends TestCase
     /**
      * @test
      */
-    public function whenTheIdStoreIsNotAvailableItShouldThrowAnUnexpectedValueException()
+    public function whenTheIdStoreIsNotAvailableItShouldThrowAnUnexpectedValueException(): void
     {
         $xpathConfig = collect([
             'title'   => '//*[@id="page-title"]',
@@ -139,7 +139,7 @@ class ScrapeTest extends TestCase
     /**
      * @test
      */
-    public function whenTheDataExtractionWorksItShouldReturnsTheScrapedData()
+    public function whenTheDataExtractionWorksItShouldReturnsTheScrapedData(): void
     {
         $scrapedData = [
             'variant' => 'b265521fc089ac61b794bfa3a5ce8a657f6833ce',
@@ -176,7 +176,7 @@ class ScrapeTest extends TestCase
 
             return $event instanceof $class;
         })->first();
-        $this->assertEquals(
+        self::assertEquals(
             $scrapedData['data'],
             $event->data
         );
@@ -185,7 +185,7 @@ class ScrapeTest extends TestCase
     /**
      * @test
      */
-    public function whenTheScraperConfigIsInvalidItShouldTriggerAnEvent()
+    public function whenTheScraperConfigIsInvalidItShouldTriggerAnEvent(): void
     {
         $xpathConfig = collect([
             'title'   => '//*[@id="page-title"]',

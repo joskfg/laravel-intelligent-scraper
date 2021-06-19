@@ -30,7 +30,7 @@ class XpathBuilderTest extends TestCase
         $this->xpathBuilder = new XpathBuilder('/^random-.*$/');
     }
 
-    private function getHtml()
+    private function getHtml(): string
     {
         return <<<'HTML'
 <!DOCTYPE html>
@@ -88,7 +88,7 @@ HTML;
     /**
      * @test
      */
-    public function whenTextIsNotFoundItShouldThrowAnException()
+    public function whenTextIsNotFoundItShouldThrowAnException(): void
     {
         $this->expectException(\UnexpectedValueException::class);
         $this->expectExceptionMessage("'unknown value' not found");
@@ -99,7 +99,7 @@ HTML;
     /**
      * @test
      */
-    public function whenRegexpIsNotFoundItShouldThrowAnException()
+    public function whenRegexpIsNotFoundItShouldThrowAnException(): void
     {
         $this->expectException(\UnexpectedValueException::class);
         $this->expectExceptionMessage("'/unknown value/' not found");
@@ -110,9 +110,9 @@ HTML;
     /**
      * @test
      */
-    public function whenTextIsFoundWithinAParentWithIdItShouldReturnTheXPathBasedInTheParentId()
+    public function whenTextIsFoundWithinAParentWithIdItShouldReturnTheXPathBasedInTheParentId(): void
     {
-        $this->assertEquals(
+        self::assertEquals(
             '//*[@id="page-description"]/h2',
             $this->xpathBuilder->find($this->domElement, 'Description')
         );
@@ -121,9 +121,9 @@ HTML;
     /**
      * @test
      */
-    public function whenTextIsFoundWithSiglingsItShouldSetTheElementPosition()
+    public function whenTextIsFoundWithSiblingsItShouldSetTheElementPosition(): void
     {
-        $this->assertEquals(
+        self::assertEquals(
             '//*[@id="page-title"]/div[2]/p',
             $this->xpathBuilder->find($this->domElement, 'Some content')
         );
@@ -132,9 +132,9 @@ HTML;
     /**
      * @test
      */
-    public function whenTextIsFoundButThereAreNoParentsWithIdItShouldReturnXpathUntilRoot()
+    public function whenTextIsFoundButThereAreNoParentsWithIdItShouldReturnXpathUntilRoot(): void
     {
-        $this->assertEquals(
+        self::assertEquals(
             '/html/body/h2',
             $this->xpathBuilder->find($this->domElement, 'The target Attribute')
         );
@@ -143,7 +143,7 @@ HTML;
     /**
      * @test
      */
-    public function whenMultiLineTextIsFoundItShouldReturnTheXpathToTheNode()
+    public function whenMultiLineTextIsFoundItShouldReturnTheXpathToTheNode(): void
     {
         $text = <<<'TEXT'
 
@@ -152,7 +152,7 @@ HTML;
         
 TEXT;
 
-        $this->assertEquals(
+        self::assertEquals(
             '//*[@id="page-description"]/p',
             $this->xpathBuilder->find($this->domElement, $text)
         );
@@ -161,13 +161,13 @@ TEXT;
     /**
      * @test
      */
-    public function whenRegexIsFoundItShouldReturnTheXpathToTheNode()
+    public function whenRegexIsFoundItShouldReturnTheXpathToTheNode(): void
     {
         $text = regexp(
             '/^\s*If you set the target attribute to "_blank",\s*the link will open in a new browser window or tab.\s*$/'
         );
 
-        $this->assertEquals(
+        self::assertEquals(
             '//*[@id="page-description"]/p',
             $this->xpathBuilder->find($this->domElement, $text)
         );
@@ -176,9 +176,9 @@ TEXT;
     /**
      * @test
      */
-    public function whenGetInformationThatIsInAAttributeItShouldGenerateAValidXpath()
+    public function whenGetInformationThatIsInAAttributeItShouldGenerateAValidXpath(): void
     {
-        $this->assertEquals(
+        self::assertEquals(
             '/html/body/img/@src',
             $this->xpathBuilder->find($this->domElement, 'http://test.com/image.jpg')
         );
@@ -187,7 +187,7 @@ TEXT;
     /**
      * @test
      */
-    public function whenTryToFindACommonPatternBetweenDifferentValuesItShouldReturnAnXpathWithCommonParts()
+    public function whenTryToFindACommonPatternBetweenDifferentValuesItShouldReturnAnXpathWithCommonParts(): void
     {
         $values = [
             'http://test.com/image1.jpg',
@@ -196,7 +196,7 @@ TEXT;
             'http://test.com/image4.jpg',
         ];
 
-        $this->assertEquals(
+        self::assertEquals(
             '//*[@id="page-description"]/div[1]/*/*/img/@src',
             $this->xpathBuilder->find($this->domElement, $values)
         );
@@ -205,7 +205,7 @@ TEXT;
     /**
      * @test
      */
-    public function whenTryToFindACommonPatternBetweenDifferentRegexpItShouldReturnAnXpathWithCommonParts()
+    public function whenTryToFindACommonPatternBetweenDifferentRegexpItShouldReturnAnXpathWithCommonParts(): void
     {
         $values = [
             regexp('@^http://test.com/image1.jpg$@'),
@@ -214,7 +214,7 @@ TEXT;
             regexp('@^http://test.com/image4.jpg$@'),
         ];
 
-        $this->assertEquals(
+        self::assertEquals(
             '//*[@id="page-description"]/div[1]/*/*/img/@src',
             $this->xpathBuilder->find($this->domElement, $values)
         );
@@ -223,11 +223,11 @@ TEXT;
     /**
      * @test
      */
-    public function whenTheInformationIsInAMetaItShouldTargetTheSpecificMeta()
+    public function whenTheInformationIsInAMetaItShouldTargetTheSpecificMeta(): void
     {
         $values = ['12345'];
 
-        $this->assertEquals(
+        self::assertEquals(
             '//meta[@name="id"]/@content',
             $this->xpathBuilder->find($this->domElement, $values)
         );

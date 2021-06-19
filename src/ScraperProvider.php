@@ -42,9 +42,9 @@ class ScraperProvider extends EventServiceProvider
      *
      * @var array
      */
-    protected $subscribe = [];
+    protected $subscribe;
 
-    public function boot()
+    public function boot(): void
     {
         parent::boot();
 
@@ -65,7 +65,7 @@ class ScraperProvider extends EventServiceProvider
      * Register any application services.
      *
      */
-    public function register()
+    public function register(): void
     {
         $this->app->when(XpathBuilder::class)
             ->needs('$idsToIgnore')

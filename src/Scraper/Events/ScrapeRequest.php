@@ -10,20 +10,11 @@ class ScrapeRequest
     use Dispatchable;
     use SerializesModels;
 
-    /**
-     * @var string
-     */
-    public $url;
+    public string $url;
 
-    /**
-     * @var string
-     */
-    public $type;
+    public string $type;
 
-    /**
-     * @var array
-     */
-    public $context;
+    public array $context;
 
     /**
      * Create a new event instance.
@@ -48,8 +39,8 @@ class ScrapeRequest
      *
      * @return array
      */
-    public function tags()
+    public function tags(): array
     {
-        return ["request_type:{$this->type}"];
+        return ["request_type:$this->type"];
     }
 }

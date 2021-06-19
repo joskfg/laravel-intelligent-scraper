@@ -2,6 +2,8 @@
 
 namespace Softonic\LaravelIntelligentScraper\Scraper\Exceptions;
 
-class MissingXpathValueException extends \UnexpectedValueException
+use UnexpectedValueException;
+
+class MissingXpathValueException extends UnexpectedValueException
 {
 }

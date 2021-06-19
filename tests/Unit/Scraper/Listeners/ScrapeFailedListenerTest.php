@@ -11,7 +11,7 @@ class ScrapeFailedListenerTest extends TestCase
     /**
      * @test
      */
-    public function whenReceiveAnUnknownScrapeFailedTypeItShouldDoNothing()
+    public function whenReceiveAnUnknownScrapeFailedTypeItShouldDoNothing(): void
     {
         $listener = \Mockery::mock(ScrapeFailedListener::class);
         \App::instance(get_class($listener), $listener);
@@ -37,7 +37,7 @@ class ScrapeFailedListenerTest extends TestCase
     /**
      * @test
      */
-    public function whenReceiveAKnownScrapeFailedTypeItShouldHandleTheEventWithTheSpecificDependency()
+    public function whenReceiveAKnownScrapeFailedTypeItShouldHandleTheEventWithTheSpecificDependency(): void
     {
         $listener = \Mockery::mock(ScrapeFailedListener::class);
         \App::instance(get_class($listener), $listener);

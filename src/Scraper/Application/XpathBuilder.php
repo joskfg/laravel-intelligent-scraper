@@ -3,13 +3,11 @@
 namespace Softonic\LaravelIntelligentScraper\Scraper\Application;
 
 use Illuminate\Support\Facades\Log;
+use UnexpectedValueException;
 
 class XpathBuilder
 {
-    /**
-     * @var string
-     */
-    private $idsToIgnore;
+    private string $idsToIgnore;
 
     public function __construct(string $idsToIgnore)
     {
@@ -17,13 +15,13 @@ class XpathBuilder
     }
 
     /**
-     * Indicates if the comparision should be done using a regexp.
+     * Indicates if the comparison should be done using a regexp.
      */
-    const REGEXP_COMPARISION = 'regexp';
+    private const REGEXP_COMPARISON = 'regexp';
 
-    public function find($documentElement, $values)
+    public function find($documentElement, $values): string
     {
-        $values = (!is_array($values) || array_key_exists(self::REGEXP_COMPARISION, $values))
+        $values = (!is_array($values) || array_key_exists(self::REGEXP_COMPARISON, $values))
             ? [$values]
             : $values;
 
@@ -39,18 +37,18 @@ class XpathBuilder
 
     public function findNode($documentElement, $value)
     {
-        list($value, $isFoundCallback) = $this->getComparisionCallbackWithBasicValue($value);
+        [$value, $isFoundCallback] = $this->getComparisonCallbackWithBasicValue($value);
 
         $node = $this->getNodeWithValue([$documentElement], $isFoundCallback);
         if (empty($node)) {
-            throw new \UnexpectedValueException("'$value' not found");
+            throw new UnexpectedValueException("'$value' not found");
         }
 
         return $node;
     }
 
     /**
-     * Get the comparision callback with the value used internally.
+     * Get the comparison callback with the value used internally.
      *
      * The callback will be different depending on the value. If the value
      * contains a regexp the callback will evaluate it, if not, the value is a simple value
@@ -60,30 +58,30 @@ class XpathBuilder
      *
      * @return array
      */
-    private function getComparisionCallbackWithBasicValue($value): array
+    private function getComparisonCallbackWithBasicValue($value): array
     {
-        if (is_array($value) && array_key_exists(self::REGEXP_COMPARISION, $value)) {
-            $value           = $value[self::REGEXP_COMPARISION];
-            $isFoundCallback = $this->regexpComparision($value);
+        if (is_array($value) && array_key_exists(self::REGEXP_COMPARISON, $value)) {
+            $value           = $value[self::REGEXP_COMPARISON];
+            $isFoundCallback = $this->regexpComparison($value);
 
             return [$value, $isFoundCallback];
         }
 
-        $isFoundCallback = $this->normalComparision($value);
+        $isFoundCallback = $this->normalComparison($value);
 
         return [$value, $isFoundCallback];
     }
 
-    private function regexpComparision($regexp)
+    private function regexpComparison($regexp): callable
     {
-        return function ($string) use ($regexp): bool {
-            return !!preg_match($regexp, $string);
+        return static function ($string) use ($regexp): bool {
+            return (bool)preg_match($regexp, $string);
         };
     }
 
-    private function normalComparision($value)
+    private function normalComparison($value): callable
     {
-        return function ($string) use ($value): bool {
+        return static function ($string) use ($value): bool {
             return $string === $value;
         };
     }
@@ -108,9 +106,11 @@ class XpathBuilder
                 }
             }
         }
+
+        return null;
     }
 
-    private function getXPath(array $nodes)
+    private function getXPath(array $nodes): string
     {
         Log::debug('Calculating xpath for the given nodes.');
         $elements = [];
@@ -123,7 +123,7 @@ class XpathBuilder
 
         Log::debug('Getting common elements between xpaths.');
         $finalXpath = implode('/', array_reverse($finalElements));
-        Log::debug("Xpath generated: {$finalXpath}.");
+        Log::debug("Xpath generated: $finalXpath.");
 
         return $finalXpath;
     }
@@ -133,14 +133,14 @@ class XpathBuilder
         if ('meta' === $node->nodeName) {
             foreach ($node->attributes as $attribute) {
                 if ('name' === $attribute->name) {
-                    return ["//meta[@name=\"$attribute->value\"]/@{$childNode->nodeName}"];
+                    return ["//meta[@name=\"$attribute->value\"]/@$childNode->nodeName"];
                 }
             }
         }
 
         foreach ($node->attributes ?? [] as $attribute) {
             if ($attribute->name === 'id' && !preg_match($this->idsToIgnore, $attribute->value)) {
-                $elements[$index] = "//*[@id=\"{$attribute->value}\"]";
+                $elements[$index] = "//*[@id=\"$attribute->value\"]";
 
                 return array_slice($elements, 0, $index + 1);
             }
@@ -168,7 +168,7 @@ class XpathBuilder
         $totalElements = count($elements[0]);
 
         for ($i = 0; $i < $totalElements; ++$i) {
-            $finalElements[$i] = (!isset($fixedElements[$i])) ? '*' : $fixedElements[$i];
+            $finalElements[$i] = $fixedElements[$i] ?? '*';
         }
 
         return $finalElements;

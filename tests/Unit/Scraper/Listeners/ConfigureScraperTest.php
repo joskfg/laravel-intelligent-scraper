@@ -55,7 +55,7 @@ class ConfigureScraperTest extends TestCase
     /**
      * @test
      */
-    public function whenCannotBeCalculatedItShouldThrowAnException()
+    public function whenCannotBeCalculatedItShouldThrowAnException(): void
     {
         $this->config->shouldReceive('calculate')
             ->once()
@@ -83,7 +83,7 @@ class ConfigureScraperTest extends TestCase
     /**
      * @test
      */
-    public function whenIsCalculatedItShouldReturnExtractedDataAndStoreTheNewConfig()
+    public function whenIsCalculatedItShouldReturnExtractedDataAndStoreTheNewConfig(): void
     {
         $xpathConfig = collect([
             new ConfigurationModel([
@@ -129,7 +129,7 @@ class ConfigureScraperTest extends TestCase
 
             return $event instanceof $class;
         })->first();
-        $this->assertEquals(
+        self::assertEquals(
             $scrapedData['data'],
             $event->data
         );
@@ -138,14 +138,14 @@ class ConfigureScraperTest extends TestCase
             'configurations',
             [
                 'name'   => 'title',
-                'xpaths' => json_encode(['//*[@id="page-title"]']),
+                'xpaths' => json_encode(['//*[@id="page-title"]'], JSON_THROW_ON_ERROR),
             ]
         );
         $this->assertDatabaseHas(
             'configurations',
             [
                 'name'   => 'version',
-                'xpaths' => json_encode(['/html/div[2]/p']),
+                'xpaths' => json_encode(['/html/div[2]/p'], JSON_THROW_ON_ERROR),
             ]
         );
     }
@@ -153,7 +153,7 @@ class ConfigureScraperTest extends TestCase
     /**
      * @test
      */
-    public function whenScrappingConnectionFailsItShouldThrowAConnectionException()
+    public function whenScrappingConnectionFailsItShouldThrowAConnectionException(): void
     {
         $xpathConfig = collect([
             new ConfigurationModel([
@@ -190,7 +190,7 @@ class ConfigureScraperTest extends TestCase
     /**
      * @test
      */
-    public function whenTheIdStoreIsNotAvailableItShouldThrowAnUnexpectedValueException()
+    public function whenTheIdStoreIsNotAvailableItShouldThrowAnUnexpectedValueException(): void
     {
         $xpathConfig = collect([
             new ConfigurationModel([
