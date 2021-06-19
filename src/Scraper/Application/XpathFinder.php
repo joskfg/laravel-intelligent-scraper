@@ -14,14 +14,8 @@ use UnexpectedValueException;
 
 class XpathFinder
 {
-    /**
-     * @var GoutteClient
-     */
     private GoutteClient $client;
 
-    /**
-     * @var VariantGenerator
-     */
     private VariantGenerator $variantGenerator;
 
     public function __construct(GoutteClient $client, VariantGenerator $variantGenerator)

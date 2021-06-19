@@ -55,8 +55,6 @@ class XpathBuilder
      * and it is checked as a normal equal.
      *
      * @param mixed $value
-     *
-     * @return array
      */
     private function getComparisonCallbackWithBasicValue($value): array
     {

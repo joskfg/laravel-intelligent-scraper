@@ -13,35 +13,24 @@ use Softonic\LaravelIntelligentScraper\Scraper\Events\ScrapeRequest;
 use Softonic\LaravelIntelligentScraper\Scraper\Exceptions\ConfigurationException;
 use Softonic\LaravelIntelligentScraper\Scraper\Models\Configuration;
 use Softonic\LaravelIntelligentScraper\Scraper\Models\ScrapedDataset;
+use Softonic\LaravelIntelligentScraper\Scraper\Repositories\Configuration as ConfigurationRepository;
 use Symfony\Component\DomCrawler\Crawler;
 use UnexpectedValueException;
 
 class Configurator
 {
-    /**
-     * @var Client
-     */
     private Client $client;
 
-    /**
-     * @var XpathBuilder
-     */
     private XpathBuilder $xpathBuilder;
 
-    /**
-     * @var VariantGenerator
-     */
     private VariantGenerator $variantGenerator;
 
-    /**
-     * @var \Softonic\LaravelIntelligentScraper\Scraper\Repositories\Configuration
-     */
-    private \Softonic\LaravelIntelligentScraper\Scraper\Repositories\Configuration $configuration;
+    private ConfigurationRepository $configuration;
 
     public function __construct(
         Client $client,
         XpathBuilder $xpathBuilder,
-        \Softonic\LaravelIntelligentScraper\Scraper\Repositories\Configuration $configuration,
+        ConfigurationRepository $configuration,
         VariantGenerator $variantGenerator
     ) {
         $this->client           = $client;
@@ -50,12 +39,6 @@ class Configurator
         $this->configuration    = $configuration;
     }
 
-    /**
-     * @param ScrapedDataset[] $scrapedDataset
-     *
-     * @return Collection
-     * @throws JsonException
-     */
     public function configureFromDataset(array $scrapedDataset): Collection
     {
         $type                 = $scrapedDataset[0]['type'];
@@ -166,11 +149,6 @@ class Configurator
      * Merge configuration.
      *
      * Assign to a field all the possible Xpath.
-     *
-     * @param array  $result
-     * @param string $type
-     *
-     * @return Collection
      */
     private function mergeConfiguration(array $result, string $type): Collection
     {

@@ -13,9 +13,6 @@ use UnexpectedValueException;
 
 class Configuration
 {
-    /**
-     * @var Configurator
-     */
     private Configurator $configurator;
 
     /**

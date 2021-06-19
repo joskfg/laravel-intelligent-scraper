@@ -2,6 +2,7 @@
 
 namespace Softonic\LaravelIntelligentScraper\Scraper\Listeners;
 
+use Exception;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use JsonException;
 use Psr\Log\LoggerInterface;
@@ -19,24 +20,14 @@ class ConfigureScraper implements ShouldQueue
 {
     /**
      * Specific queue for configure scrapper.
-     *
-     * @var string
      */
     public string $queue = 'configure';
 
-    /**
-     * @var Configuration
-     */
+
     private Configuration $configuration;
 
-    /**
-     * @var LoggerInterface
-     */
     private LoggerInterface $logger;
 
-    /**
-     * @var XpathFinder
-     */
     private XpathFinder $xpathFinder;
 
     public function __construct(
@@ -69,10 +60,6 @@ class ConfigureScraper implements ShouldQueue
         }
     }
 
-    /**
-     * @param ScrapeRequest $scrapeRequest
-     * @param               $config
-     */
     private function extractData(ScrapeRequest $scrapeRequest, $config): void
     {
         $this->logger->info("Extracting data from $scrapeRequest->url for type '$scrapeRequest->type'");
@@ -81,12 +68,7 @@ class ConfigureScraper implements ShouldQueue
         event(new Scraped($scrapeRequest, $data, $variant));
     }
 
-    /**
-     * @param InvalidConfiguration $invalidConfiguration
-     * @param                      $scrapeRequest
-     * @param                      $e
-     */
-    private function scrapeFailed(InvalidConfiguration $invalidConfiguration, $scrapeRequest, $e): void
+    private function scrapeFailed(InvalidConfiguration $invalidConfiguration, $scrapeRequest, Exception $e): void
     {
         $this->logger->error(
             "Error scraping '$scrapeRequest->url'",

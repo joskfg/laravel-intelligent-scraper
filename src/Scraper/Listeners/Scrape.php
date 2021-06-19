@@ -14,19 +14,10 @@ use Softonic\LaravelIntelligentScraper\Scraper\Repositories\Configuration;
 
 class Scrape implements ShouldQueue
 {
-    /**
-     * @var Configuration
-     */
     private Configuration $configuration;
 
-    /**
-     * @var LoggerInterface
-     */
     private LoggerInterface $logger;
 
-    /**
-     * @var XpathFinder
-     */
     private XpathFinder $xpathFinder;
 
     public function __construct(

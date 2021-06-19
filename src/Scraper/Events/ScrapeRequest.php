@@ -18,10 +18,6 @@ class ScrapeRequest
 
     /**
      * Create a new event instance.
-     *
-     * @param string $url
-     * @param string $type
-     * @param array  $context
      */
     public function __construct(string $url, string $type, array $context = [])
     {
@@ -36,8 +32,6 @@ class ScrapeRequest
      * Only if you are using Horizon
      *
      * @see https://laravel.com/docs/5.8/horizon#tags
-     *
-     * @return array
      */
     public function tags(): array
     {

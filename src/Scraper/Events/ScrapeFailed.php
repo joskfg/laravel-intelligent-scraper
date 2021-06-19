@@ -14,8 +14,6 @@ class ScrapeFailed
 
     /**
      * Create a new event instance.
-     *
-     * @param ScrapeRequest $scrapeRequest
      */
     public function __construct(ScrapeRequest $scrapeRequest)
     {
@@ -28,8 +26,6 @@ class ScrapeFailed
      * Only if you are using Horizon
      *
      * @see https://laravel.com/docs/5.8/horizon#tags
-     *
-     * @return array
      */
     public function tags(): array
     {

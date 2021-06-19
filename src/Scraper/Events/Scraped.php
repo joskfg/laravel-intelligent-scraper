@@ -10,27 +10,14 @@ class Scraped
     use Dispatchable;
     use SerializesModels;
 
-    /**
-     * @var ScrapeRequest
-     */
     public ScrapeRequest $scrapeRequest;
 
-    /**
-     * @var array
-     */
     public array $data;
 
-    /**
-     * @var string
-     */
     public string $variant;
 
     /**
      * Create a new event instance.
-     *
-     * @param ScrapeRequest $scrapeRequest
-     * @param array         $data
-     * @param string        $variant
      */
     public function __construct(ScrapeRequest $scrapeRequest, array $data, string $variant)
     {
@@ -45,8 +32,6 @@ class Scraped
      * Only if you are using Horizon
      *
      * @see https://laravel.com/docs/5.8/horizon#tags
-     *
-     * @return array
      */
     public function tags(): array
     {
