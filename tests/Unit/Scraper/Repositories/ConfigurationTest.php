@@ -111,7 +111,7 @@ class ConfigurationTest extends TestCase
         $configurator = \Mockery::mock(Configurator::class);
         App::instance(Configurator::class, $configurator);
         $configurator->shouldReceive('configureFromDataset')
-            ->withArgs(fn($posts) => 2 === $posts->count())
+            ->withArgs(fn ($posts) => 2 === $posts->count())
             ->andReturn($config);
 
         $configuration = new Configuration();
@@ -165,7 +165,7 @@ class ConfigurationTest extends TestCase
         $configurator = \Mockery::mock(Configurator::class);
         App::instance(Configurator::class, $configurator);
         $configurator->shouldReceive('configureFromDataset')
-            ->withArgs(fn($posts) => 2 === $posts->count())
+            ->withArgs(fn ($posts) => 2 === $posts->count())
             ->andThrow(new \UnexpectedValueException('Recalculate fail'));
 
         $this->expectException(\UnexpectedValueException::class);

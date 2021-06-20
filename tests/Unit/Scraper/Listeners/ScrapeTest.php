@@ -5,7 +5,6 @@ namespace Softonic\LaravelIntelligentScraper\Scraper\Listeners;
 use GuzzleHttp\Exception\ConnectException;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Support\Facades\Log;
-use Mockery\MockInterface;
 use Softonic\LaravelIntelligentScraper\Scraper\Application\XpathFinder;
 use Softonic\LaravelIntelligentScraper\Scraper\Events\InvalidConfiguration;
 use Softonic\LaravelIntelligentScraper\Scraper\Events\Scraped;

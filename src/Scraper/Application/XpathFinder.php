@@ -50,7 +50,7 @@ class XpathFinder
                 );
             }
 
-            $result['data'][$config['name']] = $subcrawler->each(fn($node) => $node->text());
+            $result['data'][$config['name']] = $subcrawler->each(fn ($node) => $node->text());
         }
 
         Log::info('Calculating variant.');

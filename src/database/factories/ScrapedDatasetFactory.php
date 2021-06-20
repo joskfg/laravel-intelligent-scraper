@@ -14,7 +14,7 @@
 use Softonic\LaravelIntelligentScraper\Scraper\Models\ScrapedDataset;
 
 /* @var \Illuminate\Database\Eloquent\Factory $factory */
-$factory->define(ScrapedDataset::class, fn(Faker\Generator $faker) => [
+$factory->define(ScrapedDataset::class, fn (Faker\Generator $faker) => [
     'url'     => $faker->url . $faker->randomDigit,
     'type'    => 'post',
     'variant' => $faker->sha1,

@@ -8,7 +8,6 @@ use GuzzleHttp\Exception\RequestException;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Support\Facades\Log;
 use Mockery;
-use Mockery\Mock;
 use Softonic\LaravelIntelligentScraper\Scraper\Events\ConfigurationScraped;
 use Softonic\LaravelIntelligentScraper\Scraper\Exceptions\ConfigurationException;
 use Softonic\LaravelIntelligentScraper\Scraper\Models\Configuration as ConfigurationModel;
