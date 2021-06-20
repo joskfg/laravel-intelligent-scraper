@@ -21,30 +21,15 @@ class ConfiguratorTest extends TestCase
 {
     use DatabaseMigrations;
 
-    /**
-     * @var Mock | Client
-     */
-    private $client;
+    private \Mockery\LegacyMockInterface $client;
 
-    /**
-     * @var Mock | XpathBuilder
-     */
-    private $xpathBuilder;
+    private \Mockery\LegacyMockInterface $xpathBuilder;
 
-    /**
-     * @var Mock | Configuration
-     */
-    private $configuration;
+    private \Mockery\LegacyMockInterface $configuration;
 
-    /**
-     * @var Mock | VariantGenerator
-     */
-    private $variantGenerator;
+    private \Mockery\LegacyMockInterface $variantGenerator;
 
-    /**
-     * @var Mock | Configurator
-     */
-    private $configurator;
+    private \Softonic\LaravelIntelligentScraper\Scraper\Application\Configurator $configurator;
 
     public function setUp(): void
     {

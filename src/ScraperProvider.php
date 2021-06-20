@@ -69,20 +69,14 @@ class ScraperProvider extends EventServiceProvider
     {
         $this->app->when(XpathBuilder::class)
             ->needs('$idsToIgnore')
-            ->give(function () {
-                return config('scraper.xpath.ignore-identifiers');
-            });
+            ->give(fn() => config('scraper.xpath.ignore-identifiers'));
 
         $this->app->when(ScrapedListener::class)
             ->needs('$listeners')
-            ->give(function () {
-                return config('scraper.listeners.scraped');
-            });
+            ->give(fn() => config('scraper.listeners.scraped'));
 
         $this->app->when(ScrapeFailedListener::class)
             ->needs('$listeners')
-            ->give(function () {
-                return config('scraper.listeners.scrape-failed');
-            });
+            ->give(fn() => config('scraper.listeners.scrape-failed'));
     }
 }

@@ -18,30 +18,15 @@ class ScrapeTest extends TestCase
 {
     use DatabaseMigrations;
 
-    /**
-     * @var MockInterface | Configuration
-     */
-    private $config;
+    private \Mockery\LegacyMockInterface $config;
 
-    /**
-     * @var MockInterface | XpathFinder
-     */
-    private $xpathFinder;
+    private \Mockery\LegacyMockInterface $xpathFinder;
 
-    /**
-     * @var string
-     */
-    private $url;
+    private string $url;
 
-    /**
-     * @var string
-     */
-    private $type;
+    private string $type;
 
-    /**
-     * @var ScrapeRequest
-     */
-    private $scrapeRequest;
+    private \Softonic\LaravelIntelligentScraper\Scraper\Events\ScrapeRequest $scrapeRequest;
 
     public function setUp(): void
     {
@@ -171,7 +156,7 @@ class ScrapeTest extends TestCase
         $this->expectsEvents(Scraped::class);
         $scrape->handle($this->scrapeRequest);
 
-        $event = collect($this->firedEvents)->filter(function ($event) {
+        $event = collect($this->firedEvents)->filter(function ($event): bool {
             $class = Scraped::class;
 
             return $event instanceof $class;

@@ -14,14 +14,12 @@
 use Softonic\LaravelIntelligentScraper\Scraper\Models\ScrapedDataset;
 
 /* @var \Illuminate\Database\Eloquent\Factory $factory */
-$factory->define(ScrapedDataset::class, function (Faker\Generator $faker) {
-    return [
-        'url'     => $faker->url . $faker->randomDigit,
-        'type'    => 'post',
-        'variant' => $faker->sha1,
-        'data'    => [
-            'title'  => $faker->word,
-            'author' => $faker->word,
-        ],
-    ];
-});
+$factory->define(ScrapedDataset::class, fn(Faker\Generator $faker) => [
+    'url'     => $faker->url . $faker->randomDigit,
+    'type'    => 'post',
+    'variant' => $faker->sha1,
+    'data'    => [
+        'title'  => $faker->word,
+        'author' => $faker->word,
+    ],
+]);

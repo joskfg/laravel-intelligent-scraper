@@ -72,16 +72,12 @@ class XpathBuilder
 
     private function regexpComparison($regexp): callable
     {
-        return static function ($string) use ($regexp): bool {
-            return (bool)preg_match($regexp, $string);
-        };
+        return static fn($string): bool => (bool)preg_match($regexp, $string);
     }
 
     private function normalComparison($value): callable
     {
-        return static function ($string) use ($value): bool {
-            return $string === $value;
-        };
+        return static fn($string): bool => $string === $value;
     }
 
     private function getNodeWithValue($nodes, $isFoundCallback)

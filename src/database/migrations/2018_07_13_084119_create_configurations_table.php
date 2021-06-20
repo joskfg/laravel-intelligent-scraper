@@ -12,7 +12,7 @@ class CreateConfigurationsTable extends Migration
      */
     public function up()
     {
-        Schema::create('configurations', function (Blueprint $table) {
+        Schema::create('configurations', function (Blueprint $table): void {
             $table->string('name')->primary();
             $table->string('type');
             $table->json('xpaths');

@@ -32,7 +32,7 @@ class Configuration
      */
     public function calculate(string $type): Collection
     {
-        $this->configurator = $this->configurator ?? resolve(Configurator::class);
+        $this->configurator ??= resolve(Configurator::class);
 
         $cacheKey = $this->getCacheKey($type);
         $config   = Cache::get($cacheKey);

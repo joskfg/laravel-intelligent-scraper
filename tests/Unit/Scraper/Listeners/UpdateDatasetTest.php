@@ -12,10 +12,7 @@ class UpdateDatasetTest extends \Tests\TestCase
 {
     use DatabaseMigrations;
 
-    /**
-     * @var UpdateDataset
-     */
-    private $updateDataset;
+    private \Softonic\LaravelIntelligentScraper\Scraper\Listeners\UpdateDataset $updateDataset;
 
     public function setUp(): void
     {

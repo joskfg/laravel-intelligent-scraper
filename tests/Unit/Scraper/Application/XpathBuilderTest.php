@@ -7,15 +7,9 @@ use Tests\TestCase;
 
 class XpathBuilderTest extends TestCase
 {
-    /**
-     * @var \DOMElement
-     */
-    private $domElement;
+    private ?\DOMElement $domElement = null;
 
-    /**
-     * @var XpathBuilder
-     */
-    private $xpathBuilder;
+    private \Softonic\LaravelIntelligentScraper\Scraper\Application\XpathBuilder $xpathBuilder;
 
     public function setUp(): void
     {

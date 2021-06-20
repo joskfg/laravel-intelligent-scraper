@@ -6,7 +6,7 @@ use InvalidArgumentException;
 
 class VariantGenerator
 {
-    protected ?string $type;
+    protected ?string $type = null;
 
     protected array $configPerField = [];
 
@@ -29,7 +29,7 @@ class VariantGenerator
 
     public function getId(?string $type = null): string
     {
-        $type = $type ?? $this->type;
+        $type ??= $this->type;
         if (empty($type)) {
             throw new InvalidArgumentException('Type should be provided in the getVariantId call or setType');
         }

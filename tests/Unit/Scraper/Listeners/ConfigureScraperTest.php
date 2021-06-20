@@ -20,25 +20,13 @@ class ConfigureScraperTest extends TestCase
 {
     use DatabaseMigrations;
 
-    /**
-     * @var MockInterface | Configuration
-     */
-    private $config;
+    private \Mockery\LegacyMockInterface $config;
 
-    /**
-     * @var MockInterface | XpathFinder
-     */
-    private $xpathFinder;
+    private \Mockery\LegacyMockInterface $xpathFinder;
 
-    /**
-     * @var string
-     */
-    private $url;
+    private string $url;
 
-    /**
-     * @var string
-     */
-    private $type;
+    private string $type;
 
     public function setUp(): void
     {
@@ -124,7 +112,7 @@ class ConfigureScraperTest extends TestCase
         $this->expectsEvents(Scraped::class);
         $configureScraper->handle(new InvalidConfiguration(new ScrapeRequest($this->url, $this->type)));
 
-        $event = collect($this->firedEvents)->filter(function ($event) {
+        $event = collect($this->firedEvents)->filter(function ($event): bool {
             $class = Scraped::class;
 
             return $event instanceof $class;
