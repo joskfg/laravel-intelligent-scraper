@@ -6,13 +6,13 @@ use InvalidArgumentException;
 
 class VariantGenerator
 {
-    protected string $type;
+    protected ?string $type;
 
     protected array $configPerField = [];
 
     protected bool $allFieldsFound = true;
 
-    public function setType(string $type): void
+    public function setType(?string $type): void
     {
         $this->type = $type;
     }

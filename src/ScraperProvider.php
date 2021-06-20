@@ -42,7 +42,7 @@ class ScraperProvider extends EventServiceProvider
      *
      * @var array
      */
-    protected $subscribe;
+    protected $subscribe = [];
 
     public function boot(): void
     {
