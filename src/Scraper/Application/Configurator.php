@@ -8,6 +8,7 @@ use GuzzleHttp\Exception\RequestException;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
 use JsonException;
+use Softonic\LaravelIntelligentScraper\Scraper\Entities\ScrapedData;
 use Softonic\LaravelIntelligentScraper\Scraper\Events\ConfigurationScraped;
 use Softonic\LaravelIntelligentScraper\Scraper\Events\ScrapeRequest;
 use Softonic\LaravelIntelligentScraper\Scraper\Exceptions\ConfigurationException;
@@ -121,8 +122,10 @@ class Configurator
                 $scrapedData['url'],
                 $scrapedData['type']
             ),
-            $scrapedData['data'],
-            $this->variantGenerator->getId($scrapedData['type'])
+            new ScrapedData(
+                $this->variantGenerator->getId($scrapedData['type']),
+                $scrapedData['data'],
+            )
         ));
 
         return $result;

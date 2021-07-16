@@ -169,7 +169,7 @@ class XpathFinderTest extends TestCase
         $variantGenerator->shouldReceive('addConfig')
             ->twice();
         $variantGenerator->shouldReceive('getId')
-            ->andReturn(10);
+            ->andReturn(':variant:');
 
         $client = \Mockery::mock(Client::class);
         $client->shouldReceive('request')
@@ -209,15 +209,16 @@ class XpathFinderTest extends TestCase
         $xpathFinder   = new XpathFinder($client, $variantGenerator);
         $extractedData = $xpathFinder->extract('url', collect($config));
 
-        self::assertEquals(
+        self::assertSame(
+            ':variant:',
+            $extractedData->getVariant()
+        );
+        self::assertSame(
             [
-                'variant' => 10,
-                'data'    => [
-                    'title'  => ['My Title'],
-                    'author' => ['My author'],
-                ],
+                'title'  => ['My Title'],
+                'author' => ['My author'],
             ],
-            $extractedData
+            $extractedData->getFields()
         );
     }
 }

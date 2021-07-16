@@ -4,15 +4,18 @@ namespace Softonic\LaravelIntelligentScraper\Scraper\Listeners;
 
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Support\Facades\Log;
+use ScrapedDatasetSeeder;
+use Softonic\LaravelIntelligentScraper\Scraper\Entities\ScrapedData;
 use Softonic\LaravelIntelligentScraper\Scraper\Events\Scraped;
 use Softonic\LaravelIntelligentScraper\Scraper\Events\ScrapeRequest;
 use Softonic\LaravelIntelligentScraper\Scraper\Models\ScrapedDataset;
+use Tests\TestCase;
 
-class UpdateDatasetTest extends \Tests\TestCase
+class UpdateDatasetTest extends TestCase
 {
     use DatabaseMigrations;
 
-    private \Softonic\LaravelIntelligentScraper\Scraper\Listeners\UpdateDataset $updateDataset;
+    private UpdateDataset $updateDataset;
 
     public function setUp(): void
     {
@@ -28,24 +31,29 @@ class UpdateDatasetTest extends \Tests\TestCase
      */
     public function whenDatasetExistsItShouldBeUpdated(): void
     {
-        $seeder  = new \ScrapedDatasetSeeder();
+        $seeder  = new ScrapedDatasetSeeder();
         $dataset = $seeder->createScrapedDatasets(2)->first();
 
-        $data = [
-            'title'    => ['My first post'],
-            'author'   => ['Jhon Doe'],
-            'category' => ['Entertainment'],
-        ];
+        $scrapedData = new ScrapedData(
+            ':variant:',
+            [
+                ':field-1:' => [':value-1:'],
+                ':field-2:' => [':value-2:'],
+                ':field-3:' => [':value-3:'],
+            ]
+        );
 
         $this->updateDataset->handle(
             new Scraped(
-                new ScrapeRequest($dataset->url, 'post'),
-                $data,
-                'b265521fc089ac61b794bfa3a5ce8a657f6833ce'
+                new ScrapeRequest($dataset->url, ':type:'),
+                $scrapedData
             )
         );
 
-        self::assertEquals($data, ScrapedDataset::where('url', $dataset->url)->first()->toArray()['data']);
+        self::assertEquals(
+            $scrapedData->getFields(),
+            ScrapedDataset::where('url', $dataset->url)->first()->toArray()['data']
+        );
         self::assertEquals(2, ScrapedDataset::all()->count());
     }
 
@@ -55,28 +63,31 @@ class UpdateDatasetTest extends \Tests\TestCase
     public function whenDatasetDoesNotExistAndTheDatasetsLimitHasNotBeenReachedItShouldBeSaved(): void
     {
         factory(ScrapedDataset::class, UpdateDataset::DATASET_AMOUNT_LIMIT - 1)->create([
-            'variant' => 'b265521fc089ac61b794bfa3a5ce8a657f6833ce',
+            'variant' => ':variant-1:',
         ]);
         factory(ScrapedDataset::class)->create([
-            'variant' => 'f45a8de53eaeea347a83ebaafaf29f16a1dd97e0',
+            'variant' => ':variant-2:',
         ]);
 
-        $url  = 'https//store-url.com/id';
-        $data = [
-            'title'    => ['My first post'],
-            'author'   => ['Jhon Doe'],
-            'category' => ['Entertainment'],
-        ];
+        $url  = ':scrape-url:';
+
+        $scrapedData = new ScrapedData(
+            ':variant-1:',
+            [
+                ':field-1:'    => [':value-1:'],
+                ':field-2:'   => [':value-2:'],
+                ':field-3:' => [':value-3:'],
+            ]
+        );
 
         $this->updateDataset->handle(
             new Scraped(
-                new ScrapeRequest($url, 'post'),
-                $data,
-                'b265521fc089ac61b794bfa3a5ce8a657f6833ce'
+                new ScrapeRequest($url, ':type:'),
+                $scrapedData
             )
         );
 
-        self::assertEquals($data, ScrapedDataset::where('url', $url)->first()->toArray()['data']);
+        self::assertEquals($scrapedData->getFields(), ScrapedDataset::where('url', $url)->first()->toArray()['data']);
         self::assertEquals(101, ScrapedDataset::count());
     }
 
@@ -85,26 +96,30 @@ class UpdateDatasetTest extends \Tests\TestCase
      */
     public function whenDatasetDoesNotExistAndTheDatasetsLimitHasReachedItShouldDeleteTheExcess(): void
     {
+        $type = ':type:';
         factory(ScrapedDataset::class, UpdateDataset::DATASET_AMOUNT_LIMIT + 10)->create([
-            'variant' => 'b265521fc089ac61b794bfa3a5ce8a657f6833ce',
+            'type'    => $type,
+            'variant' => ':variant:',
         ]);
 
-        $url  = 'https//store-url.com/id';
-        $type = 'post';
-        $data = [
-            'title'  => ['My first post'],
-            'author' => ['Jhon Doe'],
-        ];
+        $url  = ':scrape-url:';
+
+        $scrapedData = new ScrapedData(
+            ':variant:',
+            [
+                ':field-1:' => [':value-1:'],
+                ':field-2:' => [':value-2:'],
+            ]
+        );
 
         $this->updateDataset->handle(
             new Scraped(
                 new ScrapeRequest($url, $type),
-                $data,
-                'b265521fc089ac61b794bfa3a5ce8a657f6833ce'
+                $scrapedData
             )
         );
 
-        self::assertEquals($data, ScrapedDataset::where('url', $url)->first()->toArray()['data']);
+        self::assertEquals($scrapedData->getFields(), ScrapedDataset::where('url', $url)->first()->toArray()['data']);
         self::assertEquals(UpdateDataset::DATASET_AMOUNT_LIMIT, ScrapedDataset::withType($type)->count());
     }
 }

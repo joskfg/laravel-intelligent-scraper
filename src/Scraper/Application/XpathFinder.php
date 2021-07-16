@@ -7,6 +7,7 @@ use GuzzleHttp\Exception\ConnectException;
 use GuzzleHttp\Exception\RequestException;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
+use Softonic\LaravelIntelligentScraper\Scraper\Entities\ScrapedData;
 use Softonic\LaravelIntelligentScraper\Scraper\Exceptions\MissingXpathValueException;
 use Symfony\Component\DomCrawler\Crawler;
 use UnexpectedValueException;
@@ -23,12 +24,12 @@ class XpathFinder
         $this->variantGenerator = $variantGenerator;
     }
 
-    public function extract(string $url, Collection $configs): array
+    public function extract(string $url, Collection $configs): ScrapedData
     {
         $crawler = $this->getCrawler($url);
 
         Log::info('Response Received. Start crawling.');
-        $result = [];
+        $scrapedData = new ScrapedData();
         foreach ($configs as $config) {
             Log::info("Searching field {$config['name']}.");
             $subcrawler = collect();
@@ -50,14 +51,17 @@ class XpathFinder
                 );
             }
 
-            $result['data'][$config['name']] = $subcrawler->each(fn ($node) => $node->text());
+            $scrapedData->setField(
+                $config['name'],
+                $subcrawler->each(fn ($node) => $node->text())
+            );
         }
 
         Log::info('Calculating variant.');
-        $result['variant'] = $this->variantGenerator->getId($config['type']);
+        $scrapedData->setVariant($this->variantGenerator->getId($configs[0]['type']));
         Log::info('Variant calculated.');
 
-        return $result;
+        return $scrapedData;
     }
 
     private function getCrawler(string $url): ?Crawler

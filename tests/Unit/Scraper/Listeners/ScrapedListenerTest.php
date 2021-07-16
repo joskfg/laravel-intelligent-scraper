@@ -2,6 +2,7 @@
 
 namespace Softonic\LaravelIntelligentScraper\Scraper\Listeners;
 
+use Softonic\LaravelIntelligentScraper\Scraper\Entities\ScrapedData;
 use Softonic\LaravelIntelligentScraper\Scraper\Events\Scraped;
 use Softonic\LaravelIntelligentScraper\Scraper\Events\ScrapeRequest;
 use Tests\TestCase;
@@ -25,8 +26,10 @@ class ScrapedListenerTest extends TestCase
                 'http://uri',
                 'unknown_type'
             ),
-            [],
-            1
+            new ScrapedData(
+                null,
+                []
+            )
         );
 
         $listener->shouldNotReceive('handle');
@@ -51,8 +54,10 @@ class ScrapedListenerTest extends TestCase
                 'http://uri',
                 'known_type'
             ),
-            [],
-            1
+            new ScrapedData(
+                null,
+                []
+            )
         );
 
         $listener->shouldReceive('handle')

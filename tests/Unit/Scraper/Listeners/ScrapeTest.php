@@ -5,27 +5,29 @@ namespace Softonic\LaravelIntelligentScraper\Scraper\Listeners;
 use GuzzleHttp\Exception\ConnectException;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Support\Facades\Log;
+use Mockery;
+use Mockery\LegacyMockInterface;
 use Softonic\LaravelIntelligentScraper\Scraper\Application\XpathFinder;
+use Softonic\LaravelIntelligentScraper\Scraper\Entities\ScrapedData;
 use Softonic\LaravelIntelligentScraper\Scraper\Events\InvalidConfiguration;
 use Softonic\LaravelIntelligentScraper\Scraper\Events\Scraped;
 use Softonic\LaravelIntelligentScraper\Scraper\Events\ScrapeRequest;
 use Softonic\LaravelIntelligentScraper\Scraper\Exceptions\MissingXpathValueException;
 use Softonic\LaravelIntelligentScraper\Scraper\Repositories\Configuration;
 use Tests\TestCase;
+use UnexpectedValueException;
 
 class ScrapeTest extends TestCase
 {
     use DatabaseMigrations;
 
-    private \Mockery\LegacyMockInterface $config;
+    private LegacyMockInterface $config;
 
-    private \Mockery\LegacyMockInterface $xpathFinder;
-
-    private string $url;
+    private LegacyMockInterface $xpathFinder;
 
     private string $type;
 
-    private \Softonic\LaravelIntelligentScraper\Scraper\Events\ScrapeRequest $scrapeRequest;
+    private ScrapeRequest $scrapeRequest;
 
     public function setUp(): void
     {
@@ -33,11 +35,10 @@ class ScrapeTest extends TestCase
 
         Log::spy();
 
-        $this->config        = \Mockery::mock(Configuration::class);
-        $this->xpathFinder   = \Mockery::mock(XpathFinder::class);
-        $this->url           = 'http://test.c/123456';
+        $this->config        = Mockery::mock(Configuration::class);
+        $this->xpathFinder   = Mockery::mock(XpathFinder::class);
         $this->type          = 'post';
-        $this->scrapeRequest = new ScrapeRequest($this->url, $this->type);
+        $this->scrapeRequest = new ScrapeRequest(':scrape-url:', $this->type);
     }
 
     /**
@@ -67,8 +68,8 @@ class ScrapeTest extends TestCase
     public function whenScrappingConnectionFailsItShouldThrowAConnectionException(): void
     {
         $xpathConfig = collect([
-            'title'   => '//*[@id="page-title"]',
-            'version' => '/html/div[2]/p',
+            ':field-1:' => ':xpath-1:',
+            ':field-2:' => ':xpath-2:',
         ]);
         $this->config->shouldReceive('findByType')
             ->once()
@@ -77,8 +78,8 @@ class ScrapeTest extends TestCase
 
         $this->xpathFinder->shouldReceive('extract')
             ->once()
-            ->with('http://test.c/123456', $xpathConfig)
-            ->andThrowExceptions([\Mockery::mock(ConnectException::class)]);
+            ->with(':scrape-url:', $xpathConfig)
+            ->andThrowExceptions([Mockery::mock(ConnectException::class)]);
 
         $this->expectException(ConnectException::class);
 
@@ -96,8 +97,8 @@ class ScrapeTest extends TestCase
     public function whenTheIdStoreIsNotAvailableItShouldThrowAnUnexpectedValueException(): void
     {
         $xpathConfig = collect([
-            'title'   => '//*[@id="page-title"]',
-            'version' => '/html/div[2]/p',
+            ':field-1:' => ':value-1:',
+            ':field-2:' => ':value-2:',
         ]);
         $this->config->shouldReceive('findByType')
             ->once()
@@ -106,11 +107,11 @@ class ScrapeTest extends TestCase
 
         $this->xpathFinder->shouldReceive('extract')
             ->once()
-            ->with('http://test.c/123456', $xpathConfig)
-            ->andThrow(\UnexpectedValueException::class, 'HTTP Error: 404');
+            ->with(':scrape-url:', $xpathConfig)
+            ->andThrow(UnexpectedValueException::class, ':error-message:');
 
-        $this->expectException(\UnexpectedValueException::class);
-        $this->expectExceptionMessage('HTTP Error: 404');
+        $this->expectException(UnexpectedValueException::class);
+        $this->expectExceptionMessage(':error-message:');
 
         $scrape = new Scrape(
             $this->config,
@@ -125,16 +126,16 @@ class ScrapeTest extends TestCase
      */
     public function whenTheDataExtractionWorksItShouldReturnsTheScrapedData(): void
     {
-        $scrapedData = [
-            'variant' => 'b265521fc089ac61b794bfa3a5ce8a657f6833ce',
-            'data' => [
-                'title'   => ['test'],
-                'version' => ['1.0'],
-            ],
-        ];
+        $scrapedData = new ScrapedData(
+            ':variant:',
+            [
+                ':field-1:' => [':value-1:'],
+                ':field-2:' => [':value-2:'],
+            ]
+        );
         $xpathConfig = collect([
-            'title'   => '//*[@id="page-title"]',
-            'version' => '/html/div[2]/p',
+            ':field-1:' => ':xpath-1:',
+            ':field-2:' => ':xpath-2:',
         ]);
         $this->config->shouldReceive('findByType')
             ->once()
@@ -143,7 +144,7 @@ class ScrapeTest extends TestCase
 
         $this->xpathFinder->shouldReceive('extract')
             ->once()
-            ->with('http://test.c/123456', $xpathConfig)
+            ->with(':scrape-url:', $xpathConfig)
             ->andReturn($scrapedData);
 
         $scrape = new Scrape(
@@ -155,14 +156,16 @@ class ScrapeTest extends TestCase
         $this->expectsEvents(Scraped::class);
         $scrape->handle($this->scrapeRequest);
 
+        /** @var Scraped $event */
         $event = collect($this->firedEvents)->filter(function ($event): bool {
             $class = Scraped::class;
 
             return $event instanceof $class;
         })->first();
-        self::assertEquals(
-            $scrapedData['data'],
-            $event->data
+
+        self::assertSame(
+            $scrapedData,
+            $event->scrapedData
         );
     }
 
@@ -172,8 +175,8 @@ class ScrapeTest extends TestCase
     public function whenTheScraperConfigIsInvalidItShouldTriggerAnEvent(): void
     {
         $xpathConfig = collect([
-            'title'   => '//*[@id="page-title"]',
-            'version' => '/html/div[2]/p',
+            ':field-1:' => ':value-1:',
+            ':field-2:' => ':value-2:',
         ]);
         $this->config->shouldReceive('findByType')
             ->once()
@@ -182,8 +185,8 @@ class ScrapeTest extends TestCase
 
         $this->xpathFinder->shouldReceive('extract')
             ->once()
-            ->with('http://test.c/123456', $xpathConfig)
-            ->andThrow(MissingXpathValueException::class, 'XPath configuration is not valid.');
+            ->with(':scrape-url:', $xpathConfig)
+            ->andThrow(MissingXpathValueException::class, ':error:');
 
         $this->expectsEvents(InvalidConfiguration::class);
 

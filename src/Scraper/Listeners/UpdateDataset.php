@@ -29,8 +29,8 @@ class UpdateDataset implements ShouldQueue
             [
                 'url'     => $event->scrapeRequest->url,
                 'type'    => $event->scrapeRequest->type,
-                'variant' => $event->variant,
-                'data'    => $event->data,
+                'variant' => $event->scrapedData->getVariant(),
+                'data'    => $event->scrapedData->getFields(),
             ]
         );
 
@@ -40,15 +40,15 @@ class UpdateDataset implements ShouldQueue
     private function updateDataset(ScrapedDataset $dataset, Scraped $event): void
     {
         Log::info('Updating new information to dataset', ['request' => $event->scrapeRequest]);
-        $dataset->data = $event->data;
+        $dataset->data = $event->scrapedData->getFields();
 
         $dataset->save();
     }
 
-    private function deleteExceededDataset($event): void
+    private function deleteExceededDataset(Scraped $event): void
     {
         $scraperDatasets = ScrapedDataset::withType($event->scrapeRequest->type)
-            ->withVariant($event->variant);
+            ->withVariant($event->scrapedData->getVariant());
 
         $datasetAmountAvailable = $scraperDatasets->count();
 

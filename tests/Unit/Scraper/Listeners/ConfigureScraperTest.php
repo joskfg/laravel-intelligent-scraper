@@ -5,7 +5,10 @@ namespace Softonic\LaravelIntelligentScraper\Scraper\Listeners;
 use GuzzleHttp\Exception\ConnectException;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Support\Facades\Log;
+use Mockery;
+use Mockery\LegacyMockInterface;
 use Softonic\LaravelIntelligentScraper\Scraper\Application\XpathFinder;
+use Softonic\LaravelIntelligentScraper\Scraper\Entities\ScrapedData;
 use Softonic\LaravelIntelligentScraper\Scraper\Events\InvalidConfiguration;
 use Softonic\LaravelIntelligentScraper\Scraper\Events\Scraped;
 use Softonic\LaravelIntelligentScraper\Scraper\Events\ScrapeFailed;
@@ -14,14 +17,15 @@ use Softonic\LaravelIntelligentScraper\Scraper\Exceptions\ConfigurationException
 use Softonic\LaravelIntelligentScraper\Scraper\Models\Configuration as ConfigurationModel;
 use Softonic\LaravelIntelligentScraper\Scraper\Repositories\Configuration;
 use Tests\TestCase;
+use UnexpectedValueException;
 
 class ConfigureScraperTest extends TestCase
 {
     use DatabaseMigrations;
 
-    private \Mockery\LegacyMockInterface $config;
+    private LegacyMockInterface $config;
 
-    private \Mockery\LegacyMockInterface $xpathFinder;
+    private LegacyMockInterface $xpathFinder;
 
     private string $url;
 
@@ -33,10 +37,10 @@ class ConfigureScraperTest extends TestCase
 
         Log::spy();
 
-        $this->config      = \Mockery::mock(Configuration::class);
-        $this->xpathFinder = \Mockery::mock(XpathFinder::class);
-        $this->url         = 'http://test.c/123456';
-        $this->type        = 'post';
+        $this->config      = Mockery::mock(Configuration::class);
+        $this->xpathFinder = Mockery::mock(XpathFinder::class);
+        $this->url         = ':scrape-url:';
+        $this->type        = ':type:';
     }
 
     /**
@@ -47,12 +51,12 @@ class ConfigureScraperTest extends TestCase
         $this->config->shouldReceive('calculate')
             ->once()
             ->with($this->type)
-            ->andThrow(ConfigurationException::class, 'Configuration cannot be calculated');
+            ->andThrow(ConfigurationException::class, ':error:');
 
         Log::shouldReceive('error')
             ->with(
-                "Error scraping 'http://test.c/123456'",
-                ['message' => 'Configuration cannot be calculated']
+                "Error scraping ':scrape-url:'",
+                ['message' => ':error:']
             );
 
         $configureScraper = new ConfigureScraper(
@@ -74,23 +78,23 @@ class ConfigureScraperTest extends TestCase
     {
         $xpathConfig = collect([
             new ConfigurationModel([
-                'name'   => 'title',
-                'xpaths' => ['//*[@id="page-title"]'],
-                'type'   => 'post',
+                'name'   => ':field-1:',
+                'xpaths' => [':xpath-1:'],
+                'type'   => ':type:',
             ]),
             new ConfigurationModel([
-                'name'   => 'version',
-                'xpaths' => ['/html/div[2]/p'],
-                'type'   => 'post',
+                'name'   => ':field-2:',
+                'xpaths' => [':xpath-2:'],
+                'type'   => ':type:',
             ]),
         ]);
-        $scrapedData = [
-            'variant' => 'b265521fc089ac61b794bfa3a5ce8a657f6833ce',
-            'data'    => [
-                'title'   => ['test'],
-                'version' => ['1.0'],
-            ],
-        ];
+        $scrapedData = new ScrapedData(
+            ':variant:',
+            [
+                ':field-1:' => [':value-1:'],
+                ':field-2:' => [':value-2:'],
+            ]
+        );
 
         $this->config->shouldReceive('calculate')
             ->once()
@@ -99,7 +103,7 @@ class ConfigureScraperTest extends TestCase
 
         $this->xpathFinder->shouldReceive('extract')
             ->once()
-            ->with('http://test.c/123456', $xpathConfig)
+            ->with(':scrape-url:', $xpathConfig)
             ->andReturn($scrapedData);
 
         $configureScraper = new ConfigureScraper(
@@ -111,28 +115,29 @@ class ConfigureScraperTest extends TestCase
         $this->expectsEvents(Scraped::class);
         $configureScraper->handle(new InvalidConfiguration(new ScrapeRequest($this->url, $this->type)));
 
+        /** @var Scraped $event */
         $event = collect($this->firedEvents)->filter(function ($event): bool {
             $class = Scraped::class;
 
             return $event instanceof $class;
         })->first();
         self::assertEquals(
-            $scrapedData['data'],
-            $event->data
+            $scrapedData,
+            $event->scrapedData
         );
 
         $this->assertDatabaseHas(
             'configurations',
             [
-                'name'   => 'title',
-                'xpaths' => json_encode(['//*[@id="page-title"]'], JSON_THROW_ON_ERROR),
+                'name'   => ':field-1:',
+                'xpaths' => json_encode([':xpath-1:'], JSON_THROW_ON_ERROR),
             ]
         );
         $this->assertDatabaseHas(
             'configurations',
             [
-                'name'   => 'version',
-                'xpaths' => json_encode(['/html/div[2]/p'], JSON_THROW_ON_ERROR),
+                'name'   => ':field-2:',
+                'xpaths' => json_encode([':xpath-2:'], JSON_THROW_ON_ERROR),
             ]
         );
     }
@@ -144,14 +149,14 @@ class ConfigureScraperTest extends TestCase
     {
         $xpathConfig = collect([
             new ConfigurationModel([
-                'name'   => 'title',
-                'xpaths' => ['//*[@id="page-title"]'],
-                'type'   => 'post',
+                'name'   => ':field-1:',
+                'xpaths' => [':value-1:'],
+                'type'   => ':type:',
             ]),
             new ConfigurationModel([
-                'name'   => 'version',
-                'xpaths' => ['/html/div[2]/p'],
-                'type'   => 'post',
+                'name'   => ':field-2:',
+                'xpaths' => [':value-2:'],
+                'type'   => ':type:',
             ]),
         ]);
         $this->config->shouldReceive('calculate')
@@ -161,8 +166,8 @@ class ConfigureScraperTest extends TestCase
 
         $this->xpathFinder->shouldReceive('extract')
             ->once()
-            ->with('http://test.c/123456', $xpathConfig)
-            ->andThrowExceptions([\Mockery::mock(ConnectException::class)]);
+            ->with(':scrape-url:', $xpathConfig)
+            ->andThrowExceptions([Mockery::mock(ConnectException::class)]);
 
         $this->expectException(ConnectException::class);
 
@@ -181,14 +186,14 @@ class ConfigureScraperTest extends TestCase
     {
         $xpathConfig = collect([
             new ConfigurationModel([
-                'name'   => 'title',
-                'xpaths' => ['//*[@id="page-title"]'],
-                'type'   => 'post',
+                'name'   => ':field-1:',
+                'xpaths' => [':value-1:'],
+                'type'   => ':type:',
             ]),
             new ConfigurationModel([
-                'name'   => 'version',
-                'xpaths' => ['/html/div[2]/p'],
-                'type'   => 'post',
+                'name'   => ':field-2:',
+                'xpaths' => [':value-2:'],
+                'type'   => ':type:',
             ]),
         ]);
         $this->config->shouldReceive('calculate')
@@ -198,12 +203,12 @@ class ConfigureScraperTest extends TestCase
 
         $this->xpathFinder->shouldReceive('extract')
             ->once()
-            ->with('http://test.c/123456', $xpathConfig)
-            ->andThrow(\UnexpectedValueException::class, 'HTTP Error: 404');
+            ->with(':scrape-url:', $xpathConfig)
+            ->andThrow(UnexpectedValueException::class, ':error:');
 
         Log::shouldReceive('debug');
         Log::shouldReceive('error')
-            ->with("Error scraping 'http://test.c/123456'", ['message' => 'HTTP Error: 404']);
+            ->with("Error scraping ':scrape-url:'", ['message' => ':error:']);
         $this->expectsEvents(ScrapeFailed::class);
 
         $configureScraper = new ConfigureScraper(

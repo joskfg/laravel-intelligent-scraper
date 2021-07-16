@@ -4,6 +4,7 @@ namespace Softonic\LaravelIntelligentScraper\Scraper\Events;
 
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
+use Softonic\LaravelIntelligentScraper\Scraper\Entities\ScrapedData;
 
 class Scraped
 {
@@ -12,18 +13,15 @@ class Scraped
 
     public ScrapeRequest $scrapeRequest;
 
-    public array $data;
-
-    public string $variant;
+    public ScrapedData $scrapedData;
 
     /**
      * Create a new event instance.
      */
-    public function __construct(ScrapeRequest $scrapeRequest, array $data, string $variant)
+    public function __construct(ScrapeRequest $scrapeRequest, ScrapedData $scrapedData)
     {
         $this->scrapeRequest = $scrapeRequest;
-        $this->data          = $data;
-        $this->variant       = $variant;
+        $this->scrapedData = $scrapedData;
     }
 
     /**
@@ -37,7 +35,7 @@ class Scraped
     {
         return [
             "scraped_type:{$this->scrapeRequest->type}",
-            "scraped_variant:$this->variant",
+            "scraped_variant:{$this->scrapedData->getVariant()}",
         ];
     }
 }

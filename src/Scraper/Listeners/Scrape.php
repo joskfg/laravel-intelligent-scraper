@@ -60,7 +60,7 @@ class Scrape implements ShouldQueue
     {
         $this->logger->info("Extracting data from $scrapeRequest->url for type '$scrapeRequest->type'");
 
-        ['data' => $data, 'variant' => $variant] = $this->xpathFinder->extract($scrapeRequest->url, $config);
-        event(new Scraped($scrapeRequest, $data, $variant));
+        $scrapedData = $this->xpathFinder->extract($scrapeRequest->url, $config);
+        event(new Scraped($scrapeRequest, $scrapedData));
     }
 }
