@@ -2,6 +2,7 @@
 
 namespace Softonic\LaravelIntelligentScraper\Scraper\Listeners;
 
+use App;
 use Softonic\LaravelIntelligentScraper\Scraper\Entities\ScrapedData;
 use Softonic\LaravelIntelligentScraper\Scraper\Events\Scraped;
 use Softonic\LaravelIntelligentScraper\Scraper\Events\ScrapeRequest;
@@ -15,7 +16,7 @@ class ScrapedListenerTest extends TestCase
     public function whenReceiveAnUnknownScrapedTypeItShouldDoNothing(): void
     {
         $listener = \Mockery::mock(ScrapedListener::class);
-        \App::instance(get_class($listener), $listener);
+        App::instance(get_class($listener), $listener);
 
         $scrapedListener = new ScrapedListener([
             'known_type' => get_class($listener),
@@ -23,8 +24,8 @@ class ScrapedListenerTest extends TestCase
 
         $scrapedEvent = new Scraped(
             new ScrapeRequest(
-                'http://uri',
-                'unknown_type'
+                ':scrape-url:',
+                ':type:'
             ),
             new ScrapedData(
                 null,
@@ -43,7 +44,7 @@ class ScrapedListenerTest extends TestCase
     public function whenReceiveAKnownScrapedTypeItShouldHandleTheEventWithTheSpecificDependency(): void
     {
         $listener = \Mockery::mock(ScrapedListener::class);
-        \App::instance(get_class($listener), $listener);
+        App::instance(get_class($listener), $listener);
 
         $scrapedListener = new ScrapedListener([
             'known_type' => get_class($listener),
@@ -51,8 +52,8 @@ class ScrapedListenerTest extends TestCase
 
         $scrapedEvent = new Scraped(
             new ScrapeRequest(
-                'http://uri',
-                'known_type'
+                ':scrape-url:',
+                ':type:'
             ),
             new ScrapedData(
                 null,
