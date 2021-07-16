@@ -42,19 +42,19 @@ class Configurator
 
     public function configureFromDataset(Collection $scrapedDataset): Collection
     {
-        $type                 = $scrapedDataset[0]['type'];
+        $type                 = $scrapedDataset->first()->getAttribute('type'); // @TODO: Use ScrapedDataset.
         $currentConfiguration = $this->configuration->findByType($type);
 
-        $result        = [];
-        $totalDatasets = count($scrapedDataset);
-        foreach ($scrapedDataset as $key => $scrapedData) {
+        $totalDatasets = $scrapedDataset->count();
+
+        $result = $scrapedDataset->map(function ($scrapedData, $key) use ($totalDatasets, $currentConfiguration) {
             Log::info("Finding config $key/$totalDatasets");
             if ($crawler = $this->getCrawler($scrapedData)) {
-                $result[] = $this->findConfigByScrapedData($scrapedData, $crawler, $currentConfiguration);
+                return $this->findConfigByScrapedData($scrapedData, $crawler, $currentConfiguration);
             }
-        }
+        })->filter();
 
-        $finalConfig = $this->mergeConfiguration($result, $type);
+        $finalConfig = $this->mergeConfiguration($result->toArray(), $type);
 
         $this->checkConfiguration($scrapedDataset[0]['data'], $finalConfig);
 

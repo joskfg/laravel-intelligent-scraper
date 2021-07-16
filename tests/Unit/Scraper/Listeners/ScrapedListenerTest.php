@@ -2,7 +2,7 @@
 
 namespace Softonic\LaravelIntelligentScraper\Scraper\Listeners;
 
-use App;
+use Illuminate\Support\Facades\App;
 use Softonic\LaravelIntelligentScraper\Scraper\Entities\ScrapedData;
 use Softonic\LaravelIntelligentScraper\Scraper\Events\Scraped;
 use Softonic\LaravelIntelligentScraper\Scraper\Events\ScrapeRequest;
@@ -47,7 +47,7 @@ class ScrapedListenerTest extends TestCase
         App::instance(get_class($listener), $listener);
 
         $scrapedListener = new ScrapedListener([
-            'known_type' => get_class($listener),
+            ':type:' => get_class($listener),
         ]);
 
         $scrapedEvent = new Scraped(
