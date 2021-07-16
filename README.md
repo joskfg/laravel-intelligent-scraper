@@ -215,22 +215,23 @@ data) to work in your listener.
 scrape('https://test.c/p/my-objective', 'Item-definition-1', ['id' => 'my-objective']);
 ```
 
-The scrape will produce a `\Softonic\LaravelIntelligentScraper\Scraper\Events\Scraped` event if all worked as expected.
+The scrape will produce a `Scraped` event if all worked as expected.
 So attach a listener to that event to receive the data.
 
 ```php
+/** @var \Softonic\LaravelIntelligentScraper\Scraper\Events\Scraped $event */
 $event->scrapeRequest->url;  // Url scraped
 $event->scrapeRequest->type; // Request type
 $event->scrapeRequest->context; // Context
-$event->data; // Contains all the data in a [ 'fieldName' => 'value' ] format.
-$event->variant; // Contains the page variation sha1 hash.
+$event->scrapedData; // Entity that contains all data scraped and the determined page variant.
 ```
 
 All the output fields are arrays that can contain one or more results.
 
-If the scrape fails a `\Softonic\LaravelIntelligentScraper\Scraper\Events\ScrapeFailed` event is fired with the
+If the scrape fails a `ScrapeFailed` event is fired with the
 scrape request information.
 ```php
+/** @var \Softonic\LaravelIntelligentScraper\Scraper\Events\ScrapeFailed $event */
 $event->scrapeRequest->url;  // Url scraped
 $event->scrapeRequest->type; // Request type
 $event->scrapeRequest->context; // Context
@@ -253,6 +254,7 @@ But the scrapes from all types will go to that listeners. To simplify the listen
 single type, there is a `listeners` configuration available at scraper.php, so you can configure the listeners
 with greater granularity.
 ```php
+return [
     // config/scrapper.php
     'listeners' => [
         'scraped' => [
@@ -262,7 +264,8 @@ with greater granularity.
         'scrape-failed' => [
             'my-type-1' => ListenerFailedForTypeOne::class,
         ],
-    ];
+    ]
+];
 ```
 
 ## Advanced usage
