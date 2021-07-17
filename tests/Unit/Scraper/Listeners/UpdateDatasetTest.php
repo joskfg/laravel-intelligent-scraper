@@ -5,6 +5,7 @@ namespace Softonic\LaravelIntelligentScraper\Scraper\Listeners;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Support\Facades\Log;
 use ScrapedDatasetSeeder;
+use Softonic\LaravelIntelligentScraper\Scraper\Entities\Field;
 use Softonic\LaravelIntelligentScraper\Scraper\Entities\ScrapedData;
 use Softonic\LaravelIntelligentScraper\Scraper\Events\Scraped;
 use Softonic\LaravelIntelligentScraper\Scraper\Events\ScrapeRequest;
@@ -37,9 +38,9 @@ class UpdateDatasetTest extends TestCase
         $scrapedData = new ScrapedData(
             ':variant:',
             [
-                ':field-1:' => [':value-1:'],
-                ':field-2:' => [':value-2:'],
-                ':field-3:' => [':value-3:'],
+                new Field(':field-1:', [':value-1:']),
+                new Field(':field-2:', [':value-2:']),
+                new Field(':field-3:', [':value-3:']),
             ]
         );
 
@@ -51,8 +52,8 @@ class UpdateDatasetTest extends TestCase
         );
 
         self::assertEquals(
-            $scrapedData->getFields(),
-            ScrapedDataset::where('url', $dataset->url)->first()->toArray()['data']
+            json_encode($scrapedData->getFields()),
+            json_encode(ScrapedDataset::where('url', $dataset->url)->first()->toArray()['fields'])
         );
         self::assertEquals(2, ScrapedDataset::all()->count());
     }
@@ -74,9 +75,9 @@ class UpdateDatasetTest extends TestCase
         $scrapedData = new ScrapedData(
             ':variant-1:',
             [
-                ':field-1:'    => [':value-1:'],
-                ':field-2:'   => [':value-2:'],
-                ':field-3:' => [':value-3:'],
+                new Field(':field-1:', [':value-1:']),
+                new Field(':field-2:', [':value-2:']),
+                new Field(':field-3:', [':value-3:']),
             ]
         );
 
@@ -87,7 +88,10 @@ class UpdateDatasetTest extends TestCase
             )
         );
 
-        self::assertEquals($scrapedData->getFields(), ScrapedDataset::where('url', $url)->first()->toArray()['data']);
+        self::assertEquals(
+            json_encode($scrapedData->getFields()),
+            json_encode(ScrapedDataset::where('url', $url)->first()->toArray()['fields'])
+        );
         self::assertEquals(101, ScrapedDataset::count());
     }
 
@@ -107,8 +111,8 @@ class UpdateDatasetTest extends TestCase
         $scrapedData = new ScrapedData(
             ':variant:',
             [
-                ':field-1:' => [':value-1:'],
-                ':field-2:' => [':value-2:'],
+                new Field(':field-1:', [':value-1:']),
+                new Field(':field-2:', [':value-2:']),
             ]
         );
 
@@ -119,7 +123,10 @@ class UpdateDatasetTest extends TestCase
             )
         );
 
-        self::assertEquals($scrapedData->getFields(), ScrapedDataset::where('url', $url)->first()->toArray()['data']);
+        self::assertEquals(
+            json_encode($scrapedData->getFields()),
+            json_encode(ScrapedDataset::where('url', $url)->first()->toArray()['fields'])
+        );
         self::assertEquals(UpdateDataset::DATASET_AMOUNT_LIMIT, ScrapedDataset::withType($type)->count());
     }
 }

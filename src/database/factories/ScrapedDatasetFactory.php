@@ -18,8 +18,16 @@ $factory->define(ScrapedDataset::class, fn (Faker\Generator $faker) => [
     'url'     => $faker->url . $faker->randomDigit,
     'type'    => 'post',
     'variant' => $faker->sha1,
-    'data'    => [
-        'title'  => $faker->word,
-        'author' => $faker->word,
+    'fields'  => [
+        [
+            'key'   => 'title',
+            'value' => $faker->word,
+            'found' => $faker->boolean()
+        ],
+        [
+            'key'   => 'author',
+            'value' => $faker->word,
+            'found' => $faker->boolean()
+        ],
     ],
 ]);

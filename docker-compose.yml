@@ -1,19 +1,12 @@
 version: '3.2'
 
 services:
-  test:
+  composer:
     volumes:
     - ./:/app
-    image: ricc/composer-prestissimo:latest
+    image: softonic/composer-rector
     command: composer run test
-
-  fixcs:
+  dev:
     volumes:
     - ./:/app
-    image: ricc/composer-prestissimo:latest
-    command: composer run fix-cs
-
-  psysh:
-    volumes:
-    - ./:/app
-    image: ricc/psysh:latest
+    image: webdevops/php-nginx-dev:7.4

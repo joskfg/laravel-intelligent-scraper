@@ -7,6 +7,7 @@ use GuzzleHttp\Exception\ConnectException;
 use GuzzleHttp\Exception\RequestException;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
+use Softonic\LaravelIntelligentScraper\Scraper\Entities\Field;
 use Softonic\LaravelIntelligentScraper\Scraper\Entities\ScrapedData;
 use Softonic\LaravelIntelligentScraper\Scraper\Exceptions\MissingXpathValueException;
 use Softonic\LaravelIntelligentScraper\Scraper\Models\Configuration;
@@ -49,8 +50,11 @@ class XpathFinder
             }
 
             $scrapedData->setField(
-                $config['name'],
-                $value ?? $config['default']
+                new Field(
+                    $config['name'],
+                    $value ?? $config['default'],
+                    $value !== null,
+                )
             );
         }
 
@@ -77,7 +81,7 @@ class XpathFinder
         }
     }
 
-    private function extractValue(Configuration $config, ?Crawler $crawler): ?string
+    private function extractValue(Configuration $config, ?Crawler $crawler): ?array
     {
         foreach ($config['xpaths'] as $xpath) {
             Log::debug("Checking xpath $xpath");

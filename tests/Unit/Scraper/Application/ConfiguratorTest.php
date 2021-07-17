@@ -6,6 +6,7 @@ use DOMElement;
 use Goutte\Client;
 use GuzzleHttp\Exception\ConnectException;
 use GuzzleHttp\Exception\RequestException;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Support\Facades\Log;
 use Mockery;
@@ -59,11 +60,19 @@ class ConfiguratorTest extends TestCase
     {
         $posts = collect([
             new ScrapedDataset([
-                'url'  => ':scrape-url:',
-                'type' => ':type:',
-                'data' => [
-                    ':field-1:'  => ':value-1:',
-                    ':field-2:' => ':value-2:',
+                'url'    => ':scrape-url:',
+                'type'   => ':type:',
+                'fields' => [
+                    [
+                        'key'   => ':field-1:',
+                        'value' => ':value-1:',
+                        'found' => true,
+                    ],
+                    [
+                        'key'   => ':field-2:',
+                        'value' => ':value-2:',
+                        'found' => true,
+                    ],
                 ],
             ]),
         ]);
@@ -100,11 +109,19 @@ class ConfiguratorTest extends TestCase
     {
         $posts = collect([
             new ScrapedDataset([
-                'url'  => ':scrape-url:',
-                'type' => ':type:',
-                'data' => [
-                    ':field-1:' => ':value-1:',
-                    ':field-2:' => ':value-2:',
+                'url'    => ':scrape-url:',
+                'type'   => ':type:',
+                'fields' => [
+                    [
+                        'key'   => ':field-1:',
+                        'value' => ':value-1:',
+                        'found' => true,
+                    ],
+                    [
+                        'key'   => ':field-2:',
+                        'value' => ':value-2:',
+                        'found' => true,
+                    ],
                 ],
             ]),
         ]);
@@ -137,13 +154,21 @@ class ConfiguratorTest extends TestCase
     public function whenTryToFindNewXpathButNotFoundItShouldLogItAndResetVariant(): void
     {
         $posts = collect([
-            ScrapedDataset::create([
+            new ScrapedDataset([
                 'url'     => ':scrape-url:',
                 'type'    => ':type:',
                 'variant' => ':variant:',
-                'data'    => [
-                    ':field-1:' => ':value-1:',
-                    ':field-2:' => ':value-2:',
+                'fields'  => [
+                    [
+                        'key'   => ':field-1:',
+                        'value' => ':value-1:',
+                        'found' => true,
+                    ],
+                    [
+                        'key'   => ':field-2:',
+                        'value' => ':value-2:',
+                        'found' => true,
+                    ],
                 ],
             ]),
         ]);
@@ -201,13 +226,21 @@ class ConfiguratorTest extends TestCase
     public function whenUseSomeOldXpathButNotFoundNewsItShouldLogItAndResetVariant(): void
     {
         $posts = collect([
-            ScrapedDataset::create([
+            new ScrapedDataset([
                 'url'     => ':scrape-url:',
                 'type'    => ':type:',
                 'variant' => ':variant:',
-                'data'    => [
-                    ':field-1:' => ':value-1:',
-                    ':field-2:' => ':value-2:',
+                'fields'  => [
+                    [
+                        'key'   => ':field-1:',
+                        'value' => ':value-1:',
+                        'found' => true,
+                    ],
+                    [
+                        'key'   => ':field-2:',
+                        'value' => ':value-2:',
+                        'found' => true,
+                    ],
                 ],
             ]),
         ]);
@@ -243,8 +276,8 @@ class ConfiguratorTest extends TestCase
             ->with(':type:')
             ->andReturn(collect([
                 ConfigurationModel::create([
-                    'name' => ':field-1:',
-                    'type' => ':type:',
+                    'name'   => ':field-1:',
+                    'type'   => ':type:',
                     'xpaths' => [':xpath-1:'],
                 ]),
             ]));
@@ -271,25 +304,42 @@ class ConfiguratorTest extends TestCase
     /**
      * @test
      */
-    public function whenTryToFindXpathInMultiplePostsAndNotFoundInAnyItShouldThrowAnExceptionAndLogItAndResetVariant(): void
+    public function whenTryToFindXpathInMultiplePostsAndNotFoundInAnyItShouldThrowAnExceptionAndLogItAndResetVariant(
+    ): void
     {
         $posts = collect([
-            ScrapedDataset::make([
+            new ScrapedDataset([
                 'url'     => ':scrape-url-1:',
                 'type'    => ':type:',
                 'variant' => ':variant:',
-                'data'    => [
-                    ':field-1:' => ':value-1:',
-                    ':field-2:' => ':value-2:',
+                'fields'  => [
+                    [
+                        'key'   => ':field-1:',
+                        'value' => ':value-1:',
+                        'found' => true,
+                    ],
+                    [
+                        'key'   => ':field-2:',
+                        'value' => ':value-2:',
+                        'found' => true,
+                    ],
                 ],
             ]),
             ScrapedDataset::make([
                 'url'     => ':scrape-url-2:',
                 'type'    => ':type:',
                 'variant' => ':variant:',
-                'data'    => [
-                    ':field-1:' => ':value-3:',
-                    ':field-2:' => ':value-4:',
+                'fields'  => [
+                    [
+                        'key'   => ':field-1:',
+                        'value' => ':value-3:',
+                        'found' => true,
+                    ],
+                    [
+                        'key'   => ':field-2:',
+                        'value' => ':value-4:',
+                        'found' => true,
+                    ],
                 ],
             ]),
         ]);
@@ -357,31 +407,55 @@ class ConfiguratorTest extends TestCase
     public function whenDiscoverDifferentXpathItShouldGetAllOfThemAndUpdateTheVariants(): void
     {
         $posts = collect([
-            ScrapedDataset::make([
+            new ScrapedDataset([
                 'url'     => ':scrape-url-1:',
                 'type'    => ':type:',
                 'variant' => ':variant:',
-                'data'    => [
-                    ':field-1:' => ':value-1:',
-                    ':field-2:' => ':value-2:',
+                'fields'  => [
+                    [
+                        'key'   => ':field-1:',
+                        'value' => ':value-1:',
+                        'found' => true,
+                    ],
+                    [
+                        'key'   => ':field-2:',
+                        'value' => ':value-2:',
+                        'found' => true,
+                    ],
                 ],
             ]),
             ScrapedDataset::make([
                 'url'     => ':scrape-url-2:',
                 'type'    => ':type:',
                 'variant' => ':variant:',
-                'data'    => [
-                    ':field-1:' => ':value-1:',
-                    ':field-2:' => ':value-2:',
+                'fields'  => [
+                    [
+                        'key'   => ':field-1:',
+                        'value' => ':value-1:',
+                        'found' => true,
+                    ],
+                    [
+                        'key'   => ':field-2:',
+                        'value' => ':value-2:',
+                        'found' => true,
+                    ],
                 ],
             ]),
             ScrapedDataset::make([
                 'url'     => ':scrape-url-3:',
                 'type'    => ':type:',
                 'variant' => ':variant:',
-                'data'    => [
-                    ':field-1:' => ':value-3:',
-                    ':field-2:' => ':value-4:',
+                'fields'  => [
+                    [
+                        'key'   => ':field-1:',
+                        'value' => ':value-3:',
+                        'found' => true,
+                    ],
+                    [
+                        'key'   => ':field-2:',
+                        'value' => ':value-4:',
+                        'found' => true,
+                    ],
                 ],
             ]),
         ]);

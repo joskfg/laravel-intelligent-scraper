@@ -20,23 +20,23 @@ class ConfigurationTest extends TestCase
     public function whenRetrieveAllConfigurationItShouldReturnIt(): void
     {
         ConfigurationModel::create([
-            'name'   => 'title',
-            'type'   => 'post',
-            'xpaths' => '//*[@id="title"]',
+            'name'   => ':field-1:',
+            'type'   => ':type-1:',
+            'xpaths' => ':xpath-1:',
         ]);
         ConfigurationModel::create([
-            'name'   => 'category',
-            'type'   => 'list',
-            'xpaths' => '//*[@id="category"]',
+            'name'   => ':field-2:',
+            'type'   => ':type-2:',
+            'xpaths' => ':xpath-2:',
         ]);
         ConfigurationModel::create([
-            'name'   => 'author',
-            'type'   => 'post',
-            'xpaths' => '//*[@id="author"]',
+            'name'   => ':field-3:',
+            'type'   => ':type-1:',
+            'xpaths' => ':xpath-3:',
         ]);
 
         $configuration = new Configuration();
-        $data          = $configuration->findByType('post');
+        $data          = $configuration->findByType(':type-1:');
 
         self::assertCount(2, $data);
     }
@@ -44,16 +44,16 @@ class ConfigurationTest extends TestCase
     /**
      * @test
      */
-    public function whenRecalculateButThereIsNotAPostDatasetItShouldThrowAnException(): void
+    public function whenRecalculateButThereIsNotAType1DatasetItShouldThrowAnException(): void
     {
         $this->expectException(\UnexpectedValueException::class);
-        $this->expectExceptionMessage('A dataset example is needed to recalculate xpaths for type post.');
+        $this->expectExceptionMessage('A dataset example is needed to recalculate xpaths for type :type-1:.');
 
         $configurator = \Mockery::mock(Configurator::class);
         App::instance(Configurator::class, $configurator);
 
         $configuration = new Configuration();
-        $configuration->calculate('post');
+        $configuration->calculate(':type-1:');
     }
 
     /**
@@ -62,67 +62,91 @@ class ConfigurationTest extends TestCase
     public function whenRecalculateItShouldStoreTheNewXpaths(): void
     {
         ScrapedDataset::create([
-            'url'  => 'https://test.c/123456789222',
-            'type' => 'post',
+            'url'     => 'https://test.c/123456789222',
+            'type'    => ':type-1:',
             'variant' => 'b265521fc089ac61b794bfa3a5ce8a657f6833ce',
-            'data' => [
-                'title'  => 'My first post',
-                'author' => 'Jhon Doe',
+            'fields'  => [
+                [
+                    'key'   => ':field-1:',
+                    'value' => ':value-1:',
+                    'found' => true,
+                ],
+                [
+                    'key'   => ':field-3:',
+                    'value' => ':value-2:',
+                    'found' => true,
+                ],
             ],
         ]);
         ScrapedDataset::create([
-            'url'  => 'https://test.c/7675487989076',
-            'type' => 'list',
+            'url'     => 'https://test.c/7675487989076',
+            'type'    => ':type-2:',
             'variant' => 'b265521fc089ac61b794bfa3a5ce8a657f6833ce',
-            'data' => [
-                'category' => 'Entertainment',
-                'author'   => 'Jhon Doe',
+            'fields'  => [
+                [
+                    'key'   => ':field-2:',
+                    'value' => ':value-3:',
+                    'found' => true,
+                ],
+                [
+                    'key'   => ':field-3:',
+                    'value' => ':value-2:',
+                    'found' => true,
+                ],
             ],
         ]);
         ScrapedDataset::create([
-            'url'  => 'https://test.c/223456789111',
-            'type' => 'post',
+            'url'     => 'https://test.c/223456789111',
+            'type'    => ':type-1:',
             'variant' => 'b265521fc089ac61b794bfa3a5ce8a657f6833ce',
-            'data' => [
-                'title'  => 'My second Post',
-                'author' => 'Jhon Doe',
+            'fields'  => [
+                [
+                    'key'   => ':field-1:',
+                    'value' => ':value-4:',
+                    'found' => true,
+                ],
+                [
+                    'key'   => ':field-3:',
+                    'value' => ':value-2:',
+                    'found' => true,
+                ],
             ],
         ]);
 
         $config = collect([
             ConfigurationModel::make([
-                'name'   => 'title',
-                'type'   => 'post',
-                'xpaths' => '//*[@id="title"]',
+                'name'   => ':field-1:',
+                'type'   => ':type-1:',
+                'xpaths' => ':xpath-1:',
             ]),
             ConfigurationModel::make([
-                'name'   => 'author',
-                'type'   => 'post',
-                'xpaths' => '//*[@id="author"]',
+                'name'   => ':field-3:',
+                'type'   => ':type-1:',
+                'xpaths' => ':xpath-3:',
             ]),
         ]);
 
         Cache::shouldReceive('get')
-            ->with(Configuration::class . '-config-post')
+            ->with(Configuration::class . '-config-:type-1:')
             ->andReturnNull();
         Cache::shouldReceive('put')
-            ->with(Configuration::class . '-config-post', $config, Configuration::CACHE_TTL);
+            ->with(Configuration::class . '-config-:type-1:', $config, Configuration::CACHE_TTL);
 
         $configurator = \Mockery::mock(Configurator::class);
         App::instance(Configurator::class, $configurator);
         $configurator->shouldReceive('configureFromDataset')
-            ->withArgs(fn ($posts) => 2 === $posts->count())
+            ->withArgs(fn($typeOnes) => 2 === $typeOnes->count())
             ->andReturn($config);
 
         $configuration = new Configuration();
-        $configs       = $configuration->calculate('post');
+        $configs       = $configuration->calculate(':type-1:');
 
-        self::assertEquals('title', $configs[0]['name']);
-        self::assertEquals('post', $configs[0]['type']);
-        self::assertEquals('//*[@id="title"]', $configs[0]['xpaths'][0]);
-        self::assertEquals('author', $configs[1]['name']);
-        self::assertEquals('post', $configs[1]['type']);
-        self::assertEquals('//*[@id="author"]', $configs[1]['xpaths'][0]);
+        self::assertEquals(':field-1:', $configs[0]['name']);
+        self::assertEquals(':type-1:', $configs[0]['type']);
+        self::assertEquals(':xpath-1:', $configs[0]['xpaths'][0]);
+        self::assertEquals(':field-3:', $configs[1]['name']);
+        self::assertEquals(':type-1:', $configs[1]['type']);
+        self::assertEquals(':xpath-3:', $configs[1]['xpaths'][0]);
     }
 
     /**
@@ -131,48 +155,69 @@ class ConfigurationTest extends TestCase
     public function whenRecalculateFailsItShouldThrowAnException(): void
     {
         ScrapedDataset::create([
-            'url'  => 'https://test.c/123456789222',
-            'type' => 'post',
+            'url'     => 'https://test.c/123456789222',
+            'type'    => ':type-1:',
             'variant' => 'b265521fc089ac61b794bfa3a5ce8a657f6833ce',
-            'data' => [
-                'title'  => 'My first post',
-                'author' => 'Jhon Doe',
+            'fields'  => [
+                [
+                    'key'   => ':field-1:',
+                    'value' => ':value-1:',
+                    'found' => true,
+                ],
+                [   'key'   => ':field-3:', 
+                    'value' => ':value-2:',
+                    'found' => true,
+                ],
             ],
         ]);
         ScrapedDataset::create([
-            'url'  => 'https://test.c/7675487989076',
-            'type' => 'list',
+            'url'     => 'https://test.c/7675487989076',
+            'type'    => ':type-2:',
             'variant' => 'b265521fc089ac61b794bfa3a5ce8a657f6833ce',
-            'data' => [
-                'category' => 'Entertainment',
-                'author'   => 'Jhon Doe',
+            'fields'  => [
+                [
+                    'key'   => ':field-2:',
+                    'value' => ':value-3:',
+                    'found' => true,
+                ],
+                [   'key'   => ':field-3:', 
+                    'value' =>':value-2:',
+                    'found' => true,
+                ],
             ],
         ]);
         ScrapedDataset::create([
-            'url'  => 'https://test.c/223456789111',
-            'type' => 'post',
+            'url'     => 'https://test.c/223456789111',
+            'type'    => ':type-1:',
             'variant' => 'b265521fc089ac61b794bfa3a5ce8a657f6833ce',
-            'data' => [
-                'title'  => 'My second post',
-                'author' => 'Jhon Doe',
+            'fields'  => [
+                [
+                    'key'   => ':field-1:',
+                    'value' => ':value-4:',
+                    'found' => true,
+                ],
+                [   'key'   => ':field-3:', 
+                    'value' =>':value-2:',
+                    'found' => true,
+                ],
             ],
         ]);
 
         Cache::shouldReceive('get')
-            ->with(Configuration::class . '-config-post')
+            ->with(Configuration::class . '-config-:type-1:')
             ->andReturnNull();
 
         $configurator = \Mockery::mock(Configurator::class);
         App::instance(Configurator::class, $configurator);
         $configurator->shouldReceive('configureFromDataset')
-            ->withArgs(fn ($posts) => 2 === $posts->count())
+            ->withArgs(fn($typeOnes) => 2 === $typeOnes->count())
             ->andThrow(new \UnexpectedValueException('Recalculate fail'));
 
         $this->expectException(\UnexpectedValueException::class);
         $this->expectExceptionMessage('Recalculate fail');
 
         $configuration = new Configuration();
-        $configuration->calculate('post');
+        $configuration->calculate(':type-1:');
     }
 
     /**
@@ -188,13 +233,13 @@ class ConfigurationTest extends TestCase
         $config = collect('configuration');
 
         Cache::shouldReceive('get')
-            ->with(Configuration::class . '-config-post')
+            ->with(Configuration::class . '-config-:type-1:')
             ->andReturn($config);
 
         $configuration = new Configuration();
         self::assertEquals(
             $config,
-            $configuration->calculate('post')
+            $configuration->calculate(':type-1:')
         );
     }
 }

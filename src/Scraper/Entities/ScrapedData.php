@@ -15,6 +15,15 @@ class ScrapedData
         $this->fields  = $fields;
     }
 
+    private function checkFields(array $fields): void
+    {
+        foreach($fields as $field) {
+            if (!$field instanceof Field) {
+                throw new \InvalidArgumentException('Fields received are not Field entities');
+            }
+        }
+    }
+
     public function getVariant(): ?string
     {
         return $this->variant;
@@ -34,19 +43,20 @@ class ScrapedData
 
     public function setFields(array $fields): ScrapedData
     {
+        $this->checkFields($fields);
         $this->fields = $fields;
 
         return $this;
     }
 
-    public function getField(string $key): array
+    public function getField(string $key): Field
     {
         return $this->fields[$key];
     }
 
-    public function setField(string $key, $value): ScrapedData
+    public function setField(Field $field): ScrapedData
     {
-        $this->fields[$key] = $value;
+        $this->fields[$field->getKey()] = $field;
 
         return $this;
     }

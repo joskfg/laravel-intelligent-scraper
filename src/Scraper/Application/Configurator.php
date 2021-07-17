@@ -8,6 +8,7 @@ use GuzzleHttp\Exception\RequestException;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
 use JsonException;
+use Softonic\LaravelIntelligentScraper\Scraper\Entities\Field;
 use Softonic\LaravelIntelligentScraper\Scraper\Entities\ScrapedData;
 use Softonic\LaravelIntelligentScraper\Scraper\Events\ConfigurationScraped;
 use Softonic\LaravelIntelligentScraper\Scraper\Events\ScrapeRequest;
@@ -56,7 +57,7 @@ class Configurator
 
         $finalConfig = $this->mergeConfiguration($result->toArray(), $type);
 
-        $this->checkConfiguration($scrapedDataset[0]['data'], $finalConfig);
+        $this->checkConfiguration($scrapedDataset[0]['fields'], $finalConfig);
 
         return $finalConfig;
     }
@@ -94,26 +95,31 @@ class Configurator
     {
         $result = [];
 
-        foreach ($scrapedData['data'] as $field => $value) {
+        foreach ($scrapedData['fields'] as $field) {
+            $field = new Field(
+                $field['key'],
+                $field['value'],
+                $field['found'],
+            );
             try {
-                Log::info("Searching xpath for field $field");
-                $result[$field] = $this->getOldXpath($currentConfiguration, $field, $crawler);
-                if (!$result[$field]) {
+                Log::info("Searching xpath for field {$field->getKey()}");
+                $result[$field->getKey()] = $this->getOldXpath($currentConfiguration, $field->getKey(), $crawler);
+                if (!$result[$field->getKey()]) {
                     Log::debug('Trying to find a new xpath.');
-                    $result[$field] = $this->xpathBuilder->find(
+                    $result[$field->getKey()] = $this->xpathBuilder->find(
                         $crawler->getNode(0),
-                        $value
+                        $field->getValue()
                     );
                 }
-                $this->variantGenerator->addConfig($field, $result[$field]);
+                $this->variantGenerator->addConfig($field, $result[$field->getKey()]);
                 Log::info('Added found xpath to the config');
             } catch (UnexpectedValueException $e) {
                 $this->variantGenerator->fieldNotFound();
                 try {
-                    $value = is_array($value) ? json_encode($value, JSON_THROW_ON_ERROR) : $value;
+                    $value = is_array($field->getValue()) ? json_encode($field->getValue(), JSON_THROW_ON_ERROR) : $field->getValue();
                 } catch (JsonException $e) {
                 }
-                Log::notice("Field '$field' with value '$value' not found for '{$crawler->getUri()}'.");
+                Log::notice("Field '{$field->getKey()}' with value '{$field->getValue()}' not found for '{$crawler->getUri()}'.");
             }
         }
 
@@ -124,7 +130,7 @@ class Configurator
             ),
             new ScrapedData(
                 $this->variantGenerator->getId($scrapedData['type']),
-                $scrapedData['data'],
+                $scrapedData['fields'],
             )
         ));
 
@@ -176,13 +182,15 @@ class Configurator
         return $finalConfig;
     }
 
-    private function checkConfiguration($data, Collection $finalConfig): void
+    private function checkConfiguration($fields, Collection $finalConfig): void
     {
-        if (count($finalConfig) !== count($data)) {
-            $fieldsFound    = $finalConfig->pluck('name')->toArray();
-            $fieldsExpected = array_keys($data);
+        $fields = collect($fields);
+        if ($finalConfig->count() !== $fields->count()) {
+            $fieldsMissing = $fields
+                ->pluck('key')
+                ->diff($finalConfig->pluck('name'))
+                ->implode(',');
 
-            $fieldsMissing = implode(',', array_diff($fieldsExpected, $fieldsFound));
             throw new ConfigurationException("Field(s) \"$fieldsMissing\" not found.", 0);
         }
     }

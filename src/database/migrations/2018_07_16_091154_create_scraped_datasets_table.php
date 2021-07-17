@@ -16,7 +16,7 @@ class CreateScrapedDatasetsTable extends Migration
             $table->string('url', 1024)->primary();
             $table->string('type');
             $table->string('variant', 40)->index()->nullable();
-            $table->json('data');
+            $table->json('fields');
             $table->timestamps();
         });
     }

@@ -30,7 +30,7 @@ class UpdateDataset implements ShouldQueue
                 'url'     => $event->scrapeRequest->url,
                 'type'    => $event->scrapeRequest->type,
                 'variant' => $event->scrapedData->getVariant(),
-                'data'    => $event->scrapedData->getFields(),
+                'fields'  => $event->scrapedData->getFields(),
             ]
         );
 
@@ -40,7 +40,7 @@ class UpdateDataset implements ShouldQueue
     private function updateDataset(ScrapedDataset $dataset, Scraped $event): void
     {
         Log::info('Updating new information to dataset', ['request' => $event->scrapeRequest]);
-        $dataset->data = $event->scrapedData->getFields();
+        $dataset->fields = $event->scrapedData->getFields();
 
         $dataset->save();
     }

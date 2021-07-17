@@ -18,7 +18,7 @@ class ScrapedDataset extends Model
      *
      * @var array
      */
-    public $casts = ['data' => 'json'];
+    public $casts = ['fields' => 'json'];
 
     /**
      * The primary key for the model.
@@ -36,7 +36,7 @@ class ScrapedDataset extends Model
         'url',
         'type',
         'variant',
-        'data',
+        'fields',
     ];
 
     public function scopeWithType($query, string $type)
