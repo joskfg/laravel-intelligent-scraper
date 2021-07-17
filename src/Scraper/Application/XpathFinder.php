@@ -9,6 +9,7 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
 use Softonic\LaravelIntelligentScraper\Scraper\Entities\ScrapedData;
 use Softonic\LaravelIntelligentScraper\Scraper\Exceptions\MissingXpathValueException;
+use Softonic\LaravelIntelligentScraper\Scraper\Models\Configuration;
 use Symfony\Component\DomCrawler\Crawler;
 use UnexpectedValueException;
 
@@ -30,21 +31,17 @@ class XpathFinder
 
         Log::info('Response Received. Start crawling.');
         $scrapedData = new ScrapedData();
+
         foreach ($configs as $config) {
-            Log::info("Searching field {$config['name']}.");
-            $subcrawler = collect();
-            foreach ($config['xpaths'] as $xpath) {
-                Log::debug("Checking xpath $xpath");
-                $subcrawler = $crawler->filterXPath($xpath);
+            Log::info(
+                'Searching field',
+                [
+                    'field' => $config['name'],
+                ]
+            );
+            $value = $this->extractValue($config, $crawler);
 
-                if ($subcrawler->count()) {
-                    Log::debug("Found xpath $xpath");
-                    $this->variantGenerator->addConfig($config['name'], $xpath);
-                    break;
-                }
-            }
-
-            if (!$subcrawler->count()) {
+            if (!$config['optional'] && $value === null) {
                 $missingXpath = implode('\', \'', $config['xpaths']);
                 throw new MissingXpathValueException(
                     "Xpath '$missingXpath' for field '{$config['name']}' not found in '$url'."
@@ -53,12 +50,12 @@ class XpathFinder
 
             $scrapedData->setField(
                 $config['name'],
-                $subcrawler->each(fn ($node) => $node->text())
+                $value ?? $config['default']
             );
         }
 
         Log::info('Calculating variant.');
-        $scrapedData->setVariant($this->variantGenerator->getId($configs[0]['type']));
+        $scrapedData->setVariant($this->variantGenerator->getId($configs->first()->getAttribute('type')));
         Log::info('Variant calculated.');
 
         return $scrapedData;
@@ -78,5 +75,21 @@ class XpathFinder
             Log::info('Invalid response http status', ['status' => $httpCode]);
             throw new UnexpectedValueException("Response error from '$url' with '$httpCode' http code");
         }
+    }
+
+    private function extractValue(Configuration $config, ?Crawler $crawler): ?string
+    {
+        foreach ($config['xpaths'] as $xpath) {
+            Log::debug("Checking xpath $xpath");
+            $subcrawler = $crawler->filterXPath($xpath);
+
+            if ($subcrawler->count()) {
+                Log::debug("Found xpath $xpath");
+                $this->variantGenerator->addConfig($config['name'], $xpath);
+                return $subcrawler->each(fn($node) => $node->text());
+            }
+        }
+
+        return null;
     }
 }

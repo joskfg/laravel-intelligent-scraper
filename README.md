@@ -180,21 +180,28 @@ After you collected all the Xpath from the HTML, you just need to create the con
 use Softonic\LaravelIntelligentScraper\Scraper\Models\Configuration;
 
 Configuration::create([
-    'name' => 'title',
-    'type' => 'Item-definition-1',
-    'xpaths' => '//*[@id=title]',
+    'name'     => 'title',
+    'type'     => 'Item-definition-1',
+    'xpaths'   => '//*[@id=title]',
+    'optional' => false,
+    'default'  => [],
 ]);
 
 Configuration::create([
     'name' => 'category',
     'type' => 'Item-definition-1',
     'xpaths' => ['//*[@id=cat]', '//*[@id=long-cat]'],
+    'optional' => true,
+    'default'  => [],
 ]);
 ```
 
 In the definition, you should give a name to the field to be scraped and identify it as a type. The xpaths field could
 contain a string, or an array of strings. This is because the HTML can contain different variations depending on the
 specific page, you can write a list of Xpath that will be checked in order giving the first result found.
+
+The Configuration allows you to set fields as optional and set a default value when the xpath is not found. These fields
+are not going to trigger the [reconfiguration process](#configure-scraper).
 
 ## Usage
 
