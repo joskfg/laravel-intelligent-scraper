@@ -10,3 +10,8 @@ services:
     volumes:
     - ./:/app
     image: webdevops/php-nginx-dev:7.4
+  fixcs:
+    volumes:
+    - ./:/app
+    image: softonic/composer-rector
+    command: composer run fix-cs

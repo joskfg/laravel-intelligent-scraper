@@ -135,7 +135,7 @@ class ConfigurationTest extends TestCase
         $configurator = \Mockery::mock(Configurator::class);
         App::instance(Configurator::class, $configurator);
         $configurator->shouldReceive('configureFromDataset')
-            ->withArgs(fn($typeOnes) => 2 === $typeOnes->count())
+            ->withArgs(fn ($typeOnes) => 2 === $typeOnes->count())
             ->andReturn($config);
 
         $configuration = new Configuration();
@@ -164,7 +164,8 @@ class ConfigurationTest extends TestCase
                     'value' => ':value-1:',
                     'found' => true,
                 ],
-                [   'key'   => ':field-3:', 
+                [
+                    'key'   => ':field-3:',
                     'value' => ':value-2:',
                     'found' => true,
                 ],
@@ -180,8 +181,9 @@ class ConfigurationTest extends TestCase
                     'value' => ':value-3:',
                     'found' => true,
                 ],
-                [   'key'   => ':field-3:', 
-                    'value' =>':value-2:',
+                [
+                    'key'   => ':field-3:',
+                    'value' => ':value-2:',
                     'found' => true,
                 ],
             ],
@@ -196,8 +198,9 @@ class ConfigurationTest extends TestCase
                     'value' => ':value-4:',
                     'found' => true,
                 ],
-                [   'key'   => ':field-3:', 
-                    'value' =>':value-2:',
+                [
+                    'key'   => ':field-3:',
+                    'value' => ':value-2:',
                     'found' => true,
                 ],
             ],
@@ -210,7 +213,7 @@ class ConfigurationTest extends TestCase
         $configurator = \Mockery::mock(Configurator::class);
         App::instance(Configurator::class, $configurator);
         $configurator->shouldReceive('configureFromDataset')
-            ->withArgs(fn($typeOnes) => 2 === $typeOnes->count())
+            ->withArgs(fn ($typeOnes) => 2 === $typeOnes->count())
             ->andThrow(new \UnexpectedValueException('Recalculate fail'));
 
         $this->expectException(\UnexpectedValueException::class);

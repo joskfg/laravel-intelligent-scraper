@@ -90,7 +90,7 @@ class XpathFinder
             if ($subcrawler->count()) {
                 Log::debug("Found xpath $xpath");
                 $this->variantGenerator->addConfig($config['name'], $xpath);
-                return $subcrawler->each(fn($node) => $node->text());
+                return $subcrawler->each(fn ($node) => $node->text());
             }
         }
 

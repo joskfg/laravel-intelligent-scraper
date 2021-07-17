@@ -22,12 +22,12 @@ $factory->define(ScrapedDataset::class, fn (Faker\Generator $faker) => [
         [
             'key'   => 'title',
             'value' => $faker->word,
-            'found' => $faker->boolean()
+            'found' => $faker->boolean(),
         ],
         [
             'key'   => 'author',
             'value' => $faker->word,
-            'found' => $faker->boolean()
+            'found' => $faker->boolean(),
         ],
     ],
 ]);

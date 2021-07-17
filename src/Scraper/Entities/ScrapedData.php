@@ -1,8 +1,6 @@
 <?php
 
-
 namespace Softonic\LaravelIntelligentScraper\Scraper\Entities;
-
 
 class ScrapedData
 {
@@ -17,7 +15,7 @@ class ScrapedData
 
     private function checkFields(array $fields): void
     {
-        foreach($fields as $field) {
+        foreach ($fields as $field) {
             if (!$field instanceof Field) {
                 throw new \InvalidArgumentException('Fields received are not Field entities');
             }

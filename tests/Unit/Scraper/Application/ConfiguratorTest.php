@@ -6,7 +6,6 @@ use DOMElement;
 use Goutte\Client;
 use GuzzleHttp\Exception\ConnectException;
 use GuzzleHttp\Exception\RequestException;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Support\Facades\Log;
 use Mockery;
@@ -305,8 +304,7 @@ class ConfiguratorTest extends TestCase
      * @test
      */
     public function whenTryToFindXpathInMultiplePostsAndNotFoundInAnyItShouldThrowAnExceptionAndLogItAndResetVariant(
-    ): void
-    {
+    ): void {
         $posts = collect([
             new ScrapedDataset([
                 'url'     => ':scrape-url-1:',

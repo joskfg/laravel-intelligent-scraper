@@ -1,8 +1,6 @@
 <?php
 
-
 namespace Softonic\LaravelIntelligentScraper\Scraper\Entities;
-
 
 class Field implements \JsonSerializable
 {
