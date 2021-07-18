@@ -96,6 +96,10 @@ class Configurator
         $result = [];
 
         foreach ($scrapedData['fields'] as $field) {
+            if (!$field['found']) {
+                continue;
+            }
+
             $field = new Field(
                 $field['key'],
                 $field['value'],

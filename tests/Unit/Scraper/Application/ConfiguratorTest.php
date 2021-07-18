@@ -219,6 +219,66 @@ class ConfiguratorTest extends TestCase
         }
     }
 
+
+    /**
+     * @test
+     */
+    public function whenTryToFindNewXpathButNotFieldWereFoundInTheDatasetItShouldLogItDoNothing(): void
+    {
+        $posts = collect([
+            new ScrapedDataset([
+                'url'     => ':scrape-url:',
+                'type'    => ':type:',
+                'variant' => ':variant:',
+                'fields'  => [
+                    [
+                        'key'   => ':field-1:',
+                        'value' => ':value-1:',
+                        'found' => false,
+                    ],
+                    [
+                        'key'   => ':field-2:',
+                        'value' => ':value-2:',
+                        'found' => false,
+                    ],
+                ],
+            ]),
+        ]);
+
+        $crawler = Mockery::mock(Crawler::class);
+        $this->client->shouldReceive('request')
+            ->once()
+            ->with(
+                'GET',
+                ':scrape-url:'
+            )
+            ->andReturn($crawler);
+
+        $rootElement = new DOMElement('test');
+        $crawler->shouldReceive('getUri')
+            ->andReturn(':scrape-url:');
+        $crawler->shouldReceive('getNode')
+            ->with(0)
+            ->andReturn($rootElement);
+
+        $this->xpathBuilder->shouldNotReceive('find');
+
+        $this->configuration->shouldReceive('findByType')
+            ->once()
+            ->with(':type:')
+            ->andReturn(collect());
+
+        $this->variantGenerator->shouldNotReceive('addConfig');
+        $this->variantGenerator->shouldReceive('getId')
+            ->andReturn('');
+
+        try {
+            $this->configurator->configureFromDataset($posts);
+        } catch (ConfigurationException $e) {
+            self::assertEquals('Field(s) ":field-1:,:field-2:" not found.', $e->getMessage());
+        }
+    }
+
     /**
      * @test
      */
