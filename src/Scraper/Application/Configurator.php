@@ -43,7 +43,7 @@ class Configurator
 
     public function configureFromDataset(Collection $scrapedDataset): Collection
     {
-        $type                 = $scrapedDataset->first()->getAttribute('type'); // @TODO: Use ScrapedDataset.
+        $type                 = $scrapedDataset->first()->getAttribute('type');
         $currentConfiguration = $this->configuration->findByType($type);
 
         $totalDatasets = $scrapedDataset->count();
