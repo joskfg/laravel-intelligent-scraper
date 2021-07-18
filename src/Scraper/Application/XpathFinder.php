@@ -85,7 +85,7 @@ class XpathFinder
     {
         foreach ($config['xpaths'] as $xpath) {
             Log::debug("Checking xpath $xpath");
-            $subcrawler = $crawler->filterXPath($xpath);
+            $subcrawler = $crawler->evaluate($xpath);
 
             if ($subcrawler->count()) {
                 Log::debug("Found xpath $xpath");

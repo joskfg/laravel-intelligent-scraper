@@ -67,6 +67,8 @@ class ScraperProvider extends EventServiceProvider
      */
     public function register(): void
     {
+        parent::register();
+
         $this->app->when(XpathBuilder::class)
             ->needs('$idsToIgnore')
             ->give(fn () => config('scraper.xpath.ignore-identifiers'));

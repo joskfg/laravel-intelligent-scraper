@@ -119,11 +119,11 @@ class XpathFinderTest extends TestCase
             )
             ->andReturn($internalXpathFinder);
 
-        $internalXpathFinder->shouldReceive('filterXPath')
+        $internalXpathFinder->shouldReceive('evaluate')
             ->once()
             ->with(':xpath-1:')
             ->andReturnSelf();
-        $internalXpathFinder->shouldReceive('filterXPath')
+        $internalXpathFinder->shouldReceive('evaluate')
             ->once()
             ->with(':xpath-2:')
             ->andReturnSelf();
@@ -180,19 +180,19 @@ class XpathFinderTest extends TestCase
             )
             ->andReturn($internalXpathFinder);
 
-        $internalXpathFinder->shouldReceive('filterXPath')
+        $internalXpathFinder->shouldReceive('evaluate')
             ->once()
             ->with(':xpath-1:')
             ->andReturnSelf();
-        $internalXpathFinder->shouldReceive('filterXPath')
+        $internalXpathFinder->shouldReceive('evaluate')
             ->once()
             ->with(':xpath-2:')
             ->andReturn($titleXpathFinder);
-        $internalXpathFinder->shouldReceive('filterXPath')
+        $internalXpathFinder->shouldReceive('evaluate')
             ->once()
             ->with(':xpath-3:')
             ->andReturn($authorXpathFinder);
-        $internalXpathFinder->shouldReceive('filterXPath')
+        $internalXpathFinder->shouldReceive('evaluate')
             ->never()
             ->with(':xpath-4:');
         $internalXpathFinder->shouldReceive('count')

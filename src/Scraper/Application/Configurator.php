@@ -111,7 +111,7 @@ class Configurator
                         $field->getValue()
                     );
                 }
-                $this->variantGenerator->addConfig($field, $result[$field->getKey()]);
+                $this->variantGenerator->addConfig($field->getKey(), $result[$field->getKey()]);
                 Log::info('Added found xpath to the config');
             } catch (UnexpectedValueException $e) {
                 $this->variantGenerator->fieldNotFound();

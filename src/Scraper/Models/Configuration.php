@@ -18,7 +18,10 @@ class Configuration extends Model
      *
      * @var array
      */
-    public $casts = ['xpaths' => 'json'];
+    public $casts = [
+        'xpaths'   => 'json',
+        'optional' => 'bool',
+    ];
 
     /**
      * The primary key for the model.
@@ -36,6 +39,8 @@ class Configuration extends Model
         'name',
         'type',
         'xpaths',
+        'optional',
+        'default',
     ];
 
     public function getXpathsAttribute($xpaths): array
