@@ -26,7 +26,7 @@ class CrawlingTest extends TestCase
                 'xpath'         => '',
                 // Remember it must be a list of values.
                 'expectedValue' => [],
-            ]
+            ],
         ];
     }
 
@@ -71,14 +71,14 @@ class CrawlingTest extends TestCase
                         // Field name
                         'key'   => '',
                         // Value retrieved in list format
-                        'value' => ['']
-                    ]
+                        'value' => [],
+                    ],
                 ],
                 // Url to be crawled where we want to get the data
                 'urlToCrawl'         => '',
                 // Value that we are expecting to obtain in list format
-                'expectedFieldValue' => [''],
-            ]
+                'expectedFieldValue' => [],
+            ],
         ];
     }
 
