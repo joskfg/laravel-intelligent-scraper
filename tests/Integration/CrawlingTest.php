@@ -1,6 +1,5 @@
 <?php
 
-
 namespace Tests\Integration;
 
 use Illuminate\Foundation\Testing\DatabaseMigrations;
@@ -34,6 +33,9 @@ class CrawlingTest extends TestCase
     /**
      * @test
      * @dataProvider fieldCrawlProvider
+     * @param mixed $urlToCrawl
+     * @param mixed $xpath
+     * @param mixed $expectedValue
      */
     public function crawlPageExtractingAField($urlToCrawl, $xpath, $expectedValue): void
     {
@@ -48,12 +50,12 @@ class CrawlingTest extends TestCase
 
         Event::listen(
             Scraped::class,
-            fn(Scraped $scraped) => self::assertSame(
+            fn (Scraped $scraped) => self::assertSame(
                 $expectedValue,
                 $scraped->scrapedData->getField($fieldName)->getValue()
             )
         );
-        Event::listen(ScrapeFailed::class, fn() => self::fail('Scrape failed'));
+        Event::listen(ScrapeFailed::class, fn () => self::fail('Scrape failed'));
 
         scrape($urlToCrawl, $type);
     }
@@ -83,6 +85,9 @@ class CrawlingTest extends TestCase
     /**
      * @test
      * @dataProvider getDatasetToReconfigureProvider
+     * @param mixed $dataset
+     * @param mixed $urlToCrawl
+     * @param mixed $expectedFieldValue
      */
     public function configureAutomaticallyCrawlerAndCrawlAField($dataset, $urlToCrawl, $expectedFieldValue): void
     {
@@ -99,21 +104,21 @@ class CrawlingTest extends TestCase
 
         Event::listen(
             InvalidConfiguration::class,
-            fn() => self::assertTrue(
+            fn () => self::assertTrue(
                 true,
                 'This event must be dispatched to reconfigure the crawler'
             )
         );
         Event::listen(
             ScrapeFailed::class,
-            fn() => self::assertTrue(
+            fn () => self::assertTrue(
                 true,
                 'The scrape fails due to misconfiguration'
             )
         );
         Event::listen(
             Scraped::class,
-            fn(Scraped $scraped) => self::assertSame(
+            fn (Scraped $scraped) => self::assertSame(
                 $expectedFieldValue,
                 $scraped->scrapedData->getField($fieldName)->getValue()
             )
@@ -123,17 +128,17 @@ class CrawlingTest extends TestCase
         Event::forget(InvalidConfiguration::class);
         Event::listen(
             InvalidConfiguration::class,
-            fn() => self::fail('It should be already reconfigured')
+            fn () => self::fail('It should be already reconfigured')
         );
         Event::forget(ScrapeFailed::class);
         Event::listen(
             ScrapeFailed::class,
-            fn() => self::fail('The scrape should not fail this time')
+            fn () => self::fail('The scrape should not fail this time')
         );
 
         Event::listen(
             Scraped::class,
-            fn(Scraped $scraped) => self::assertSame(
+            fn (Scraped $scraped) => self::assertSame(
                 $expectedFieldValue,
                 $scraped->scrapedData->getField($fieldName)->getValue()
             )
@@ -145,6 +150,9 @@ class CrawlingTest extends TestCase
     /**
      * @test
      * @dataProvider getDatasetToReconfigureProvider
+     * @param mixed $dataset
+     * @param mixed $urlToCrawl
+     * @param mixed $expectedFieldValue
      */
     public function configureAutomaticallyCrawlerWithoutDatasetFoundInfoIsNotPossible($dataset, $urlToCrawl, $expectedFieldValue): void
     {
@@ -161,21 +169,21 @@ class CrawlingTest extends TestCase
 
         Event::listen(
             InvalidConfiguration::class,
-            fn() => self::assertTrue(
+            fn () => self::assertTrue(
                 true,
                 'This event must be dispatched to reconfigure the crawler'
             )
         );
         Event::listen(
             ScrapeFailed::class,
-            fn() => self::assertTrue(
+            fn () => self::assertTrue(
                 true,
                 'The scrape fails due to misconfiguration'
             )
         );
         Event::listen(
             Scraped::class,
-            fn(Scraped $scraped) => self::fail('It should not try to scrape the url without reconfiguration')
+            fn (Scraped $scraped) => self::fail('It should not try to scrape the url without reconfiguration')
         );
 
         scrape($urlToCrawl, $type);
