@@ -363,8 +363,8 @@ class ConfiguratorTest extends TestCase
     /**
      * @test
      */
-    public function whenTryToFindXpathInMultiplePostsAndNotFoundInAnyItShouldThrowAnExceptionAndLogItAndResetVariant(
-    ): void {
+    public function whenTryToFindXpathInMultiplePostsAndNotFoundInAnyItShouldThrowAnExceptionAndLogItAndResetVariant(): void
+    {
         $posts = collect([
             new ScrapedDataset([
                 'url'     => ':scrape-url-1:',
