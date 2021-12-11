@@ -32,6 +32,10 @@ class XpathBuilder
             $nodes[] = $this->findNode($documentElement, $value);
         }
 
+        if (empty($nodes)) {
+            throw new UnexpectedValueException('Xpath not found for the given values: ' . implode('/', $values));
+        }
+
         return $this->getXPath($nodes);
     }
 

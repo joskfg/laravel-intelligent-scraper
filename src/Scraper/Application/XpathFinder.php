@@ -37,22 +37,23 @@ class XpathFinder
             Log::info(
                 'Searching field',
                 [
-                    'field' => $config['name'],
+                    'field' => $config->getAttribute('name'),
                 ]
             );
             $value = $this->extractValue($config, $crawler);
 
-            if (!$config['optional'] && $value === null) {
-                $missingXpath = implode('\', \'', $config['xpaths']);
+            if (!$config->getAttribute('optional') && $value === null) {
+                $missingXpath = implode('\', \'', $config->getAttribute('xpaths'));
                 throw new MissingXpathValueException(
-                    "Xpath '$missingXpath' for field '{$config['name']}' not found in '$url'."
+                    "Xpath '$missingXpath' for field '{$config->getAttribute('name')}' not found in '$url'."
                 );
             }
 
             $scrapedData->setField(
                 new Field(
-                    $config['name'],
-                    $value ?? $config['default'],
+                    $config->getAttribute('name'),
+                    $value ?? $config->getAttribute('default'),
+                    $config->getAttribute('chain_type'),
                     $value !== null,
                 )
             );
@@ -83,13 +84,13 @@ class XpathFinder
 
     private function extractValue(Configuration $config, ?Crawler $crawler): ?array
     {
-        foreach ($config['xpaths'] as $xpath) {
+        foreach ($config->getAttribute('xpaths') as $xpath) {
             Log::debug("Checking xpath $xpath");
             $subcrawler = $crawler->evaluate($xpath);
 
             if ($subcrawler->count()) {
                 Log::debug("Found xpath $xpath");
-                $this->variantGenerator->addConfig($config['name'], $xpath);
+                $this->variantGenerator->addConfig($config->getAttribute('name'), $xpath);
                 return $subcrawler->each(fn ($node) => $node->text());
             }
         }

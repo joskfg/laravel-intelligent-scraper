@@ -144,9 +144,10 @@ class XpathFinderTest extends TestCase
     {
         $config = [
             Configuration::create([
-                'name'   => ':field-1:',
-                'type'   => ':type:',
-                'xpaths' => [
+                'name'       => ':field-1:',
+                'type'       => ':type:',
+                'chain_type' => ':chain-type:',
+                'xpaths'     => [
                     ':xpath-1:',
                     ':xpath-2:',
                 ],
@@ -214,12 +215,14 @@ class XpathFinderTest extends TestCase
             $extractedData->getVariant()
         );
 
-        $title = $extractedData->getField(':field-1:');
-        self::assertSame([':value-2:'], $title->getValue());
-        self::assertTrue($title->isFound());
+        $field1 = $extractedData->getField(':field-1:');
+        self::assertSame([':value-2:'], $field1->getValue());
+        self::assertSame(':chain-type:', $field1->getChainType());
+        self::assertTrue($field1->isFound());
 
-        $author = $extractedData->getField(':field-2:');
-        self::assertSame([':value-1:'], $author->getValue());
-        self::assertTrue($author->isFound());
+        $field2 = $extractedData->getField(':field-2:');
+        self::assertSame([':value-1:'], $field2->getValue());
+        self::assertNull($field2->getChainType());
+        self::assertTrue($field2->isFound());
     }
 }

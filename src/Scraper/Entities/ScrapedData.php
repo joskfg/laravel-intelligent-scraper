@@ -34,6 +34,9 @@ class ScrapedData
         return $this;
     }
 
+    /**
+     * @return array<Field>
+     */
     public function getFields(): array
     {
         return $this->fields;

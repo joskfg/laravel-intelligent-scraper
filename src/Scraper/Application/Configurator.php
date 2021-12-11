@@ -123,7 +123,7 @@ class Configurator
                     $value = is_array($field->getValue()) ? json_encode($field->getValue(), JSON_THROW_ON_ERROR) : $field->getValue();
                 } catch (JsonException $e) {
                 }
-                Log::notice("Field '{$field->getKey()}' with value '{$field->getValue()}' not found for '{$crawler->getUri()}'.");
+                Log::notice("Field '{$field->getKey()}' with value '{$value}' not found for '{$crawler->getUri()}'.");
             }
         }
 

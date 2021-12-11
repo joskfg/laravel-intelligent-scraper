@@ -6,13 +6,15 @@ class Field implements \JsonSerializable
 {
     private string $key;
     private $value;
+    private ?string $chainType;
     private bool $found;
 
-    public function __construct(string $key, $value, bool $found = true)
+    public function __construct(string $key, $value, ?string $chainType = null, bool $found = true)
     {
-        $this->key   = $key;
-        $this->value = $value;
-        $this->found = $found;
+        $this->key       = $key;
+        $this->value     = $value;
+        $this->found     = $found;
+        $this->chainType = $chainType;
     }
 
     public function getKey(): string
@@ -39,6 +41,18 @@ class Field implements \JsonSerializable
         return $this;
     }
 
+    public function getChainType(): ?string
+    {
+        return $this->chainType;
+    }
+
+    public function setChainType(string $chainType): Field
+    {
+        $this->chainType = $chainType;
+
+        return $this;
+    }
+
     public function isFound(): bool
     {
         return $this->found;
@@ -54,9 +68,10 @@ class Field implements \JsonSerializable
     public function jsonSerialize(): array
     {
         return [
-            'key'   => $this->getKey(),
-            'value' => $this->getValue(),
-            'foind' => $this->isFound(),
+            'key'        => $this->getKey(),
+            'value'      => $this->getValue(),
+            'chain_type' => $this->getChainType(),
+            'found'      => $this->isFound(),
         ];
     }
 }

@@ -12,10 +12,17 @@ use Softonic\LaravelIntelligentScraper\Scraper\Models\Configuration;
 use Softonic\LaravelIntelligentScraper\Scraper\Models\ScrapedDataset;
 use Tests\TestCase;
 
+/**
+ * THIS TEST SHOULD BE CONFIGURED FIRST. NOT WORKING AS IT IS.
+ * FILL ALL PROVIDERS BEFORE RUNNING THE TEST.
+ */
 class CrawlingTest extends TestCase
 {
     use DatabaseMigrations;
 
+    /**
+     * Configure this provider to check if the crawler is working as expected.
+     */
     public function fieldCrawlProvider(): array
     {
         return [

@@ -38,6 +38,7 @@ class Configuration extends Model
     protected $fillable = [
         'name',
         'type',
+        'chain_type',
         'xpaths',
         'optional',
         'default',
