@@ -81,11 +81,34 @@ class ScrapedListenerTest extends TestCase
         Event::assertNotDispatched(ScrapeRequest::class);
     }
 
+    public function chainedScraperProvider(): array
+    {
+        return [
+            'fullUrl' => [
+                'scrapeUrl'        => 'https://something.dev',
+                'chainedUrl'       => 'https://something.dev/final-endpoint',
+                'finalUrlToScrape' => 'https://something.dev/final-endpoint',
+            ],
+            'partialUrl' => [
+                'scrapeUrl'        => 'https://something.dev',
+                'chainedUrl'       => '/final-endpoint',
+                'finalUrlToScrape' => 'https://something.dev/final-endpoint',
+            ],
+        ];
+    }
+
     /**
      * @test
+     * @dataProvider chainedScraperProvider
+     * @param mixed $scrapeUrl
+     * @param mixed $chainedUrl
+     * @param mixed $finalUrlToScrape
      */
-    public function whenReceiveATypeThatShoudlTriggerAScraoeItShouldHandleTheEventWithTheSpecificDependency(): void
-    {
+    public function whenReceiveATypeThatShouldTriggerAScrapeItShouldHandleTheEventWithTheSpecificDependency(
+        $scrapeUrl,
+        $chainedUrl,
+        $finalUrlToScrape
+    ): void {
         $listener = \Mockery::mock(ScrapedListener::class);
         App::instance(get_class($listener), $listener);
 
@@ -95,7 +118,7 @@ class ScrapedListenerTest extends TestCase
 
         $scrapedEvent = new Scraped(
             new ScrapeRequest(
-                ':scrape-url:',
+                $scrapeUrl,
                 ':type:'
             ),
             new ScrapedData(
@@ -103,7 +126,7 @@ class ScrapedListenerTest extends TestCase
                 [
                     new Field(
                         ':field-name:',
-                        ':field-value:',
+                        [$chainedUrl],
                         ':chain-type:'
                     ),
                 ]
@@ -118,7 +141,7 @@ class ScrapedListenerTest extends TestCase
 
         Event::assertDispatched(
             ScrapeRequest::class,
-            fn (ScrapeRequest $event) => $event->url === ':field-value:' && $event->type === ':chain-type:'
+            fn (ScrapeRequest $event) => $event->url === $finalUrlToScrape && $event->type === ':chain-type:'
         );
     }
 }

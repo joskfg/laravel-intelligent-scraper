@@ -46,7 +46,7 @@
   },
   "scripts": {
     "all-test": "phpunit --coverage-text; php-cs-fixer fix -v --diff --dry-run --allow-risky=yes;",
-    "test": "phpunit --coverage-text tests/Unit; php-cs-fixer fix -v --diff --dry-run --allow-risky=yes;",
+    "test": "phpunit --coverage-text --testsuite=Unit; php-cs-fixer fix -v --diff --dry-run --allow-risky=yes;",
     "phpunit": "phpunit --coverage-text",
     "phpcs": "php-cs-fixer fix -v --diff --dry-run --allow-risky=yes;",
     "fix-cs": "php-cs-fixer fix -v --diff --allow-risky=yes;"

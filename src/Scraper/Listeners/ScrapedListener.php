@@ -35,14 +35,21 @@ class ScrapedListener implements ShouldQueue
         );
 
         foreach ($fields as $field) {
-            foreach($field->getValue() as $url) {
-                if(strpos($url, 'http') !== 0) {
-                    $urlParts = parse_url($scraped->scrapeRequest->url);
-                    $url = $urlParts['scheme'] . '://' . $urlParts['host'] . $url;
-                }
+            foreach ($field->getValue() as $value) {
+                $url = $this->getFullUrl($value, $scraped);
                 event(new ScrapeRequest($url, $field->getChainType()));
             }
         }
+    }
+
+    protected function getFullUrl($url, Scraped $scraped): string
+    {
+        if (strpos($url, 'http') !== 0) {
+            $urlParts = parse_url($scraped->scrapeRequest->url);
+            return $urlParts['scheme'] . '://' . $urlParts['host'] . $url;
+        }
+
+        return $url;
     }
 
     protected function fireUserListeners(Scraped $scraped): void

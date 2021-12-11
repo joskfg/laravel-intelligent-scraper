@@ -215,14 +215,17 @@ class CrawlingTest extends TestCase
     /**
      * @test
      * @dataProvider getChainedTypesConfigurationProvider
+     * @param mixed $urlToCrawl
+     * @param mixed $urlXpath
+     * @param mixed $finalXpath
+     * @param mixed $expectedValue
      */
     public function whenCrawlingFieldsWithChainedTypesItShouldContinueCrawlingTheChainedTypes(
         $urlToCrawl,
         $urlXpath,
         $finalXpath,
         $expectedValue
-    ): void
-    {
+    ): void {
         $type      = 'type-example';
         $fieldName = 'semantic-field-name';
         $childType = 'child-type-example';
@@ -232,7 +235,7 @@ class CrawlingTest extends TestCase
             'name'   => $fieldName,
             'type'   => $type,
             'xpaths' => $urlXpath,
-            'chain_type' => $childType
+            'chain_type' => $childType,
         ]);
 
         Configuration::create([
