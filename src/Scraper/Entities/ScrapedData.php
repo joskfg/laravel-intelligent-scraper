@@ -1,6 +1,6 @@
 <?php
 
-namespace Softonic\LaravelIntelligentScraper\Scraper\Entities;
+namespace Joskfg\LaravelIntelligentScraper\Scraper\Entities;
 
 class ScrapedData
 {

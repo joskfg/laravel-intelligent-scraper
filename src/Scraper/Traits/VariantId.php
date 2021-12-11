@@ -1,6 +1,6 @@
 <?php
 
-namespace Softonic\LaravelIntelligentScraper\Scraper\Traits;
+namespace Joskfg\LaravelIntelligentScraper\Scraper\Traits;
 
 trait VariantId
 {

@@ -1,6 +1,6 @@
 <?php
 
-namespace Softonic\LaravelIntelligentScraper\Scraper\Application;
+namespace Joskfg\LaravelIntelligentScraper\Scraper\Application;
 
 use Goutte\Client;
 use GuzzleHttp\Exception\ConnectException;
@@ -8,14 +8,14 @@ use GuzzleHttp\Exception\RequestException;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
 use JsonException;
-use Softonic\LaravelIntelligentScraper\Scraper\Entities\Field;
-use Softonic\LaravelIntelligentScraper\Scraper\Entities\ScrapedData;
-use Softonic\LaravelIntelligentScraper\Scraper\Events\ConfigurationScraped;
-use Softonic\LaravelIntelligentScraper\Scraper\Events\ScrapeRequest;
-use Softonic\LaravelIntelligentScraper\Scraper\Exceptions\ConfigurationException;
-use Softonic\LaravelIntelligentScraper\Scraper\Models\Configuration;
-use Softonic\LaravelIntelligentScraper\Scraper\Models\ScrapedDataset;
-use Softonic\LaravelIntelligentScraper\Scraper\Repositories\Configuration as ConfigurationRepository;
+use Joskfg\LaravelIntelligentScraper\Scraper\Entities\Field;
+use Joskfg\LaravelIntelligentScraper\Scraper\Entities\ScrapedData;
+use Joskfg\LaravelIntelligentScraper\Scraper\Events\ConfigurationScraped;
+use Joskfg\LaravelIntelligentScraper\Scraper\Events\ScrapeRequest;
+use Joskfg\LaravelIntelligentScraper\Scraper\Exceptions\ConfigurationException;
+use Joskfg\LaravelIntelligentScraper\Scraper\Models\Configuration;
+use Joskfg\LaravelIntelligentScraper\Scraper\Models\ScrapedDataset;
+use Joskfg\LaravelIntelligentScraper\Scraper\Repositories\Configuration as ConfigurationRepository;
 use Symfony\Component\DomCrawler\Crawler;
 use UnexpectedValueException;
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace Softonic\LaravelIntelligentScraper\Scraper\Application;
+namespace Joskfg\LaravelIntelligentScraper\Scraper\Application;
 
 use Illuminate\Support\Facades\Log;
 use UnexpectedValueException;

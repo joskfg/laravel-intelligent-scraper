@@ -1,19 +1,19 @@
 <?php
 
-namespace Softonic\LaravelIntelligentScraper\Scraper\Listeners;
+namespace Joskfg\LaravelIntelligentScraper\Scraper\Listeners;
 
 use Exception;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use JsonException;
 use Psr\Log\LoggerInterface;
-use Softonic\LaravelIntelligentScraper\Scraper\Application\XpathFinder;
-use Softonic\LaravelIntelligentScraper\Scraper\Events\InvalidConfiguration;
-use Softonic\LaravelIntelligentScraper\Scraper\Events\Scraped;
-use Softonic\LaravelIntelligentScraper\Scraper\Events\ScrapeFailed;
-use Softonic\LaravelIntelligentScraper\Scraper\Events\ScrapeRequest;
-use Softonic\LaravelIntelligentScraper\Scraper\Exceptions\ConfigurationException;
-use Softonic\LaravelIntelligentScraper\Scraper\Exceptions\MissingXpathValueException;
-use Softonic\LaravelIntelligentScraper\Scraper\Repositories\Configuration;
+use Joskfg\LaravelIntelligentScraper\Scraper\Application\XpathFinder;
+use Joskfg\LaravelIntelligentScraper\Scraper\Events\InvalidConfiguration;
+use Joskfg\LaravelIntelligentScraper\Scraper\Events\Scraped;
+use Joskfg\LaravelIntelligentScraper\Scraper\Events\ScrapeFailed;
+use Joskfg\LaravelIntelligentScraper\Scraper\Events\ScrapeRequest;
+use Joskfg\LaravelIntelligentScraper\Scraper\Exceptions\ConfigurationException;
+use Joskfg\LaravelIntelligentScraper\Scraper\Exceptions\MissingXpathValueException;
+use Joskfg\LaravelIntelligentScraper\Scraper\Repositories\Configuration;
 use UnexpectedValueException;
 
 class ConfigureScraper implements ShouldQueue

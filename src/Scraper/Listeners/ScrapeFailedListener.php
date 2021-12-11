@@ -1,10 +1,10 @@
 <?php
 
-namespace Softonic\LaravelIntelligentScraper\Scraper\Listeners;
+namespace Joskfg\LaravelIntelligentScraper\Scraper\Listeners;
 
 use Exception;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use Softonic\LaravelIntelligentScraper\Scraper\Events\ScrapeFailed;
+use Joskfg\LaravelIntelligentScraper\Scraper\Events\ScrapeFailed;
 
 class ScrapeFailedListener implements ShouldQueue
 {

@@ -1,6 +1,6 @@
 <?php
 
-namespace Softonic\LaravelIntelligentScraper\Scraper\Application;
+namespace Joskfg\LaravelIntelligentScraper\Scraper\Application;
 
 use Illuminate\Support\Facades\Log;
 use Tests\TestCase;
@@ -9,7 +9,7 @@ class XpathBuilderTest extends TestCase
 {
     private ?\DOMElement $domElement = null;
 
-    private \Softonic\LaravelIntelligentScraper\Scraper\Application\XpathBuilder $xpathBuilder;
+    private \Joskfg\LaravelIntelligentScraper\Scraper\Application\XpathBuilder $xpathBuilder;
 
     public function setUp(): void
     {

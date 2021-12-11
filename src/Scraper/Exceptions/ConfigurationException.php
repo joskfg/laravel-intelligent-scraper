@@ -1,6 +1,6 @@
 <?php
 
-namespace Softonic\LaravelIntelligentScraper\Scraper\Exceptions;
+namespace Joskfg\LaravelIntelligentScraper\Scraper\Exceptions;
 
 use RuntimeException;
 

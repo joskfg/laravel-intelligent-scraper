@@ -1,18 +1,18 @@
 <?php
 
-namespace Softonic\LaravelIntelligentScraper;
+namespace Joskfg\LaravelIntelligentScraper;
 
 use Illuminate\Foundation\Support\Providers\EventServiceProvider;
-use Softonic\LaravelIntelligentScraper\Scraper\Application\XpathBuilder;
-use Softonic\LaravelIntelligentScraper\Scraper\Events\ConfigurationScraped;
-use Softonic\LaravelIntelligentScraper\Scraper\Events\InvalidConfiguration;
-use Softonic\LaravelIntelligentScraper\Scraper\Events\Scraped;
-use Softonic\LaravelIntelligentScraper\Scraper\Events\ScrapeRequest;
-use Softonic\LaravelIntelligentScraper\Scraper\Listeners\ConfigureScraper;
-use Softonic\LaravelIntelligentScraper\Scraper\Listeners\Scrape;
-use Softonic\LaravelIntelligentScraper\Scraper\Listeners\ScrapedListener;
-use Softonic\LaravelIntelligentScraper\Scraper\Listeners\ScrapeFailedListener;
-use Softonic\LaravelIntelligentScraper\Scraper\Listeners\UpdateDataset;
+use Joskfg\LaravelIntelligentScraper\Scraper\Application\XpathBuilder;
+use Joskfg\LaravelIntelligentScraper\Scraper\Events\ConfigurationScraped;
+use Joskfg\LaravelIntelligentScraper\Scraper\Events\InvalidConfiguration;
+use Joskfg\LaravelIntelligentScraper\Scraper\Events\Scraped;
+use Joskfg\LaravelIntelligentScraper\Scraper\Events\ScrapeRequest;
+use Joskfg\LaravelIntelligentScraper\Scraper\Listeners\ConfigureScraper;
+use Joskfg\LaravelIntelligentScraper\Scraper\Listeners\Scrape;
+use Joskfg\LaravelIntelligentScraper\Scraper\Listeners\ScrapedListener;
+use Joskfg\LaravelIntelligentScraper\Scraper\Listeners\ScrapeFailedListener;
+use Joskfg\LaravelIntelligentScraper\Scraper\Listeners\UpdateDataset;
 
 class ScraperProvider extends EventServiceProvider
 {

@@ -1,13 +1,13 @@
 <?php
 
-namespace Softonic\LaravelIntelligentScraper\Scraper\Listeners;
+namespace Joskfg\LaravelIntelligentScraper\Scraper\Listeners;
 
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Event;
-use Softonic\LaravelIntelligentScraper\Scraper\Entities\Field;
-use Softonic\LaravelIntelligentScraper\Scraper\Entities\ScrapedData;
-use Softonic\LaravelIntelligentScraper\Scraper\Events\Scraped;
-use Softonic\LaravelIntelligentScraper\Scraper\Events\ScrapeRequest;
+use Joskfg\LaravelIntelligentScraper\Scraper\Entities\Field;
+use Joskfg\LaravelIntelligentScraper\Scraper\Entities\ScrapedData;
+use Joskfg\LaravelIntelligentScraper\Scraper\Events\Scraped;
+use Joskfg\LaravelIntelligentScraper\Scraper\Events\ScrapeRequest;
 use Tests\TestCase;
 
 class ScrapedListenerTest extends TestCase

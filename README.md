@@ -1,13 +1,13 @@
 # Laravel Intelligent Scraper
 
-[![Latest Version](https://img.shields.io/github/release/softonic/laravel-intelligent-scraper.svg?style=flat-square)](https://github.com/softonic/laravel-intelligent-scraper/releases)
+[![Latest Version](https://img.shields.io/github/release/joskfg/laravel-intelligent-scraper.svg?style=flat-square)](https://github.com/joskfg/laravel-intelligent-scraper/releases)
 [![Software License](https://img.shields.io/badge/license-Apache%202.0-blue.svg?style=flat-square)](LICENSE.md)
-[![Build Status](https://img.shields.io/travis/softonic/laravel-intelligent-scraper/master.svg?style=flat-square)](https://travis-ci.org/softonic/laravel-intelligent-scraper)
-[![Coverage Status](https://img.shields.io/scrutinizer/coverage/g/softonic/laravel-intelligent-scraper.svg?style=flat-square)](https://scrutinizer-ci.com/g/softonic/laravel-intelligent-scraper/code-structure)
-[![Quality Score](https://img.shields.io/scrutinizer/g/softonic/laravel-intelligent-scraper.svg?style=flat-square)](https://scrutinizer-ci.com/g/softonic/laravel-intelligent-scraper)
-[![Total Downloads](https://img.shields.io/packagist/dt/softonic/laravel-intelligent-scraper.svg?style=flat-square)](https://packagist.org/packages/softonic/laravel-intelligent-scraper)
-[![Average time to resolve an issue](http://isitmaintained.com/badge/resolution/softonic/laravel-intelligent-scraper.svg?style=flat-square)](http://isitmaintained.com/project/softonic/laravel-intelligent-scraper "Average time to resolve an issue")
-[![Percentage of issues still open](http://isitmaintained.com/badge/open/softonic/laravel-intelligent-scraper.svg?style=flat-square)](http://isitmaintained.com/project/softonic/laravel-intelligent-scraper "Percentage of issues still open")
+[![Build Status](https://img.shields.io/travis/joskfg/laravel-intelligent-scraper/master.svg?style=flat-square)](https://travis-ci.org/joskfg/laravel-intelligent-scraper)
+[![Coverage Status](https://img.shields.io/scrutinizer/coverage/g/joskfg/laravel-intelligent-scraper.svg?style=flat-square)](https://scrutinizer-ci.com/g/joskfg/laravel-intelligent-scraper/code-structure)
+[![Quality Score](https://img.shields.io/scrutinizer/g/joskfg/laravel-intelligent-scraper.svg?style=flat-square)](https://scrutinizer-ci.com/g/joskfg/laravel-intelligent-scraper)
+[![Total Downloads](https://img.shields.io/packagist/dt/joskfg/laravel-intelligent-scraper.svg?style=flat-square)](https://packagist.org/packages/joskfg/laravel-intelligent-scraper)
+[![Average time to resolve an issue](http://isitmaintained.com/badge/resolution/joskfg/laravel-intelligent-scraper.svg?style=flat-square)](http://isitmaintained.com/project/joskfg/laravel-intelligent-scraper "Average time to resolve an issue")
+[![Percentage of issues still open](http://isitmaintained.com/badge/open/joskfg/laravel-intelligent-scraper.svg?style=flat-square)](http://isitmaintained.com/project/joskfg/laravel-intelligent-scraper "Percentage of issues still open")
 
 
 This packages offers a scraping solution that doesn't require to know the web HTML structure and it is autoconfigured
@@ -19,12 +19,12 @@ during a long time.
 To install, use composer:
 
 ```bash
-composer require softonic/laravel-intelligent-scraper
+composer require joskfg/laravel-intelligent-scraper
 ```
 
 To publish the scraper config, you can use
 ```bash
-php artisan vendor:publish --provider="Softonic\LaravelIntelligentScraper\ScraperProvider" --tag=config
+php artisan vendor:publish --provider="Joskfg\LaravelIntelligentScraper\ScraperProvider" --tag=config
 ```
 
 The migrations for database are registered in the service provider, so you can execute the migrate command to create the needed tables.
@@ -77,7 +77,7 @@ the texts, images, metas, etc... that do you want to scrap and label them, so yo
 An example from microsoft store could be:
 ```php
 <?php
-use Softonic\LaravelIntelligentScraper\Scraper\Models\ScrapedDataset;
+use Joskfg\LaravelIntelligentScraper\Scraper\Models\ScrapedDataset;
 
 ScrapedDataset::create([
     'url'  => 'https://test.c/p/my-objective',
@@ -120,7 +120,7 @@ The data could be a list of items or a single item.
 A basic example could be:
 ```php
 <?php
-use Softonic\LaravelIntelligentScraper\Scraper\Models\ScrapedDataset;
+use Joskfg\LaravelIntelligentScraper\Scraper\Models\ScrapedDataset;
 
 ScrapedDataset::create([
     'url'     => 'https://test.c/p/my-objective',
@@ -148,7 +148,7 @@ Example with `body` field as regexp:
 
 ```php
 <?php
-use Softonic\LaravelIntelligentScraper\Scraper\Models\ScrapedDataset;
+use Joskfg\LaravelIntelligentScraper\Scraper\Models\ScrapedDataset;
 
 ScrapedDataset::create([
     'url'  => 'https://test.c/p/my-objective',
@@ -177,7 +177,7 @@ text is inside some child element of `<html>`. So define regexp carefully.
 After you collected all the Xpath from the HTML, you just need to create the configuration models. They look like:
 ```php
 <?php
-use Softonic\LaravelIntelligentScraper\Scraper\Models\Configuration;
+use Joskfg\LaravelIntelligentScraper\Scraper\Models\Configuration;
 
 Configuration::create([
     'name'     => 'title',
@@ -226,7 +226,7 @@ The scrape will produce a `Scraped` event if all worked as expected.
 So attach a listener to that event to receive the data.
 
 ```php
-/** @var \Softonic\LaravelIntelligentScraper\Scraper\Events\Scraped $event */
+/** @var \Joskfg\LaravelIntelligentScraper\Scraper\Events\Scraped $event */
 $event->scrapeRequest->url;  // Url scraped
 $event->scrapeRequest->type; // Request type
 $event->scrapeRequest->context; // Context
@@ -238,7 +238,7 @@ All the output fields are arrays that can contain one or more results.
 If the scrape fails a `ScrapeFailed` event is fired with the
 scrape request information.
 ```php
-/** @var \Softonic\LaravelIntelligentScraper\Scraper\Events\ScrapeFailed $event */
+/** @var \Joskfg\LaravelIntelligentScraper\Scraper\Events\ScrapeFailed $event */
 $event->scrapeRequest->url;  // Url scraped
 $event->scrapeRequest->type; // Request type
 $event->scrapeRequest->context; // Context
@@ -295,7 +295,7 @@ php artisan queue:work --queue=configure # Just one
 
 ## Testing
 
-`softonic/laravel-intelligent-scraper` has a [PHPUnit](https://phpunit.de) test suite and a coding style compliance test suite using [PHP CS Fixer](http://cs.sensiolabs.org/).
+`joskfg/laravel-intelligent-scraper` has a [PHPUnit](https://phpunit.de) test suite and a coding style compliance test suite using [PHP CS Fixer](http://cs.sensiolabs.org/).
 
 To run the tests, run the following command from the project folder.
 
@@ -317,7 +317,7 @@ There are three services that have unique responsibilities and are connected usi
 
 ### Scrape
 
-It is fired when the system receive a `\Softonic\LaravelIntelligentScraper\Scraper\Events\ScrapeRequest` event. It
+It is fired when the system receive a `\Joskfg\LaravelIntelligentScraper\Scraper\Events\ScrapeRequest` event. It
 can be done using our `scrape($url, $type)` helper function.
 
 ![Scrape process](./docs/images/scrape_diagram.png "Scrape process")

@@ -1,15 +1,15 @@
 <?php
 
-namespace Softonic\LaravelIntelligentScraper\Scraper\Listeners;
+namespace Joskfg\LaravelIntelligentScraper\Scraper\Listeners;
 
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Support\Facades\Log;
 use ScrapedDatasetSeeder;
-use Softonic\LaravelIntelligentScraper\Scraper\Entities\Field;
-use Softonic\LaravelIntelligentScraper\Scraper\Entities\ScrapedData;
-use Softonic\LaravelIntelligentScraper\Scraper\Events\Scraped;
-use Softonic\LaravelIntelligentScraper\Scraper\Events\ScrapeRequest;
-use Softonic\LaravelIntelligentScraper\Scraper\Models\ScrapedDataset;
+use Joskfg\LaravelIntelligentScraper\Scraper\Entities\Field;
+use Joskfg\LaravelIntelligentScraper\Scraper\Entities\ScrapedData;
+use Joskfg\LaravelIntelligentScraper\Scraper\Events\Scraped;
+use Joskfg\LaravelIntelligentScraper\Scraper\Events\ScrapeRequest;
+use Joskfg\LaravelIntelligentScraper\Scraper\Models\ScrapedDataset;
 use Tests\TestCase;
 
 class UpdateDatasetTest extends TestCase

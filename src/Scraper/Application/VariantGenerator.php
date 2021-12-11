@@ -1,6 +1,6 @@
 <?php
 
-namespace Softonic\LaravelIntelligentScraper\Scraper\Application;
+namespace Joskfg\LaravelIntelligentScraper\Scraper\Application;
 
 use InvalidArgumentException;
 

@@ -1,6 +1,6 @@
 <?php
 
-use Softonic\LaravelIntelligentScraper\Scraper\Events\ScrapeRequest;
+use Joskfg\LaravelIntelligentScraper\Scraper\Events\ScrapeRequest;
 
 if (!function_exists('regexp')) {
     function regexp($regexp): array

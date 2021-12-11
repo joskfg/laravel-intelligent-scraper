@@ -1,9 +1,9 @@
 <?php
 
-namespace Softonic\LaravelIntelligentScraper\Scraper\Listeners;
+namespace Joskfg\LaravelIntelligentScraper\Scraper\Listeners;
 
-use Softonic\LaravelIntelligentScraper\Scraper\Events\ScrapeFailed;
-use Softonic\LaravelIntelligentScraper\Scraper\Events\ScrapeRequest;
+use Joskfg\LaravelIntelligentScraper\Scraper\Events\ScrapeFailed;
+use Joskfg\LaravelIntelligentScraper\Scraper\Events\ScrapeRequest;
 use Tests\TestCase;
 
 class ScrapeFailedListenerTest extends TestCase

@@ -1,14 +1,14 @@
 <?php
 
-namespace Softonic\LaravelIntelligentScraper\Scraper\Application;
+namespace Joskfg\LaravelIntelligentScraper\Scraper\Application;
 
 use Goutte\Client;
 use GuzzleHttp\Exception\ConnectException;
 use GuzzleHttp\Exception\RequestException;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Support\Facades\Log;
-use Softonic\LaravelIntelligentScraper\Scraper\Exceptions\MissingXpathValueException;
-use Softonic\LaravelIntelligentScraper\Scraper\Models\Configuration;
+use Joskfg\LaravelIntelligentScraper\Scraper\Exceptions\MissingXpathValueException;
+use Joskfg\LaravelIntelligentScraper\Scraper\Models\Configuration;
 use Symfony\Component\DomCrawler\Crawler;
 use Tests\TestCase;
 

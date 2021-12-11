@@ -1,13 +1,13 @@
 <?php
 
-namespace Softonic\LaravelIntelligentScraper\Scraper\Repositories;
+namespace Joskfg\LaravelIntelligentScraper\Scraper\Repositories;
 
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Cache;
-use Softonic\LaravelIntelligentScraper\Scraper\Application\Configurator;
-use Softonic\LaravelIntelligentScraper\Scraper\Models\Configuration as ConfigurationModel;
-use Softonic\LaravelIntelligentScraper\Scraper\Models\ScrapedDataset;
+use Joskfg\LaravelIntelligentScraper\Scraper\Application\Configurator;
+use Joskfg\LaravelIntelligentScraper\Scraper\Models\Configuration as ConfigurationModel;
+use Joskfg\LaravelIntelligentScraper\Scraper\Models\ScrapedDataset;
 use Tests\TestCase;
 
 class ConfigurationTest extends TestCase

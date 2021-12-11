@@ -1,16 +1,16 @@
 <?php
 
-namespace Softonic\LaravelIntelligentScraper\Scraper\Application;
+namespace Joskfg\LaravelIntelligentScraper\Scraper\Application;
 
 use Goutte\Client as GoutteClient;
 use GuzzleHttp\Exception\ConnectException;
 use GuzzleHttp\Exception\RequestException;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
-use Softonic\LaravelIntelligentScraper\Scraper\Entities\Field;
-use Softonic\LaravelIntelligentScraper\Scraper\Entities\ScrapedData;
-use Softonic\LaravelIntelligentScraper\Scraper\Exceptions\MissingXpathValueException;
-use Softonic\LaravelIntelligentScraper\Scraper\Models\Configuration;
+use Joskfg\LaravelIntelligentScraper\Scraper\Entities\Field;
+use Joskfg\LaravelIntelligentScraper\Scraper\Entities\ScrapedData;
+use Joskfg\LaravelIntelligentScraper\Scraper\Exceptions\MissingXpathValueException;
+use Joskfg\LaravelIntelligentScraper\Scraper\Models\Configuration;
 use Symfony\Component\DomCrawler\Crawler;
 use UnexpectedValueException;
 

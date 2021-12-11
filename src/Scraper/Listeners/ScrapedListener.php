@@ -1,12 +1,12 @@
 <?php
 
-namespace Softonic\LaravelIntelligentScraper\Scraper\Listeners;
+namespace Joskfg\LaravelIntelligentScraper\Scraper\Listeners;
 
 use Exception;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use Softonic\LaravelIntelligentScraper\Scraper\Entities\Field;
-use Softonic\LaravelIntelligentScraper\Scraper\Events\Scraped;
-use Softonic\LaravelIntelligentScraper\Scraper\Events\ScrapeRequest;
+use Joskfg\LaravelIntelligentScraper\Scraper\Entities\Field;
+use Joskfg\LaravelIntelligentScraper\Scraper\Events\Scraped;
+use Joskfg\LaravelIntelligentScraper\Scraper\Events\ScrapeRequest;
 
 class ScrapedListener implements ShouldQueue
 {

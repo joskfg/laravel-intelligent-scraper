@@ -1,14 +1,14 @@
 <?php
 
-namespace Softonic\LaravelIntelligentScraper\Scraper\Repositories;
+namespace Joskfg\LaravelIntelligentScraper\Scraper\Repositories;
 
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 use JsonException;
-use Softonic\LaravelIntelligentScraper\Scraper\Application\Configurator;
-use Softonic\LaravelIntelligentScraper\Scraper\Models\Configuration as ConfigurationModel;
-use Softonic\LaravelIntelligentScraper\Scraper\Models\ScrapedDataset;
+use Joskfg\LaravelIntelligentScraper\Scraper\Application\Configurator;
+use Joskfg\LaravelIntelligentScraper\Scraper\Models\Configuration as ConfigurationModel;
+use Joskfg\LaravelIntelligentScraper\Scraper\Models\ScrapedDataset;
 use UnexpectedValueException;
 
 class Configuration

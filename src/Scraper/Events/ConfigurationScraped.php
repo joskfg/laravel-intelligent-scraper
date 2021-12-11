@@ -1,6 +1,6 @@
 <?php
 
-namespace Softonic\LaravelIntelligentScraper\Scraper\Events;
+namespace Joskfg\LaravelIntelligentScraper\Scraper\Events;
 
 class ConfigurationScraped extends Scraped
 {

@@ -2,7 +2,7 @@
 
 namespace Tests;
 
-use Softonic\LaravelIntelligentScraper\ScraperProvider;
+use Joskfg\LaravelIntelligentScraper\ScraperProvider;
 
 class TestCase extends \Orchestra\Testbench\TestCase
 {

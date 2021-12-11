@@ -1,6 +1,6 @@
 <?php
 
-namespace Softonic\LaravelIntelligentScraper\Scraper\Models;
+namespace Joskfg\LaravelIntelligentScraper\Scraper\Models;
 
 use Illuminate\Database\Eloquent\Model;
 

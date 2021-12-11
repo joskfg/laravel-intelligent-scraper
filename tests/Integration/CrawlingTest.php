@@ -5,11 +5,11 @@ namespace Tests\Integration;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Str;
-use Softonic\LaravelIntelligentScraper\Scraper\Events\InvalidConfiguration;
-use Softonic\LaravelIntelligentScraper\Scraper\Events\Scraped;
-use Softonic\LaravelIntelligentScraper\Scraper\Events\ScrapeFailed;
-use Softonic\LaravelIntelligentScraper\Scraper\Models\Configuration;
-use Softonic\LaravelIntelligentScraper\Scraper\Models\ScrapedDataset;
+use Joskfg\LaravelIntelligentScraper\Scraper\Events\InvalidConfiguration;
+use Joskfg\LaravelIntelligentScraper\Scraper\Events\Scraped;
+use Joskfg\LaravelIntelligentScraper\Scraper\Events\ScrapeFailed;
+use Joskfg\LaravelIntelligentScraper\Scraper\Models\Configuration;
+use Joskfg\LaravelIntelligentScraper\Scraper\Models\ScrapedDataset;
 use Tests\TestCase;
 
 /**

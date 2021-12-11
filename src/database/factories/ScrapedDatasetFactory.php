@@ -11,7 +11,7 @@
 |
 */
 
-use Softonic\LaravelIntelligentScraper\Scraper\Models\ScrapedDataset;
+use Joskfg\LaravelIntelligentScraper\Scraper\Models\ScrapedDataset;
 
 /* @var \Illuminate\Database\Eloquent\Factory $factory */
 $factory->define(ScrapedDataset::class, fn (Faker\Generator $faker) => [
