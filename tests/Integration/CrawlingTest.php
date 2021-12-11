@@ -195,4 +195,66 @@ class CrawlingTest extends TestCase
 
         scrape($urlToCrawl, $type);
     }
+
+    public function getChainedTypesConfigurationProvider(): array
+    {
+        return [
+            [
+                // Url to be crawled
+                'urlToCrawl'    => '',
+                // Xpath where to find the next URL to crawl
+                'urlXpath'      => '',
+                // Final Xpath to crawl in the chained crawl
+                'finalXpath'    => '',
+                // Final value to be found in the final Xpath in list format
+                'value' => [],
+            ],
+        ];
+    }
+
+    /**
+     * @test
+     * @dataProvider getChainedTypesConfigurationProvider
+     */
+    public function whenCrawlingFieldsWithChainedTypesItShouldContinueCrawlingTheChainedTypes(
+        $urlToCrawl,
+        $urlXpath,
+        $finalXpath,
+        $expectedValue
+    ): void
+    {
+        $type      = 'type-example';
+        $fieldName = 'semantic-field-name';
+        $childType = 'child-type-example';
+        $childFieldName = 'child-semantic-field-name';
+
+        Configuration::create([
+            'name'   => $fieldName,
+            'type'   => $type,
+            'xpaths' => $urlXpath,
+            'chain_type' => $childType
+        ]);
+
+        Configuration::create([
+            'name'   => $childFieldName,
+            'type'   => $childType,
+            'xpaths' => $finalXpath,
+        ]);
+
+        Event::listen(
+            Scraped::class,
+            function (Scraped $scraped) use ($expectedValue, $childType, $childFieldName) {
+                if ($scraped->scrapeRequest->type === $childType) {
+                    self::assertSame(
+                        $expectedValue,
+                        $scraped->scrapedData->getField($childFieldName)
+                            ->getValue()
+                    );
+                }
+            }
+        );
+        Event::listen(ScrapeFailed::class, fn () => self::fail('Scrape failed'));
+
+        scrape($urlToCrawl, $type);
+    }
 }

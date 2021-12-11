@@ -35,7 +35,13 @@ class ScrapedListener implements ShouldQueue
         );
 
         foreach ($fields as $field) {
-            event(new ScrapeRequest($field->getValue(), $field->getChainType()));
+            foreach($field->getValue() as $url) {
+                if(strpos($url, 'http') !== 0) {
+                    $urlParts = parse_url($scraped->scrapeRequest->url);
+                    $url = $urlParts['scheme'] . '://' . $urlParts['host'] . $url;
+                }
+                event(new ScrapeRequest($url, $field->getChainType()));
+            }
         }
     }
 
