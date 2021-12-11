@@ -1,12 +1,12 @@
 {
-  "name": "softonic/laravel-intelligent-scraper",
+  "name": "joskfg/laravel-intelligent-scraper",
   "type": "library",
   "description" : "Service to scrape a web page easily without knowing their HTML structure.",
   "keywords": ["laravel", "scraper", "intelligent", "automatic"],
   "license": "Apache-2.0",
-  "homepage": "https://github.com/softonic/laravel-intelligent-scraper",
+  "homepage": "https://github.com/joskfg/laravel-intelligent-scraper",
   "support": {
-    "issues": "https://github.com/softonic/laravel-intelligent-scraper/issues"
+    "issues": "https://github.com/joskfg/laravel-intelligent-scraper/issues"
   },
   "require": {
     "php": ">=7.4",
@@ -36,7 +36,7 @@
       "src/database/factories"
     ],
     "psr-4": {
-      "Softonic\\LaravelIntelligentScraper\\": "src/"
+      "Joskfg\\LaravelIntelligentScraper\\": "src/"
     }
   },
   "autoload-dev": {
@@ -54,7 +54,7 @@
   "extra": {
     "laravel": {
       "providers": [
-        "Softonic\\LaravelIntelligentScraper\\ScraperProvider"
+        "Joskfg\\LaravelIntelligentScraper\\ScraperProvider"
       ]
     }
   }
