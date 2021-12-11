@@ -4,13 +4,13 @@ namespace Joskfg\LaravelIntelligentScraper\Scraper\Listeners;
 
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Support\Collection;
-use Psr\Log\LoggerInterface;
 use Joskfg\LaravelIntelligentScraper\Scraper\Application\XpathFinder;
 use Joskfg\LaravelIntelligentScraper\Scraper\Events\InvalidConfiguration;
 use Joskfg\LaravelIntelligentScraper\Scraper\Events\Scraped;
 use Joskfg\LaravelIntelligentScraper\Scraper\Events\ScrapeRequest;
 use Joskfg\LaravelIntelligentScraper\Scraper\Exceptions\MissingXpathValueException;
 use Joskfg\LaravelIntelligentScraper\Scraper\Repositories\Configuration;
+use Psr\Log\LoggerInterface;
 
 class Scrape implements ShouldQueue
 {

@@ -5,8 +5,6 @@ namespace Joskfg\LaravelIntelligentScraper\Scraper\Listeners;
 use GuzzleHttp\Exception\ConnectException;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Support\Facades\Log;
-use Mockery;
-use Mockery\LegacyMockInterface;
 use Joskfg\LaravelIntelligentScraper\Scraper\Application\XpathFinder;
 use Joskfg\LaravelIntelligentScraper\Scraper\Entities\ScrapedData;
 use Joskfg\LaravelIntelligentScraper\Scraper\Events\InvalidConfiguration;
@@ -14,6 +12,8 @@ use Joskfg\LaravelIntelligentScraper\Scraper\Events\Scraped;
 use Joskfg\LaravelIntelligentScraper\Scraper\Events\ScrapeRequest;
 use Joskfg\LaravelIntelligentScraper\Scraper\Exceptions\MissingXpathValueException;
 use Joskfg\LaravelIntelligentScraper\Scraper\Repositories\Configuration;
+use Mockery;
+use Mockery\LegacyMockInterface;
 use Tests\TestCase;
 use UnexpectedValueException;
 

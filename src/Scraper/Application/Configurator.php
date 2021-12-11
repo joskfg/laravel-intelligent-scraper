@@ -7,7 +7,6 @@ use GuzzleHttp\Exception\ConnectException;
 use GuzzleHttp\Exception\RequestException;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
-use JsonException;
 use Joskfg\LaravelIntelligentScraper\Scraper\Entities\Field;
 use Joskfg\LaravelIntelligentScraper\Scraper\Entities\ScrapedData;
 use Joskfg\LaravelIntelligentScraper\Scraper\Events\ConfigurationScraped;
@@ -16,6 +15,7 @@ use Joskfg\LaravelIntelligentScraper\Scraper\Exceptions\ConfigurationException;
 use Joskfg\LaravelIntelligentScraper\Scraper\Models\Configuration;
 use Joskfg\LaravelIntelligentScraper\Scraper\Models\ScrapedDataset;
 use Joskfg\LaravelIntelligentScraper\Scraper\Repositories\Configuration as ConfigurationRepository;
+use JsonException;
 use Symfony\Component\DomCrawler\Crawler;
 use UnexpectedValueException;
 

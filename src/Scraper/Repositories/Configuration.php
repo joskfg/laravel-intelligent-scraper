@@ -5,10 +5,10 @@ namespace Joskfg\LaravelIntelligentScraper\Scraper\Repositories;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
-use JsonException;
 use Joskfg\LaravelIntelligentScraper\Scraper\Application\Configurator;
 use Joskfg\LaravelIntelligentScraper\Scraper\Models\Configuration as ConfigurationModel;
 use Joskfg\LaravelIntelligentScraper\Scraper\Models\ScrapedDataset;
+use JsonException;
 use UnexpectedValueException;
 
 class Configuration
