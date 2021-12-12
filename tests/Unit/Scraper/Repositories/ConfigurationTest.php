@@ -62,6 +62,7 @@ class ConfigurationTest extends TestCase
     public function whenRecalculateItShouldStoreTheNewXpaths(): void
     {
         ScrapedDataset::create([
+            'url_hash' => hash('sha256', 'https://test.c/123456789222'),
             'url'     => 'https://test.c/123456789222',
             'type'    => ':type-1:',
             'variant' => 'b265521fc089ac61b794bfa3a5ce8a657f6833ce',
@@ -79,6 +80,7 @@ class ConfigurationTest extends TestCase
             ],
         ]);
         ScrapedDataset::create([
+            'url_hash' => hash('sha256', 'https://test.c/7675487989076'),
             'url'     => 'https://test.c/7675487989076',
             'type'    => ':type-2:',
             'variant' => 'b265521fc089ac61b794bfa3a5ce8a657f6833ce',
@@ -96,6 +98,7 @@ class ConfigurationTest extends TestCase
             ],
         ]);
         ScrapedDataset::create([
+            'url_hash' => hash('sha256', 'https://test.c/223456789111'),
             'url'     => 'https://test.c/223456789111',
             'type'    => ':type-1:',
             'variant' => 'b265521fc089ac61b794bfa3a5ce8a657f6833ce',
@@ -155,6 +158,7 @@ class ConfigurationTest extends TestCase
     public function whenRecalculateFailsItShouldThrowAnException(): void
     {
         ScrapedDataset::create([
+            'url_hash' => hash('sha256', 'https://test.c/123456789222'),
             'url'     => 'https://test.c/123456789222',
             'type'    => ':type-1:',
             'variant' => 'b265521fc089ac61b794bfa3a5ce8a657f6833ce',
@@ -172,6 +176,7 @@ class ConfigurationTest extends TestCase
             ],
         ]);
         ScrapedDataset::create([
+            'url_hash' => hash('sha256', 'https://test.c/7675487989076'),
             'url'     => 'https://test.c/7675487989076',
             'type'    => ':type-2:',
             'variant' => 'b265521fc089ac61b794bfa3a5ce8a657f6833ce',
@@ -189,6 +194,7 @@ class ConfigurationTest extends TestCase
             ],
         ]);
         ScrapedDataset::create([
+            'url_hash' => hash('sha256', 'https://test.c/223456789111'),
             'url'     => 'https://test.c/223456789111',
             'type'    => ':type-1:',
             'variant' => 'b265521fc089ac61b794bfa3a5ce8a657f6833ce',

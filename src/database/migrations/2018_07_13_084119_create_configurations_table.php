@@ -13,7 +13,7 @@ class CreateConfigurationsTable extends Migration
     public function up()
     {
         Schema::create('configurations', function (Blueprint $table): void {
-            $table->string('name')->primary()
+            $table->string('name')
                 ->comment('The name of the field.');
             $table->string('type')
                 ->comment('The scrape type.');
@@ -30,6 +30,7 @@ class CreateConfigurationsTable extends Migration
                 ->nullable()->default(null);
 
             $table->timestamps();
+            $table->primary(['name', 'type']);
         });
     }
 

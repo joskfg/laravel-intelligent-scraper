@@ -25,7 +25,7 @@ class ScrapedDataset extends Model
      *
      * @var string
      */
-    protected $primaryKey = 'url';
+    protected $primaryKey = 'url_hash';
 
     /**
      * The attributes that are mass assignable.
@@ -33,6 +33,7 @@ class ScrapedDataset extends Model
      * @var array
      */
     protected $fillable = [
+        'url_hash',
         'url',
         'type',
         'variant',

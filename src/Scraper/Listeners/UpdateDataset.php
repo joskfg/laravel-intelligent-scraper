@@ -13,13 +13,14 @@ class UpdateDataset implements ShouldQueue
 
     public function handle(Scraped $event): void
     {
-        $datasets = ScrapedDataset::where('url', $event->scrapeRequest->url)->get();
+        $datasets = ScrapedDataset::where('url_hash', hash('sha256', $event->scrapeRequest->url))->first();
 
-        if ($datasets->isEmpty()) {
+        if ($datasets === null) {
             $this->addDataset($event);
-        } else {
-            $this->updateDataset($datasets->first(), $event);
+            return ;
         }
+
+        $this->updateDataset($datasets, $event);
     }
 
     private function addDataset(Scraped $event): void
@@ -27,10 +28,11 @@ class UpdateDataset implements ShouldQueue
         Log::info('Adding new information to dataset', ['request' => $event->scrapeRequest]);
         ScrapedDataset::create(
             [
-                'url'     => $event->scrapeRequest->url,
-                'type'    => $event->scrapeRequest->type,
-                'variant' => $event->scrapedData->getVariant(),
-                'fields'  => $event->scrapedData->getFields(),
+                'url_hash' => hash('sha256', $event->scrapeRequest->url),
+                'url'      => $event->scrapeRequest->url,
+                'type'     => $event->scrapeRequest->type,
+                'variant'  => $event->scrapedData->getVariant(),
+                'fields'   => $event->scrapedData->getFields(),
             ]
         );
 

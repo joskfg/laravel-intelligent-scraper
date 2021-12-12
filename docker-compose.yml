@@ -4,7 +4,7 @@ services:
   composer:
     volumes:
     - ./:/app
-    image: joskfg/composer-rector
+    image: softonic/composer-rector
     command: composer run test
   dev:
     volumes:
@@ -13,5 +13,5 @@ services:
   fixcs:
     volumes:
     - ./:/app
-    image: joskfg/composer-rector
+    image: softonic/composer-rector
     command: composer run fix-cs

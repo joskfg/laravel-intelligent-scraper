@@ -14,20 +14,25 @@
 use Joskfg\LaravelIntelligentScraper\Scraper\Models\ScrapedDataset;
 
 /* @var \Illuminate\Database\Eloquent\Factory $factory */
-$factory->define(ScrapedDataset::class, fn (Faker\Generator $faker) => [
-    'url'     => $faker->url . $faker->randomDigit,
-    'type'    => 'post',
-    'variant' => $faker->sha1,
-    'fields'  => [
-        [
-            'key'   => 'title',
-            'value' => $faker->word,
-            'found' => $faker->boolean(),
+$factory->define(ScrapedDataset::class, function (Faker\Generator $faker) {
+    $url = $faker->url . $faker->randomDigit;
+
+    return [
+        'url_hash' => hash('sha256', $url),
+        'url'      => $url,
+        'type'     => 'post',
+        'variant'  => $faker->sha1,
+        'fields'   => [
+            [
+                'key'   => 'title',
+                'value' => $faker->word,
+                'found' => $faker->boolean(),
+            ],
+            [
+                'key'   => 'author',
+                'value' => $faker->word,
+                'found' => $faker->boolean(),
+            ],
         ],
-        [
-            'key'   => 'author',
-            'value' => $faker->word,
-            'found' => $faker->boolean(),
-        ],
-    ],
-]);
+    ];
+});
