@@ -103,10 +103,11 @@ class CrawlingTest extends TestCase
         $type                      = 'type-example';
 
         ScrapedDataset::create([
-            'url'     => $dataset['url'],
-            'type'    => $type,
-            'variant' => Str::random(),
-            'fields'  => [$dataset['field']],
+            'url_hash' => hash('sha256', $dataset['url']),
+            'url'      => $dataset['url'],
+            'type'     => $type,
+            'variant'  => Str::random(),
+            'fields'   => [$dataset['field']],
         ]);
 
         Event::listen(
@@ -168,10 +169,11 @@ class CrawlingTest extends TestCase
         $type                      = 'type-example';
 
         ScrapedDataset::create([
-            'url'     => $dataset['url'],
-            'type'    => $type,
-            'variant' => Str::random(),
-            'fields'  => [$dataset['field']],
+            'url_hash' => hash('sha256', $dataset['url']),
+            'url'      => $dataset['url'],
+            'type'     => $type,
+            'variant'  => Str::random(),
+            'fields'   => [$dataset['field']],
         ]);
 
         Event::listen(
