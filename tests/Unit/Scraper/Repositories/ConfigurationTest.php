@@ -5,6 +5,7 @@ namespace Joskfg\LaravelIntelligentScraper\Scraper\Repositories;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Log;
 use Joskfg\LaravelIntelligentScraper\Scraper\Application\Configurator;
 use Joskfg\LaravelIntelligentScraper\Scraper\Models\Configuration as ConfigurationModel;
 use Joskfg\LaravelIntelligentScraper\Scraper\Models\ScrapedDataset;
@@ -13,6 +14,13 @@ use Tests\TestCase;
 class ConfigurationTest extends TestCase
 {
     use DatabaseMigrations;
+
+    public function setUp(): void
+    {
+        parent::setUp();
+
+        Log::spy();
+    }
 
     /**
      * @test
