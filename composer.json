@@ -9,18 +9,18 @@
     "issues": "https://github.com/joskfg/laravel-intelligent-scraper/issues"
   },
   "require": {
-    "php": ">=7.4",
+    "php": ">= 8.0",
     "fabpot/goutte": "^3.2",
-    "psr/log": "^2.0",
-    "illuminate/database": "^5.8 || ^6.0 || ^7.0 || ^8.0",
-    "illuminate/events": "^5.8 || ^6.0 || ^7.0 || ^8.0",
+    "psr/log": "^1.0 || ^2.0 || ^3.0",
+    "illuminate/database": "^7.0 || ^8.0",
+    "illuminate/events": "^7.0 || ^8.0",
     "ext-dom": "*",
     "ext-json": "*"
   },
   "require-dev": {
     "phpunit/phpunit": "^9.0",
     "mockery/mockery": "^1.0",
-    "friendsofphp/php-cs-fixer": "^2.4",
+    "friendsofphp/php-cs-fixer": "^3.6",
     "laravel/legacy-factories": "^1.1",
     "squizlabs/php_codesniffer": "^3",
     "orchestra/testbench": "^6.18",
@@ -45,11 +45,21 @@
     }
   },
   "scripts": {
-    "all-test": "phpunit --coverage-text; php-cs-fixer fix -v --diff --dry-run --allow-risky=yes;",
-    "test": "phpunit --coverage-text --testsuite=Unit; php-cs-fixer fix -v --diff --dry-run --allow-risky=yes;",
+    "test": [
+      "@checkstyle",
+      "@phpunit"
+    ],
     "phpunit": "phpunit --coverage-text",
-    "phpcs": "php-cs-fixer fix -v --diff --dry-run --allow-risky=yes;",
-    "fix-cs": "php-cs-fixer fix -v --diff --allow-risky=yes;"
+    "checkstyle": [
+      "php-cs-fixer fix -v --diff --dry-run --allow-risky=yes",
+      "rector --dry-run"
+    ],
+    "fix-checkstyle": [
+      "@php-cs-fixer",
+      "@rector"
+    ],
+    "php-cs-fixer": "php-cs-fixer fix -v --diff --allow-risky=yes",
+    "rector": "rector"
   },
   "extra": {
     "laravel": {

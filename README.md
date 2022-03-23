@@ -2,13 +2,10 @@
 
 [![Latest Version](https://img.shields.io/github/release/joskfg/laravel-intelligent-scraper.svg?style=flat-square)](https://github.com/joskfg/laravel-intelligent-scraper/releases)
 [![Software License](https://img.shields.io/badge/license-Apache%202.0-blue.svg?style=flat-square)](LICENSE.md)
-[![Build Status](https://img.shields.io/travis/joskfg/laravel-intelligent-scraper/master.svg?style=flat-square)](https://travis-ci.org/joskfg/laravel-intelligent-scraper)
-[![Coverage Status](https://img.shields.io/scrutinizer/coverage/g/joskfg/laravel-intelligent-scraper.svg?style=flat-square)](https://scrutinizer-ci.com/g/joskfg/laravel-intelligent-scraper/code-structure)
-[![Quality Score](https://img.shields.io/scrutinizer/g/joskfg/laravel-intelligent-scraper.svg?style=flat-square)](https://scrutinizer-ci.com/g/joskfg/laravel-intelligent-scraper)
+[![Build Status](https://github.com/joskfg/laravel-intelligent-scraper/actions/workflows/build.yml/badge.svg)](https://github.com/joskfg/laravel-intelligent-scraper/actions/workflows/build.yml)
 [![Total Downloads](https://img.shields.io/packagist/dt/joskfg/laravel-intelligent-scraper.svg?style=flat-square)](https://packagist.org/packages/joskfg/laravel-intelligent-scraper)
 [![Average time to resolve an issue](http://isitmaintained.com/badge/resolution/joskfg/laravel-intelligent-scraper.svg?style=flat-square)](http://isitmaintained.com/project/joskfg/laravel-intelligent-scraper "Average time to resolve an issue")
 [![Percentage of issues still open](http://isitmaintained.com/badge/open/joskfg/laravel-intelligent-scraper.svg?style=flat-square)](http://isitmaintained.com/project/joskfg/laravel-intelligent-scraper "Percentage of issues still open")
-
 
 This packages offers a scraping solution that doesn't require to know the web HTML structure and it is autoconfigured
 when some change is detected in the HTML structure. This allows you to continue scraping without manual intervention
@@ -63,8 +60,8 @@ The default stack already has the http_errors middleware, so you only need to do
 
 ## Configuration
 
-There are two different options for the initial setup. The package can be 
-[configured using datasets](#configuration-based-in-dataset) or 
+There are two different options for the initial setup. The package can be
+[configured using datasets](#configuration-based-in-dataset) or
 [configured using Xpath](#configuration-based-in-xpath). Both ways produce the same result but
 depending on your Xpath knowledge you could prefer one or other. We recommend using the
 [configured using Xpath](#configuration-based-in-xpath) approach.
@@ -103,18 +100,18 @@ trying to cover maximum page variations possible. The scraper WILL NOT BE ABLE t
 in the dataset.
 
 Once we did the job, all is ready to work. You should not care about updates always you have enough data in the dataset
-to cover all the new modifications on the page, so the scraper will recalculate the modifications on the fly. You can 
+to cover all the new modifications on the page, so the scraper will recalculate the modifications on the fly. You can
 check [how it works](how-it-works.md) to know much about the internals.
 
 We will check more deeply how we can create a new dataset and what options are available in the next section.
 
 #### Dataset creation
 
-The dataset is composed by `url` and `data`. 
+The dataset is composed by `url` and `data`.
 * The `url` part is simple, you just need to indicate the url from where you obtained the data.
 * The `type` part gives a item name to the current dataset. This allows you to define multiple types.
 * The `variant` identifies the page variant. The identifier is a sha1 hash build based in the xpath used to get the data.
-* The `data` part is where you indicate what data and assign the label that you want to get. 
+* The `data` part is where you indicate what data and assign the label that you want to get.
 The data could be a list of items or a single item.
 
 A basic example could be:
@@ -166,10 +163,10 @@ ScrapedDataset::create([
 ]);
 ```
 
-With this change we will ensure that we detect the `body` even if it has hidden characters. 
+With this change we will ensure that we detect the `body` even if it has hidden characters.
 
 **IMPORTANT** The scraper tries to find the text in all the tags including children, so if you define a regular
-expression without limit, like for example `/.*Body starts.*/` you will find the text in `<html>` element due to that 
+expression without limit, like for example `/.*Body starts.*/` you will find the text in `<html>` element due to that
 text is inside some child element of `<html>`. So define regexp carefully.
 
 ### Configuration based in Xpath
@@ -207,7 +204,7 @@ are not going to trigger the [reconfiguration process](#configure-scraper).
 
 After configure the scraper, you will be able to request a specific scrape using the `scrape` helper
 ```php
-<?php 
+<?php
 
 scrape('https://test.c/p/my-objective', 'Item-definition-1');
 ```
@@ -300,17 +297,17 @@ php artisan queue:work --queue=configure # Just one
 To run the tests, run the following command from the project folder.
 
 ``` bash
-$ docker-compose run test
+$ make tests
 ```
 
-To run interactively using [PsySH](http://psysh.org/):
+To open a terminal in the dev environment:
 ``` bash
-$ docker-compose run psysh
+$ make debug
 ```
 
 ## How it works?
 
-The scraper is auto configurable, but needs an initial dataset or add a configuration. 
+The scraper is auto configurable, but needs an initial dataset or add a configuration.
 The dataset tells the configurator which data do you want and how to label it.
 
 There are three services that have unique responsibilities and are connected using the event system.
