@@ -80,12 +80,21 @@ ScrapedDataset::create([
     'url'  => 'https://test.c/p/my-objective',
     'type' => 'Item-definition-1',
     'data' => [
-        'title'     => 'My title',
-        'body'      => 'This is the body content I want to get',
-        'images'    => [
-            'https://test.c/images/1.jpg',
-            'https://test.c/images/2.jpg',
-            'https://test.c/images/3.jpg',
+        [
+            'key' => 'title',
+            'value' => 'My title',
+        ],
+        [
+            'key' => 'body',
+            'value' => 'This is the body content I want to get',
+        ],
+        [
+            'key' => 'images',
+            'value' => [
+                'https://test.c/images/1.jpg',
+                'https://test.c/images/2.jpg',
+                'https://test.c/images/3.jpg',
+            ],
         ],
     ],
 ]);
@@ -124,12 +133,21 @@ ScrapedDataset::create([
     'type'    => 'Item-definition-1',
     'variant' => '8ed10778a83f1266e7ffed90205f7fb61ddcdf78',
     'data'    => [
-        'title'     => 'My title',
-        'body'      => 'This is the body content I want to get',
-        'images'    => [
-            'https://test.c/images/1.jpg',
-            'https://test.c/images/2.jpg',
-            'https://test.c/images/3.jpg',
+        [
+            'key' => 'title',
+            'value' => 'My title',
+        ],
+        [
+            'key' => 'body',
+            'value' => 'This is the body content I want to get',
+        ],
+        [
+            'key' => 'images',
+            'value' => [
+                'https://test.c/images/1.jpg',
+                'https://test.c/images/2.jpg',
+                'https://test.c/images/3.jpg',
+            ],
         ],
     ],
 ]);
@@ -152,12 +170,21 @@ ScrapedDataset::create([
     'type' => 'Item-definition-1',
     'variant' => '8ed10778a83f1266e7ffed90205f7fb61ddcdf78',
     'data' => [
-        'title'     => 'My title',
-        'body'      => regexp('/^Body starts here, but it is so long that.*$/si'),
-        'images'    => [
-            'https://test.c/images/1.jpg',
-            'https://test.c/images/2.jpg',
-            'https://test.c/images/3.jpg',
+        [
+            'key' => 'title',
+            'value' => 'My title',
+        ],
+        [
+            'key' => 'body',
+            'value' => regexp('/^Body starts here, but it is so long that.*$/si'),
+        ],
+        [
+            'key' => 'images',
+            'value' => [
+                'https://test.c/images/1.jpg',
+                'https://test.c/images/2.jpg',
+                'https://test.c/images/3.jpg',
+            ],
         ],
     ],
 ]);

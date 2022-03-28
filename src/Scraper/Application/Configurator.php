@@ -96,6 +96,7 @@ class Configurator
         $result = [];
 
         foreach ($scrapedData['fields'] as $field) {
+            $field['found'] = $field['found'] ?? true;
             if (!$field['found']) {
                 continue;
             }
