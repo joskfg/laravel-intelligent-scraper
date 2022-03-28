@@ -40,6 +40,13 @@ class ScrapedDataset extends Model
         'fields',
     ];
 
+    protected static function booted()
+    {
+        static::creating(function ($model) {
+            $model->url_hash = hash('sha256', $model->url);
+        });
+    }
+
     public function scopeWithType($query, string $type)
     {
         return $query->where('type', $type);
