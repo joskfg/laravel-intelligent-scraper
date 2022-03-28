@@ -46,7 +46,7 @@ class Configuration extends Model
 
     public function getXpathsAttribute($xpaths): array
     {
-        return (array) $this->castAttribute('xpaths', $xpaths);
+        return (array)$this->castAttribute('xpaths', $xpaths);
     }
 
     public function scopeWithType($query, string $type)
