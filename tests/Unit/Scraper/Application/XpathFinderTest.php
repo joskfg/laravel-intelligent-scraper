@@ -3,13 +3,13 @@
 namespace Joskfg\LaravelIntelligentScraper\Scraper\Application;
 
 use Goutte\Client;
-use GuzzleHttp\Exception\ConnectException;
-use GuzzleHttp\Exception\RequestException;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Support\Facades\Log;
 use Joskfg\LaravelIntelligentScraper\Scraper\Exceptions\MissingXpathValueException;
 use Joskfg\LaravelIntelligentScraper\Scraper\Models\Configuration;
 use Symfony\Component\DomCrawler\Crawler;
+use Symfony\Component\HttpClient\Exception\TransportException;
+use Tests\Unit\Fakes\FakeHttpException;
 use Tests\TestCase;
 
 class XpathFinderTest extends TestCase
@@ -38,7 +38,7 @@ class XpathFinderTest extends TestCase
 
         $variantGenerator = \Mockery::mock(VariantGenerator::class);
 
-        $requestException = \Mockery::mock(RequestException::class);
+        $requestException = \Mockery::mock(FakeHttpException::class);
         $requestException->shouldReceive('getResponse->getStatusCode')
             ->once()
             ->andReturn(404);
@@ -74,7 +74,7 @@ class XpathFinderTest extends TestCase
 
         $variantGenerator = \Mockery::mock(VariantGenerator::class);
 
-        $connectException = \Mockery::mock(ConnectException::class);
+        $connectException = \Mockery::mock(TransportException::class);
         $client           = \Mockery::mock(Client::class);
         $client->shouldReceive('request')
             ->once()

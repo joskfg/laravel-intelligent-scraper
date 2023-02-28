@@ -2,7 +2,6 @@
 
 namespace Joskfg\LaravelIntelligentScraper\Scraper\Listeners;
 
-use GuzzleHttp\Exception\ConnectException;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Support\Facades\Log;
 use Joskfg\LaravelIntelligentScraper\Scraper\Application\XpathFinder;
@@ -14,6 +13,7 @@ use Joskfg\LaravelIntelligentScraper\Scraper\Exceptions\MissingXpathValueExcepti
 use Joskfg\LaravelIntelligentScraper\Scraper\Repositories\Configuration;
 use Mockery;
 use Mockery\LegacyMockInterface;
+use Symfony\Component\HttpClient\Exception\TransportException;
 use Tests\TestCase;
 use UnexpectedValueException;
 
@@ -79,9 +79,9 @@ class ScrapeTest extends TestCase
         $this->xpathFinder->shouldReceive('extract')
             ->once()
             ->with(':scrape-url:', $xpathConfig)
-            ->andThrowExceptions([Mockery::mock(ConnectException::class)]);
+            ->andThrowExceptions([Mockery::mock(TransportException::class)]);
 
-        $this->expectException(ConnectException::class);
+        $this->expectException(TransportException::class);
 
         $scrape = new Scrape(
             $this->config,

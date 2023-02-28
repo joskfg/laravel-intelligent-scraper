@@ -3,8 +3,6 @@
 namespace Joskfg\LaravelIntelligentScraper\Scraper\Application;
 
 use Goutte\Client as GoutteClient;
-use GuzzleHttp\Exception\ConnectException;
-use GuzzleHttp\Exception\RequestException;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
 use Joskfg\LaravelIntelligentScraper\Scraper\Entities\Field;
@@ -12,6 +10,8 @@ use Joskfg\LaravelIntelligentScraper\Scraper\Entities\ScrapedData;
 use Joskfg\LaravelIntelligentScraper\Scraper\Exceptions\MissingXpathValueException;
 use Joskfg\LaravelIntelligentScraper\Scraper\Models\Configuration;
 use Symfony\Component\DomCrawler\Crawler;
+use Symfony\Component\HttpClient\Exception\TransportException;
+use Symfony\Contracts\HttpClient\Exception\HttpExceptionInterface;
 use UnexpectedValueException;
 
 class XpathFinder
@@ -72,10 +72,10 @@ class XpathFinder
             Log::info("Requesting $url");
 
             return $this->client->request('GET', $url);
-        } catch (ConnectException $e) {
+        } catch (TransportException $e) {
             Log::info("Unavailable url '$url'", ['message' => $e->getMessage()]);
             throw new UnexpectedValueException("Unavailable url '$url'");
-        } catch (RequestException $e) {
+        } catch (HttpExceptionInterface $e) {
             $httpCode = $e->getResponse()->getStatusCode();
             Log::info('Invalid response http status', ['status' => $httpCode]);
             throw new UnexpectedValueException("Response error from '$url' with '$httpCode' http code");

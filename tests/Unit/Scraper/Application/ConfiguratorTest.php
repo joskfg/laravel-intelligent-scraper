@@ -4,8 +4,6 @@ namespace Joskfg\LaravelIntelligentScraper\Scraper\Application;
 
 use DOMElement;
 use Goutte\Client;
-use GuzzleHttp\Exception\ConnectException;
-use GuzzleHttp\Exception\RequestException;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Support\Facades\Log;
 use Joskfg\LaravelIntelligentScraper\Scraper\Events\ConfigurationScraped;
@@ -16,7 +14,9 @@ use Joskfg\LaravelIntelligentScraper\Scraper\Repositories\Configuration;
 use Mockery;
 use Mockery\LegacyMockInterface;
 use Symfony\Component\DomCrawler\Crawler;
+use Symfony\Component\HttpClient\Exception\TransportException;
 use Tests\TestCase;
+use Tests\Unit\Fakes\FakeHttpException;
 use UnexpectedValueException;
 
 class ConfiguratorTest extends TestCase
@@ -76,7 +76,7 @@ class ConfiguratorTest extends TestCase
             ]),
         ]);
 
-        $requestException = Mockery::mock(RequestException::class);
+        $requestException = Mockery::mock(FakeHttpException::class);
         $requestException->shouldReceive('getResponse->getStatusCode')
             ->once()
             ->andReturn(404);
@@ -86,7 +86,7 @@ class ConfiguratorTest extends TestCase
                 'GET',
                 ':scrape-url:'
             )
-            ->andThrows($requestException);
+            ->andThrow($requestException);
 
         $this->configuration->shouldReceive('findByType')
             ->once()
@@ -125,7 +125,7 @@ class ConfiguratorTest extends TestCase
             ]),
         ]);
 
-        $connectException = Mockery::mock(ConnectException::class);
+        $connectException = Mockery::mock(TransportException::class);
         $this->client->shouldReceive('request')
             ->once()
             ->with(
@@ -319,10 +319,12 @@ class ConfiguratorTest extends TestCase
         $crawler->shouldReceive('getNode')
             ->with(0)
             ->andReturn($rootElement);
-        $crawler->shouldReceive('filterXpath->count')
+        $filter = $crawler->shouldReceive('filterXpath')
+            ->andReturnSelf()
+            ->getMock()
+            ->shouldReceive('count')
             ->once()
             ->andReturn(1);
-
         $this->xpathBuilder->shouldReceive('find')
             ->never()
             ->with($rootElement, ':value-1:');

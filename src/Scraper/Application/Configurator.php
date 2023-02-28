@@ -3,8 +3,6 @@
 namespace Joskfg\LaravelIntelligentScraper\Scraper\Application;
 
 use Goutte\Client;
-use GuzzleHttp\Exception\ConnectException;
-use GuzzleHttp\Exception\RequestException;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
 use Joskfg\LaravelIntelligentScraper\Scraper\Entities\Field;
@@ -17,6 +15,8 @@ use Joskfg\LaravelIntelligentScraper\Scraper\Models\ScrapedDataset;
 use Joskfg\LaravelIntelligentScraper\Scraper\Repositories\Configuration as ConfigurationRepository;
 use JsonException;
 use Symfony\Component\DomCrawler\Crawler;
+use Symfony\Component\HttpClient\Exception\TransportException;
+use Symfony\Contracts\HttpClient\Exception\HttpExceptionInterface;
 use UnexpectedValueException;
 
 class Configurator
@@ -68,13 +68,13 @@ class Configurator
             Log::info("Request {$scrapedData['url']}");
 
             return $this->client->request('GET', $scrapedData['url']);
-        } catch (ConnectException $e) {
+        } catch (TransportException $e) {
             Log::notice(
                 "Connection error: {$e->getMessage()}",
                 compact('scrapedData')
             );
             $scrapedData->delete();
-        } catch (RequestException $e) {
+        }catch (HttpExceptionInterface $e) {
             $httpCode = $e->getResponse()->getStatusCode();
             Log::notice(
                 "Response status ($httpCode) invalid, so proceeding to delete the scraped data.",
