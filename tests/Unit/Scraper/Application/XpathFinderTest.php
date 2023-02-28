@@ -9,8 +9,8 @@ use Joskfg\LaravelIntelligentScraper\Scraper\Exceptions\MissingXpathValueExcepti
 use Joskfg\LaravelIntelligentScraper\Scraper\Models\Configuration;
 use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\HttpClient\Exception\TransportException;
-use Tests\Unit\Fakes\FakeHttpException;
 use Tests\TestCase;
+use Tests\Unit\Fakes\FakeHttpException;
 
 class XpathFinderTest extends TestCase
 {

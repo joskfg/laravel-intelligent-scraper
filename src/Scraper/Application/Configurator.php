@@ -74,7 +74,7 @@ class Configurator
                 compact('scrapedData')
             );
             $scrapedData->delete();
-        }catch (HttpExceptionInterface $e) {
+        } catch (HttpExceptionInterface $e) {
             $httpCode = $e->getResponse()->getStatusCode();
             Log::notice(
                 "Response status ($httpCode) invalid, so proceeding to delete the scraped data.",
