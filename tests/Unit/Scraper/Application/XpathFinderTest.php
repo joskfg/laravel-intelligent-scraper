@@ -2,15 +2,17 @@
 
 namespace Joskfg\LaravelIntelligentScraper\Scraper\Application;
 
-use Goutte\Client;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Support\Facades\Log;
 use Joskfg\LaravelIntelligentScraper\Scraper\Exceptions\MissingXpathValueException;
 use Joskfg\LaravelIntelligentScraper\Scraper\Models\Configuration;
+use Mockery;
+use Symfony\Component\BrowserKit\HttpBrowser;
 use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\HttpClient\Exception\TransportException;
 use Tests\TestCase;
 use Tests\Unit\Fakes\FakeHttpException;
+use UnexpectedValueException;
 
 class XpathFinderTest extends TestCase
 {
@@ -36,14 +38,14 @@ class XpathFinderTest extends TestCase
             ]),
         ];
 
-        $variantGenerator = \Mockery::mock(VariantGenerator::class);
+        $variantGenerator = Mockery::mock(VariantGenerator::class);
 
-        $requestException = \Mockery::mock(FakeHttpException::class);
+        $requestException = Mockery::mock(FakeHttpException::class);
         $requestException->shouldReceive('getResponse->getStatusCode')
             ->once()
             ->andReturn(404);
 
-        $client = \Mockery::mock(Client::class);
+        $client = Mockery::mock(HttpBrowser::class);
         $client->shouldReceive('request')
             ->once()
             ->with(
@@ -52,7 +54,7 @@ class XpathFinderTest extends TestCase
             )
             ->andThrows($requestException);
 
-        $this->expectException(\UnexpectedValueException::class);
+        $this->expectException(UnexpectedValueException::class);
         $this->expectExceptionMessage('Response error from \':url:\' with \'404\' http code');
 
         $xpathFinder = new XpathFinder($client, $variantGenerator);
@@ -72,10 +74,10 @@ class XpathFinderTest extends TestCase
             ]),
         ];
 
-        $variantGenerator = \Mockery::mock(VariantGenerator::class);
+        $variantGenerator = Mockery::mock(VariantGenerator::class);
 
-        $connectException = \Mockery::mock(TransportException::class);
-        $client           = \Mockery::mock(Client::class);
+        $connectException = Mockery::mock(TransportException::class);
+        $client           = Mockery::mock(HttpBrowser::class);
         $client->shouldReceive('request')
             ->once()
             ->with(
@@ -84,7 +86,7 @@ class XpathFinderTest extends TestCase
             )
             ->andThrows($connectException);
 
-        $this->expectException(\UnexpectedValueException::class);
+        $this->expectException(UnexpectedValueException::class);
         $this->expectExceptionMessage('Unavailable url \':url:\'');
 
         $xpathFinder = new XpathFinder($client, $variantGenerator);
@@ -107,10 +109,10 @@ class XpathFinderTest extends TestCase
             ]),
         ];
 
-        $internalXpathFinder = \Mockery::mock(\Symfony\Component\DomCrawler\Crawler::class);
+        $internalXpathFinder = Mockery::mock(Crawler::class);
 
-        $variantGenerator = \Mockery::mock(VariantGenerator::class);
-        $client           = \Mockery::mock(Client::class);
+        $variantGenerator = Mockery::mock(VariantGenerator::class);
+        $client           = Mockery::mock(HttpBrowser::class);
         $client->shouldReceive('request')
             ->once()
             ->with(
@@ -162,17 +164,17 @@ class XpathFinderTest extends TestCase
             ]),
         ];
 
-        $internalXpathFinder = \Mockery::mock(Crawler::class);
-        $titleXpathFinder    = \Mockery::mock(Crawler::class);
-        $authorXpathFinder   = \Mockery::mock(Crawler::class);
+        $internalXpathFinder = Mockery::mock(Crawler::class);
+        $titleXpathFinder    = Mockery::mock(Crawler::class);
+        $authorXpathFinder   = Mockery::mock(Crawler::class);
 
-        $variantGenerator = \Mockery::mock(VariantGenerator::class);
+        $variantGenerator = Mockery::mock(VariantGenerator::class);
         $variantGenerator->shouldReceive('addConfig')
             ->twice();
         $variantGenerator->shouldReceive('getId')
             ->andReturn(':variant:');
 
-        $client = \Mockery::mock(Client::class);
+        $client = Mockery::mock(HttpBrowser::class);
         $client->shouldReceive('request')
             ->once()
             ->with(

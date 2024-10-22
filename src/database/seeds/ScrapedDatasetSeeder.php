@@ -1,4 +1,6 @@
-<?php /** @noinspection ALL */
+<?php
+
+/** @noinspection ALL */
 
 use Illuminate\Database\Seeder;
 use Joskfg\LaravelIntelligentScraper\Scraper\Models\ScrapedDataset;

@@ -54,7 +54,7 @@ class ScrapeTest extends TestCase
             ->with($this->type)
             ->andReturn(collect());
 
-            
+
         $scrape = new Scrape(
             $this->config,
             $this->xpathFinder,
@@ -155,11 +155,11 @@ class ScrapeTest extends TestCase
             $this->xpathFinder,
             Log::getFacadeRoot()
         );
-        
+
         $scrape->handle($this->scrapeRequest);
-        
+
         $firedEvents = Event::dispatched(Scraped::class);
-       
+
         self::assertSame(
             $scrapedData,
             $firedEvents[0][0]->scrapedData

@@ -1,8 +1,13 @@
 {
   "name": "joskfg/laravel-intelligent-scraper",
   "type": "library",
-  "description" : "Service to scrape a web page easily without knowing their HTML structure.",
-  "keywords": ["laravel", "scraper", "intelligent", "automatic"],
+  "description": "Service to scrape a web page easily without knowing their HTML structure.",
+  "keywords": [
+    "laravel",
+    "scraper",
+    "intelligent",
+    "automatic"
+  ],
   "license": "Apache-2.0",
   "homepage": "https://github.com/joskfg/laravel-intelligent-scraper",
   "support": {
@@ -10,12 +15,13 @@
   },
   "require": {
     "php": ">= 8.3",
-    "fabpot/goutte": "^4.0",
     "psr/log": "^1.0 || ^2.0 || ^3.0",
     "illuminate/database": "^10.0",
     "illuminate/events": "^10.0",
     "ext-dom": "*",
-    "ext-json": "*"
+    "ext-json": "*",
+    "symfony/browser-kit": "^6.4",
+    "symfony/http-client": "^7.1"
   },
   "require-dev": {
     "phpunit/phpunit": "^9.0",

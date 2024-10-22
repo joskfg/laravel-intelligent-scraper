@@ -1,4 +1,6 @@
-<?php /** @noinspection ALL */
+<?php
+
+/** @noinspection ALL */
 
 namespace Database\Factories\Joskfg\LaravelIntelligentScraper\Scraper\Models;
 

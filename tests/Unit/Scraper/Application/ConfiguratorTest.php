@@ -3,7 +3,6 @@
 namespace Joskfg\LaravelIntelligentScraper\Scraper\Application;
 
 use DOMElement;
-use Goutte\Client;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Log;
@@ -14,6 +13,7 @@ use Joskfg\LaravelIntelligentScraper\Scraper\Models\ScrapedDataset;
 use Joskfg\LaravelIntelligentScraper\Scraper\Repositories\Configuration;
 use Mockery;
 use Mockery\LegacyMockInterface;
+use Symfony\Component\BrowserKit\HttpBrowser;
 use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\HttpClient\Exception\TransportException;
 use Tests\TestCase;
@@ -38,7 +38,7 @@ class ConfiguratorTest extends TestCase
     {
         parent::setUp();
 
-        $this->client           = Mockery::mock(Client::class);
+        $this->client           = Mockery::mock(HttpBrowser::class);
         $this->xpathBuilder     = Mockery::mock(XpathBuilder::class);
         $this->configuration    = Mockery::mock(Configuration::class);
         $this->variantGenerator = Mockery::mock(VariantGenerator::class);
@@ -98,7 +98,9 @@ class ConfiguratorTest extends TestCase
 
         try {
             $this->configurator->configureFromDataset($posts);
+            $this->fail('A ConfigurationException should be thrown');
         } catch (ConfigurationException $e) {
+            Event::assertNotDispatched(ConfigurationScraped::class);
             self::assertEquals('Field(s) ":field-1:,:field-2:" not found.', $e->getMessage());
             $this->assertDatabaseMissing('scraped_datasets', ['url' => ':scrape-url:']);
         }
@@ -144,7 +146,9 @@ class ConfiguratorTest extends TestCase
 
         try {
             $this->configurator->configureFromDataset($posts);
+            $this->fail('A ConfigurationException should be thrown');
         } catch (ConfigurationException $e) {
+            Event::assertNotDispatched(ConfigurationScraped::class);
             self::assertEquals('Field(s) ":field-1:,:field-2:" not found.', $e->getMessage());
             $this->assertDatabaseMissing('scraped_datasets', ['url' => ':scrape-url:']);
         }
@@ -210,18 +214,13 @@ class ConfiguratorTest extends TestCase
         $this->variantGenerator->shouldReceive('getId')
             ->andReturn('');
 
-        Log::shouldReceive('warning')
+        Log::shouldReceive('notice')
+            ->once()
             ->with("Field ':field-2:' with value ':value-2:' not found for ':scrape-url:'.");
-            
-        try {
-            $this->configurator->configureFromDataset($posts);
-            Event::assertDispatched(ConfigurationScraped::class);
-        } catch (ConfigurationException $e) {
-            $this->fail('A ConfigurationException should be thrown');
-            self::assertEquals('Field(s) ":field-1:" not found.', $e->getMessage());
-        }
-    }
 
+        $this->configurator->configureFromDataset($posts);
+        Event::assertDispatched(ConfigurationScraped::class);
+    }
 
     /**
      * @test
@@ -277,7 +276,9 @@ class ConfiguratorTest extends TestCase
 
         try {
             $this->configurator->configureFromDataset($posts);
+            $this->fail('A ConfigurationException should be thrown');
         } catch (ConfigurationException $e) {
+            Event::assertDispatched(ConfigurationScraped::class);
             self::assertEquals('Field(s) ":field-1:,:field-2:" not found.', $e->getMessage());
         }
     }
@@ -322,7 +323,7 @@ class ConfiguratorTest extends TestCase
         $crawler->shouldReceive('getNode')
             ->with(0)
             ->andReturn($rootElement);
-        $filter = $crawler->shouldReceive('filterXpath')
+        $crawler->shouldReceive('filterXpath')
             ->andReturnSelf()
             ->getMock()
             ->shouldReceive('count')
@@ -353,22 +354,18 @@ class ConfiguratorTest extends TestCase
         $this->variantGenerator->shouldReceive('getId')
             ->andReturn('');
 
-        Log::shouldReceive('warning')
+        Log::shouldReceive('notice')
+            ->once()
             ->with("Field ':field-2:' with value ':value-2:' not found for ':scrape-url:'.");
-            
-        try {
-            $this->configurator->configureFromDataset($posts);
-            Event::assertDispatched(ConfigurationScraped::class);
-        } catch (ConfigurationException $e) {
-            $this->fail('A ConfigurationException should be thrown');
-            self::assertEquals('Field(s) ":field-1:" not found.', $e->getMessage());
-        }
+
+        $this->configurator->configureFromDataset($posts);
+        Event::assertDispatched(ConfigurationScraped::class);
     }
 
     /**
      * @test
      */
-    public function whenTryToFindXpathInMultiplePostsAndNotFoundInAnyItShouldThrowAnExceptionAndLogItAndResetVariant(): void
+    public function whenTryToFindXpathInMultiplePostsAndNotFoundInAnyItShouldLogItAndResetVariant(): void
     {
         $posts = collect([
             new ScrapedDataset([
@@ -455,13 +452,8 @@ class ConfiguratorTest extends TestCase
         Log::shouldReceive('warning')
             ->with("Field ':field-2:' with value ':value-2:' not found for ':scrape-url-1:'.");
 
-        try {
-            $this->configurator->configureFromDataset($posts);
-            Event::assertDispatched(ConfigurationScraped::class);
-        } catch (ConfigurationException $e) {
-            $this->fail('A ConfigurationException should be thrown');
-            self::assertEquals('Field(s) ":field-1:,:field-2:" not found.', $e->getMessage());
-        }
+        $this->configurator->configureFromDataset($posts);
+        Event::assertDispatched(ConfigurationScraped::class);
     }
 
     /**
@@ -546,7 +538,7 @@ class ConfiguratorTest extends TestCase
             )
             ->andReturn($crawler);
 
-        $rootElement = new \DOMElement('test');
+        $rootElement = new DOMElement('test');
         $crawler->shouldReceive('getNode')
             ->with(0)
             ->andReturn($rootElement);
@@ -577,7 +569,7 @@ class ConfiguratorTest extends TestCase
             ->andReturn(10, 20, 30);
 
         $configurations = $this->configurator->configureFromDataset($posts);
-        
+
         Event::assertDispatched(ConfigurationScraped::class);
 
         self::assertInstanceOf(ConfigurationModel::class, $configurations[0]);

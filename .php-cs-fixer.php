@@ -1,10 +1,11 @@
 <?php
+
 $finder = PhpCsFixer\Finder::create()
-    ->in(__DIR__ . '/src')
-    ->in(__DIR__ . '/tests');
+    ->in(__DIR__.'/src')
+    ->in(__DIR__.'/tests');
 return (new PhpCsFixer\Config)
     ->setRules([
-        '@PSR2'                                 => true,
+        '@PSR12'                                => true,
         'array_syntax'                          => ['syntax' => 'short'],
         'concat_space'                          => ['spacing' => 'one'],
         'new_with_braces'                       => true,
@@ -23,7 +24,6 @@ return (new PhpCsFixer\Config)
         'phpdoc_to_comment'                     => true,
         'psr_autoloading'                       => false,
         'return_type_declaration'               => ['space_before' => 'none'],
-        'single_blank_line_before_namespace'    => true,
         'single_quote'                          => true,
         'space_after_semicolon'                 => true,
         'ternary_operator_spaces'               => true,
