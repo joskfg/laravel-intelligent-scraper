@@ -68,7 +68,6 @@ class ConfigureScraperTest extends TestCase
             Log::getFacadeRoot()
         );
 
-        // $this->expectsEvents(ScrapeFailed::class);
         Event::assertNotDispatched(ScrapeFailed::class);
 
         $scrapeRequest = new ScrapeRequest($this->url, $this->type);
@@ -215,7 +214,7 @@ class ConfigureScraperTest extends TestCase
         Log::shouldReceive('debug');
         Log::shouldReceive('error')
             ->with("Error scraping ':scrape-url:'", ['message' => ':error:']);
-        // $this->expectsEvents(ScrapeFailed::class);
+
         Event::assertNotDispatched(ScrapeFailed::class);
 
         $configureScraper = new ConfigureScraper(

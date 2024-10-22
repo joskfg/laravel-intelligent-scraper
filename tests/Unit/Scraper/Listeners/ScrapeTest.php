@@ -54,7 +54,6 @@ class ScrapeTest extends TestCase
             ->with($this->type)
             ->andReturn(collect());
 
-        // $this->expectsEvents(InvalidConfiguration::class);
         Event::assertNotDispatched(InvalidConfiguration::class);
 
         $scrape = new Scrape(
@@ -157,7 +156,6 @@ class ScrapeTest extends TestCase
             Log::getFacadeRoot()
         );
 
-        // $this->expectsEvents(Scraped::class);
         Event::assertNotDispatched(Scraped::class);
         $scrape->handle($this->scrapeRequest);
         
@@ -192,7 +190,6 @@ class ScrapeTest extends TestCase
             ->with(':scrape-url:', $xpathConfig)
             ->andThrow(MissingXpathValueException::class, ':error:');
 
-        // $this->expectsEvents(InvalidConfiguration::class);
         Event::assertNotDispatched(InvalidConfiguration::class);
 
         $scrape = new Scrape(

@@ -9,7 +9,6 @@ use Joskfg\LaravelIntelligentScraper\Scraper\Entities\ScrapedData;
 use Joskfg\LaravelIntelligentScraper\Scraper\Events\Scraped;
 use Joskfg\LaravelIntelligentScraper\Scraper\Events\ScrapeRequest;
 use Joskfg\LaravelIntelligentScraper\Scraper\Models\ScrapedDataset;
-// use Database\Factories\Joskfg\LaravelIntelligentScraper\Scraper\Models\ScrapedDatasetFactory;
 use ScrapedDatasetSeeder;
 use Tests\TestCase;
 
@@ -24,43 +23,8 @@ class UpdateDatasetTest extends TestCase
     {
         parent::setUp();
 
-        // Log::spy();
-
         $this->UpdateDatasets = new UpdateDataset();
     }
-    
-//     public function testCreateDummyData()
-//     {
-
-// $type = ':type:';
-//         echo '111111111111111111111111111111';
-//         // print_r(ScrapedDataset::factory()->model);
-//         // // Create dummy data using the factory
-//         ScrapedDataset::factory()->count(UpdateDataset::DATASET_AMOUNT_LIMIT)->create([
-//             'type'    => $type,
-//             'variant' => ':variant:',
-//         ]);
-
-//         $url  = ':scrape-url:';
-        
-//         $scrapedData = new ScrapedData(
-//             ':variant:',
-//             [
-//                 new Field(':field-1:', [':value-1:']),
-//                 new Field(':field-2:', [':value-2:']),
-//             ]
-//         );
-//         echo 'AAAAAAAAAAAAAA';
-// print_r(ScrapedDataset::where('url', $url));
-//         self::assertEquals(
-//             json_encode($scrapedData->getFields()),
-//             json_encode(ScrapedDataset::where('url', $url)->first()->toArray()['fields'])
-//         );
-//         self::assertEquals(UpdateDataset::DATASET_AMOUNT_LIMIT, ScrapedDataset::withType($type)->count());
-
-//         // // Assert that 10 records were created
-//         // $this->assertCount(5, ScrapedDataset::all());
-//     }
 
     /**
      * @test

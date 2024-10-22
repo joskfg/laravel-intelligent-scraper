@@ -213,7 +213,6 @@ class ConfiguratorTest extends TestCase
         Log::shouldReceive('warning')
             ->with("Field ':field-2:' with value ':value-2:' not found for ':scrape-url:'.");
 
-        // $this->expectsEvents(ConfigurationScraped::class);
         Event::assertNotDispatched(ConfigurationScraped::class);
 
         try {
@@ -357,7 +356,6 @@ class ConfiguratorTest extends TestCase
         Log::shouldReceive('warning')
             ->with("Field ':field-2:' with value ':value-2:' not found for ':scrape-url:'.");
 
-        // $this->expectsEvents(ConfigurationScraped::class);
         Event::assertNotDispatched(ConfigurationScraped::class);
 
         try {
@@ -457,7 +455,6 @@ class ConfiguratorTest extends TestCase
         Log::shouldReceive('warning')
             ->with("Field ':field-2:' with value ':value-2:' not found for ':scrape-url-1:'.");
 
-        // $this->expectsEvents(ConfigurationScraped::class);
         Event::assertNotDispatched(ConfigurationScraped::class);
 
         try {
@@ -579,7 +576,6 @@ class ConfiguratorTest extends TestCase
         $this->variantGenerator->shouldReceive('getId')
             ->andReturn(10, 20, 30);
 
-        // $this->expectsEvents(ConfigurationScraped::class);
         Event::assertNotDispatched(ConfigurationScraped::class);
 
         $configurations = $this->configurator->configureFromDataset($posts);
