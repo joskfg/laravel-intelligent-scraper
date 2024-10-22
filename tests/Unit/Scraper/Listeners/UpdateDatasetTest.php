@@ -15,7 +15,7 @@ class UpdateDatasetTest extends TestCase
 {
     use DatabaseMigrations;
 
-    private updateDataset $updateDataset;
+    private UpdateDataset $updateDataset;
 
     public function setUp(): void
     {
@@ -100,7 +100,7 @@ class UpdateDatasetTest extends TestCase
     public function whenDatasetDoesNotExistAndTheDatasetsLimitHasReachedItShouldDeleteTheExcess(): void
     {
         $type = ':type:';
-        $test = ScrapedDataset::factory()->count(UpdateDataset::DATASET_AMOUNT_LIMIT + 10)->create([
+        ScrapedDataset::factory()->count(UpdateDataset::DATASET_AMOUNT_LIMIT + 10)->create([
             'type'    => $type,
             'variant' => ':variant:',
         ]);
