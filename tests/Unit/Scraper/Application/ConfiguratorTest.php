@@ -219,11 +219,7 @@ class ConfiguratorTest extends TestCase
             self::assertEquals('Field(s) ":field-1:" not found.', $e->getMessage());
         }
 
-        try {
-            Event::assertDispatched(ConfigurationScraped::class);
-        } catch (\Exception $e) {
-            $this->assertTrue(false, 'Failed asserting that Configurator event was dispatched. Exception: ' . $e->getMessage());
-        }
+        Event::assertDispatched(ConfigurationScraped::class);
     }
 
 
@@ -366,11 +362,7 @@ class ConfiguratorTest extends TestCase
             self::assertEquals('Field(s) ":field-1:" not found.', $e->getMessage());
         }
 
-        try {
-            Event::assertDispatched(ConfigurationScraped::class);
-        } catch (\Exception $e) {
-            $this->assertTrue(false, 'Failed asserting that Configurator event was dispatched. Exception: ' . $e->getMessage());
-        }
+        Event::assertDispatched(ConfigurationScraped::class);
     }
 
     /**
@@ -469,11 +461,7 @@ class ConfiguratorTest extends TestCase
             self::assertEquals('Field(s) ":field-1:,:field-2:" not found.', $e->getMessage());
         }
 
-        try {
-            Event::assertDispatched(ConfigurationScraped::class);
-        } catch (\Exception $e) {
-            $this->assertTrue(false, 'Failed asserting that Configurator event was dispatched. Exception: ' . $e->getMessage());
-        }
+        Event::assertDispatched(ConfigurationScraped::class);
     }
 
     /**
@@ -590,11 +578,7 @@ class ConfiguratorTest extends TestCase
 
         $configurations = $this->configurator->configureFromDataset($posts);
         
-        try {
-            Event::assertDispatched(ConfigurationScraped::class);
-        } catch (\Exception $e) {
-            $this->assertTrue(false, 'Failed asserting that Configurator event was dispatched. Exception: ' . $e->getMessage());
-        }
+        Event::assertDispatched(ConfigurationScraped::class);
 
         self::assertInstanceOf(ConfigurationModel::class, $configurations[0]);
         self::assertEquals(':field-1:', $configurations[0]['name']);
