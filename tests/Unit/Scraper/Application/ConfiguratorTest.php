@@ -5,6 +5,7 @@ namespace Joskfg\LaravelIntelligentScraper\Scraper\Application;
 use DOMElement;
 use Goutte\Client;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Log;
 use Joskfg\LaravelIntelligentScraper\Scraper\Events\ConfigurationScraped;
 use Joskfg\LaravelIntelligentScraper\Scraper\Exceptions\ConfigurationException;
@@ -18,7 +19,6 @@ use Symfony\Component\HttpClient\Exception\TransportException;
 use Tests\TestCase;
 use Tests\Unit\Fakes\FakeHttpException;
 use UnexpectedValueException;
-use Illuminate\Support\Facades\Event;
 
 class ConfiguratorTest extends TestCase
 {

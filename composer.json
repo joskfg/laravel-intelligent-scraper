@@ -54,6 +54,10 @@
       "@checkstyle",
       "phpunit --coverage-text --testsuite Unit"
     ],
+    "checkstyle": [
+      "php-cs-fixer fix -v --diff --dry-run --allow-risky=yes",
+      "rector --dry-run"
+    ],
     "fix-checkstyle": [
       "@php-cs-fixer",
       "@rector"

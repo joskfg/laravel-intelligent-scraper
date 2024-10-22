@@ -2,8 +2,8 @@
 
 namespace Database\Factories\Joskfg\LaravelIntelligentScraper\Scraper\Models;
 
-use Joskfg\LaravelIntelligentScraper\Scraper\Models\ScrapedDataset;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Joskfg\LaravelIntelligentScraper\Scraper\Models\ScrapedDataset;
 
 class ScrapedDatasetFactory extends Factory
 {

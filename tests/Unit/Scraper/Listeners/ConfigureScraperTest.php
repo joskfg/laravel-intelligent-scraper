@@ -3,6 +3,7 @@
 namespace Joskfg\LaravelIntelligentScraper\Scraper\Listeners;
 
 use Illuminate\Foundation\Testing\DatabaseMigrations;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Log;
 use Joskfg\LaravelIntelligentScraper\Scraper\Application\XpathFinder;
 use Joskfg\LaravelIntelligentScraper\Scraper\Entities\ScrapedData;
@@ -18,7 +19,6 @@ use Mockery\LegacyMockInterface;
 use Symfony\Component\HttpClient\Exception\TransportException;
 use Tests\TestCase;
 use UnexpectedValueException;
-use Illuminate\Support\Facades\Event;
 
 class ConfigureScraperTest extends TestCase
 {
