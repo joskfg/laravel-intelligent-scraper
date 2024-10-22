@@ -3,6 +3,7 @@
 namespace Joskfg\LaravelIntelligentScraper\Scraper\Listeners;
 
 use Illuminate\Foundation\Testing\DatabaseMigrations;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Log;
 use Joskfg\LaravelIntelligentScraper\Scraper\Application\XpathFinder;
 use Joskfg\LaravelIntelligentScraper\Scraper\Entities\ScrapedData;
@@ -35,6 +36,8 @@ class ScrapeTest extends TestCase
 
         Log::spy();
 
+        Event::fake();
+
         $this->config        = Mockery::mock(Configuration::class);
         $this->xpathFinder   = Mockery::mock(XpathFinder::class);
         $this->type          = 'post';
@@ -51,8 +54,7 @@ class ScrapeTest extends TestCase
             ->with($this->type)
             ->andReturn(collect());
 
-        $this->expectsEvents(InvalidConfiguration::class);
-
+            
         $scrape = new Scrape(
             $this->config,
             $this->xpathFinder,
@@ -60,6 +62,7 @@ class ScrapeTest extends TestCase
         );
 
         $scrape->handle($this->scrapeRequest);
+        Event::assertDispatched(InvalidConfiguration::class);
     }
 
     /**
@@ -152,21 +155,17 @@ class ScrapeTest extends TestCase
             $this->xpathFinder,
             Log::getFacadeRoot()
         );
-
-        $this->expectsEvents(Scraped::class);
+        
         $scrape->handle($this->scrapeRequest);
-
-        /** @var Scraped $event */
-        $event = collect($this->firedEvents)->filter(function ($event): bool {
-            $class = Scraped::class;
-
-            return $event instanceof $class;
-        })->first();
-
+        
+        $firedEvents = Event::dispatched(Scraped::class);
+       
         self::assertSame(
             $scrapedData,
-            $event->scrapedData
+            $firedEvents[0][0]->scrapedData
         );
+
+        Event::assertDispatched(Scraped::class);
     }
 
     /**
@@ -188,13 +187,13 @@ class ScrapeTest extends TestCase
             ->with(':scrape-url:', $xpathConfig)
             ->andThrow(MissingXpathValueException::class, ':error:');
 
-        $this->expectsEvents(InvalidConfiguration::class);
-
         $scrape = new Scrape(
             $this->config,
             $this->xpathFinder,
             Log::getFacadeRoot()
         );
         $scrape->handle($this->scrapeRequest);
+
+        Event::assertDispatched(InvalidConfiguration::class);
     }
 }

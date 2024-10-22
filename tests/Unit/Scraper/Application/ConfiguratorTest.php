@@ -5,6 +5,7 @@ namespace Joskfg\LaravelIntelligentScraper\Scraper\Application;
 use DOMElement;
 use Goutte\Client;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Log;
 use Joskfg\LaravelIntelligentScraper\Scraper\Events\ConfigurationScraped;
 use Joskfg\LaravelIntelligentScraper\Scraper\Exceptions\ConfigurationException;
@@ -43,6 +44,8 @@ class ConfiguratorTest extends TestCase
         $this->variantGenerator = Mockery::mock(VariantGenerator::class);
 
         Log::spy();
+
+        Event::fake();
 
         $this->configurator = new Configurator(
             $this->client,
@@ -209,12 +212,12 @@ class ConfiguratorTest extends TestCase
 
         Log::shouldReceive('warning')
             ->with("Field ':field-2:' with value ':value-2:' not found for ':scrape-url:'.");
-
-        $this->expectsEvents(ConfigurationScraped::class);
-
+            
         try {
             $this->configurator->configureFromDataset($posts);
+            Event::assertDispatched(ConfigurationScraped::class);
         } catch (ConfigurationException $e) {
+            $this->fail('A ConfigurationException should be thrown');
             self::assertEquals('Field(s) ":field-1:" not found.', $e->getMessage());
         }
     }
@@ -352,12 +355,12 @@ class ConfiguratorTest extends TestCase
 
         Log::shouldReceive('warning')
             ->with("Field ':field-2:' with value ':value-2:' not found for ':scrape-url:'.");
-
-        $this->expectsEvents(ConfigurationScraped::class);
-
+            
         try {
             $this->configurator->configureFromDataset($posts);
+            Event::assertDispatched(ConfigurationScraped::class);
         } catch (ConfigurationException $e) {
+            $this->fail('A ConfigurationException should be thrown');
             self::assertEquals('Field(s) ":field-1:" not found.', $e->getMessage());
         }
     }
@@ -452,11 +455,11 @@ class ConfiguratorTest extends TestCase
         Log::shouldReceive('warning')
             ->with("Field ':field-2:' with value ':value-2:' not found for ':scrape-url-1:'.");
 
-        $this->expectsEvents(ConfigurationScraped::class);
-
         try {
             $this->configurator->configureFromDataset($posts);
+            Event::assertDispatched(ConfigurationScraped::class);
         } catch (ConfigurationException $e) {
+            $this->fail('A ConfigurationException should be thrown');
             self::assertEquals('Field(s) ":field-1:,:field-2:" not found.', $e->getMessage());
         }
     }
@@ -573,9 +576,9 @@ class ConfiguratorTest extends TestCase
         $this->variantGenerator->shouldReceive('getId')
             ->andReturn(10, 20, 30);
 
-        $this->expectsEvents(ConfigurationScraped::class);
-
         $configurations = $this->configurator->configureFromDataset($posts);
+        
+        Event::assertDispatched(ConfigurationScraped::class);
 
         self::assertInstanceOf(ConfigurationModel::class, $configurations[0]);
         self::assertEquals(':field-1:', $configurations[0]['name']);

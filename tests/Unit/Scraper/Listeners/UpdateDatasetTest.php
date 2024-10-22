@@ -3,7 +3,6 @@
 namespace Joskfg\LaravelIntelligentScraper\Scraper\Listeners;
 
 use Illuminate\Foundation\Testing\DatabaseMigrations;
-use Illuminate\Support\Facades\Log;
 use Joskfg\LaravelIntelligentScraper\Scraper\Entities\Field;
 use Joskfg\LaravelIntelligentScraper\Scraper\Entities\ScrapedData;
 use Joskfg\LaravelIntelligentScraper\Scraper\Events\Scraped;
@@ -21,8 +20,6 @@ class UpdateDatasetTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
-
-        Log::spy();
 
         $this->updateDataset = new UpdateDataset();
     }
@@ -63,10 +60,11 @@ class UpdateDatasetTest extends TestCase
      */
     public function whenDatasetDoesNotExistAndTheDatasetsLimitHasNotBeenReachedItShouldBeSaved(): void
     {
-        factory(ScrapedDataset::class, UpdateDataset::DATASET_AMOUNT_LIMIT - 1)->create([
+        ScrapedDataset::factory()->count(UpdateDataset::DATASET_AMOUNT_LIMIT - 1)->create([
             'variant' => ':variant-1:',
         ]);
-        factory(ScrapedDataset::class)->create([
+
+        ScrapedDataset::factory()->create([
             'variant' => ':variant-2:',
         ]);
 
@@ -92,6 +90,7 @@ class UpdateDatasetTest extends TestCase
             json_encode($scrapedData->getFields()),
             json_encode(ScrapedDataset::where('url', $url)->first()->toArray()['fields'])
         );
+
         self::assertEquals(101, ScrapedDataset::count());
     }
 
@@ -101,11 +100,11 @@ class UpdateDatasetTest extends TestCase
     public function whenDatasetDoesNotExistAndTheDatasetsLimitHasReachedItShouldDeleteTheExcess(): void
     {
         $type = ':type:';
-        factory(ScrapedDataset::class, UpdateDataset::DATASET_AMOUNT_LIMIT + 10)->create([
+        ScrapedDataset::factory()->count(UpdateDataset::DATASET_AMOUNT_LIMIT + 10)->create([
             'type'    => $type,
             'variant' => ':variant:',
         ]);
-
+        
         $url  = ':scrape-url:';
 
         $scrapedData = new ScrapedData(
@@ -115,18 +114,19 @@ class UpdateDatasetTest extends TestCase
                 new Field(':field-2:', [':value-2:']),
             ]
         );
-
+       
         $this->updateDataset->handle(
             new Scraped(
                 new ScrapeRequest($url, $type),
                 $scrapedData
             )
         );
-
+        
         self::assertEquals(
             json_encode($scrapedData->getFields()),
             json_encode(ScrapedDataset::where('url', $url)->first()->toArray()['fields'])
         );
+        
         self::assertEquals(UpdateDataset::DATASET_AMOUNT_LIMIT, ScrapedDataset::withType($type)->count());
     }
 }

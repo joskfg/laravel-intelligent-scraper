@@ -3,6 +3,7 @@
 namespace Joskfg\LaravelIntelligentScraper\Scraper\Listeners;
 
 use Illuminate\Foundation\Testing\DatabaseMigrations;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Log;
 use Joskfg\LaravelIntelligentScraper\Scraper\Application\XpathFinder;
 use Joskfg\LaravelIntelligentScraper\Scraper\Entities\ScrapedData;
@@ -37,6 +38,8 @@ class ConfigureScraperTest extends TestCase
 
         Log::spy();
 
+        Event::fake();
+
         $this->config      = Mockery::mock(Configuration::class);
         $this->xpathFinder = Mockery::mock(XpathFinder::class);
         $this->url         = ':scrape-url:';
@@ -65,10 +68,11 @@ class ConfigureScraperTest extends TestCase
             Log::getFacadeRoot()
         );
 
-        $this->expectsEvents(ScrapeFailed::class);
-
+        
         $scrapeRequest = new ScrapeRequest($this->url, $this->type);
         $configureScraper->handle(new InvalidConfiguration($scrapeRequest));
+        
+        Event::assertDispatched(ScrapeFailed::class);
     }
 
     /**
@@ -112,18 +116,16 @@ class ConfigureScraperTest extends TestCase
             Log::getFacadeRoot()
         );
 
-        $this->expectsEvents(Scraped::class);
         $configureScraper->handle(new InvalidConfiguration(new ScrapeRequest($this->url, $this->type)));
+        
+        Event::assertDispatched(Scraped::class);
 
         /** @var Scraped $event */
-        $event = collect($this->firedEvents)->filter(function ($event): bool {
-            $class = Scraped::class;
-
-            return $event instanceof $class;
-        })->first();
-        self::assertEquals(
+        $firedEvents = Event::dispatched(Scraped::class);
+        
+        self::assertSame(
             $scrapedData,
-            $event->scrapedData
+            $firedEvents[0][0]->scrapedData
         );
 
         $this->assertDatabaseHas(
@@ -196,6 +198,7 @@ class ConfigureScraperTest extends TestCase
                 'type'   => ':type:',
             ]),
         ]);
+
         $this->config->shouldReceive('calculate')
             ->once()
             ->with($this->type)
@@ -209,13 +212,15 @@ class ConfigureScraperTest extends TestCase
         Log::shouldReceive('debug');
         Log::shouldReceive('error')
             ->with("Error scraping ':scrape-url:'", ['message' => ':error:']);
-        $this->expectsEvents(ScrapeFailed::class);
 
         $configureScraper = new ConfigureScraper(
             $this->config,
             $this->xpathFinder,
             Log::getFacadeRoot()
         );
+        
         $configureScraper->handle(new InvalidConfiguration(new ScrapeRequest($this->url, $this->type)));
+        
+        Event::assertDispatched(ScrapeFailed::class);
     }
 }
