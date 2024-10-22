@@ -11,11 +11,11 @@ class ScrapedDatasetSeeder extends Seeder
      */
     public function run()
     {
-        factory(ScrapedDataset::class, 2)->create();
+        ScrapedDataset::factory(2)->create();
     }
 
     public function createScrapedDatasets(int $amount): \Illuminate\Support\Collection
     {
-        return factory(ScrapedDataset::class, $amount)->create();
+        return ScrapedDataset::factory($amount)->create();
     }
 }

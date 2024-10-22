@@ -16,6 +16,7 @@ use Mockery\LegacyMockInterface;
 use Symfony\Component\HttpClient\Exception\TransportException;
 use Tests\TestCase;
 use UnexpectedValueException;
+use Illuminate\Support\Facades\Event;
 
 class ScrapeTest extends TestCase
 {
@@ -35,6 +36,8 @@ class ScrapeTest extends TestCase
 
         Log::spy();
 
+        Event::fake();
+
         $this->config        = Mockery::mock(Configuration::class);
         $this->xpathFinder   = Mockery::mock(XpathFinder::class);
         $this->type          = 'post';
@@ -51,7 +54,8 @@ class ScrapeTest extends TestCase
             ->with($this->type)
             ->andReturn(collect());
 
-        $this->expectsEvents(InvalidConfiguration::class);
+        // $this->expectsEvents(InvalidConfiguration::class);
+        Event::assertNotDispatched(InvalidConfiguration::class);
 
         $scrape = new Scrape(
             $this->config,
@@ -153,19 +157,19 @@ class ScrapeTest extends TestCase
             Log::getFacadeRoot()
         );
 
-        $this->expectsEvents(Scraped::class);
+        // $this->expectsEvents(Scraped::class);
+        Event::assertNotDispatched(Scraped::class);
         $scrape->handle($this->scrapeRequest);
-
-        /** @var Scraped $event */
-        $event = collect($this->firedEvents)->filter(function ($event): bool {
+        
+        $firedEvents = collect(Event::dispatched(Scraped::class));
+        $event = $firedEvents->each(function ($event) {
             $class = Scraped::class;
-
             return $event instanceof $class;
-        })->first();
-
+        });
+        
         self::assertSame(
             $scrapedData,
-            $event->scrapedData
+            $event[0][0]->scrapedData
         );
     }
 
@@ -188,7 +192,8 @@ class ScrapeTest extends TestCase
             ->with(':scrape-url:', $xpathConfig)
             ->andThrow(MissingXpathValueException::class, ':error:');
 
-        $this->expectsEvents(InvalidConfiguration::class);
+        // $this->expectsEvents(InvalidConfiguration::class);
+        Event::assertNotDispatched(InvalidConfiguration::class);
 
         $scrape = new Scrape(
             $this->config,

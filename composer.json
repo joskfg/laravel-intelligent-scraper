@@ -9,11 +9,11 @@
     "issues": "https://github.com/joskfg/laravel-intelligent-scraper/issues"
   },
   "require": {
-    "php": ">= 8.0",
+    "php": ">= 8.3",
     "fabpot/goutte": "^4.0",
     "psr/log": "^1.0 || ^2.0 || ^3.0",
-    "illuminate/database": "^8.0 || ^9.0",
-    "illuminate/events": "^8.0 || ^9.0",
+    "illuminate/database": "^10.0",
+    "illuminate/events": "^10.0",
     "ext-dom": "*",
     "ext-json": "*"
   },
@@ -23,9 +23,8 @@
     "friendsofphp/php-cs-fixer": "^3.8",
     "laravel/legacy-factories": "^1.1",
     "squizlabs/php_codesniffer": "^3",
-    "orchestra/testbench": "^6.18",
-    "orchestra/database": "^6.0",
-    "rector/rector": "^0.12.18"
+    "orchestra/testbench": "^8.27.2",
+    "rector/rector": "^1.0"
   },
   "autoload": {
     "files": [
@@ -36,7 +35,9 @@
       "src/database/factories"
     ],
     "psr-4": {
-      "Joskfg\\LaravelIntelligentScraper\\": "src/"
+      "Joskfg\\LaravelIntelligentScraper\\": "src/",
+      "Database\\Factories\\": "database/factories/",
+      "Database\\Seeders\\": "database/seeders/"
     }
   },
   "autoload-dev": {
@@ -52,10 +53,6 @@
     "test": [
       "@checkstyle",
       "phpunit --coverage-text --testsuite Unit"
-    ],
-    "checkstyle": [
-      "php-cs-fixer fix -v --diff --dry-run --allow-risky=yes",
-      "rector --dry-run"
     ],
     "fix-checkstyle": [
       "@php-cs-fixer",

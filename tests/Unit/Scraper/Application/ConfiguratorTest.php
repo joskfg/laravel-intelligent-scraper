@@ -18,6 +18,7 @@ use Symfony\Component\HttpClient\Exception\TransportException;
 use Tests\TestCase;
 use Tests\Unit\Fakes\FakeHttpException;
 use UnexpectedValueException;
+use Illuminate\Support\Facades\Event;
 
 class ConfiguratorTest extends TestCase
 {
@@ -43,6 +44,8 @@ class ConfiguratorTest extends TestCase
         $this->variantGenerator = Mockery::mock(VariantGenerator::class);
 
         Log::spy();
+
+        Event::fake();
 
         $this->configurator = new Configurator(
             $this->client,
@@ -210,7 +213,8 @@ class ConfiguratorTest extends TestCase
         Log::shouldReceive('warning')
             ->with("Field ':field-2:' with value ':value-2:' not found for ':scrape-url:'.");
 
-        $this->expectsEvents(ConfigurationScraped::class);
+        // $this->expectsEvents(ConfigurationScraped::class);
+        Event::assertNotDispatched(ConfigurationScraped::class);
 
         try {
             $this->configurator->configureFromDataset($posts);
@@ -353,7 +357,8 @@ class ConfiguratorTest extends TestCase
         Log::shouldReceive('warning')
             ->with("Field ':field-2:' with value ':value-2:' not found for ':scrape-url:'.");
 
-        $this->expectsEvents(ConfigurationScraped::class);
+        // $this->expectsEvents(ConfigurationScraped::class);
+        Event::assertNotDispatched(ConfigurationScraped::class);
 
         try {
             $this->configurator->configureFromDataset($posts);
@@ -452,7 +457,8 @@ class ConfiguratorTest extends TestCase
         Log::shouldReceive('warning')
             ->with("Field ':field-2:' with value ':value-2:' not found for ':scrape-url-1:'.");
 
-        $this->expectsEvents(ConfigurationScraped::class);
+        // $this->expectsEvents(ConfigurationScraped::class);
+        Event::assertNotDispatched(ConfigurationScraped::class);
 
         try {
             $this->configurator->configureFromDataset($posts);
@@ -573,7 +579,8 @@ class ConfiguratorTest extends TestCase
         $this->variantGenerator->shouldReceive('getId')
             ->andReturn(10, 20, 30);
 
-        $this->expectsEvents(ConfigurationScraped::class);
+        // $this->expectsEvents(ConfigurationScraped::class);
+        Event::assertNotDispatched(ConfigurationScraped::class);
 
         $configurations = $this->configurator->configureFromDataset($posts);
 

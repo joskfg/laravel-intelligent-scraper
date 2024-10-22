@@ -18,6 +18,7 @@ use Mockery\LegacyMockInterface;
 use Symfony\Component\HttpClient\Exception\TransportException;
 use Tests\TestCase;
 use UnexpectedValueException;
+use Illuminate\Support\Facades\Event;
 
 class ConfigureScraperTest extends TestCase
 {
@@ -36,6 +37,8 @@ class ConfigureScraperTest extends TestCase
         parent::setUp();
 
         Log::spy();
+
+        Event::fake();
 
         $this->config      = Mockery::mock(Configuration::class);
         $this->xpathFinder = Mockery::mock(XpathFinder::class);
@@ -65,7 +68,8 @@ class ConfigureScraperTest extends TestCase
             Log::getFacadeRoot()
         );
 
-        $this->expectsEvents(ScrapeFailed::class);
+        // $this->expectsEvents(ScrapeFailed::class);
+        Event::assertNotDispatched(ScrapeFailed::class);
 
         $scrapeRequest = new ScrapeRequest($this->url, $this->type);
         $configureScraper->handle(new InvalidConfiguration($scrapeRequest));
@@ -112,18 +116,20 @@ class ConfigureScraperTest extends TestCase
             Log::getFacadeRoot()
         );
 
-        $this->expectsEvents(Scraped::class);
+        // $this->expectsEvents(Scraped::class);
+        Event::assertNotDispatched(Scraped::class);
         $configureScraper->handle(new InvalidConfiguration(new ScrapeRequest($this->url, $this->type)));
 
         /** @var Scraped $event */
-        $event = collect($this->firedEvents)->filter(function ($event): bool {
+        $firedEvents = collect(Event::dispatched(Scraped::class));
+        $event = $firedEvents->each(function ($event) {
             $class = Scraped::class;
-
             return $event instanceof $class;
-        })->first();
-        self::assertEquals(
+        });
+        
+        self::assertSame(
             $scrapedData,
-            $event->scrapedData
+            $event[0][0]->scrapedData
         );
 
         $this->assertDatabaseHas(
@@ -209,7 +215,8 @@ class ConfigureScraperTest extends TestCase
         Log::shouldReceive('debug');
         Log::shouldReceive('error')
             ->with("Error scraping ':scrape-url:'", ['message' => ':error:']);
-        $this->expectsEvents(ScrapeFailed::class);
+        // $this->expectsEvents(ScrapeFailed::class);
+        Event::assertNotDispatched(ScrapeFailed::class);
 
         $configureScraper = new ConfigureScraper(
             $this->config,
