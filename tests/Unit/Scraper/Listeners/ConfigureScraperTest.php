@@ -71,7 +71,12 @@ class ConfigureScraperTest extends TestCase
         
         $scrapeRequest = new ScrapeRequest($this->url, $this->type);
         $configureScraper->handle(new InvalidConfiguration($scrapeRequest));
-        Event::assertDispatched(ScrapeFailed::class);
+        
+        try {
+            Event::assertDispatched(ScrapeFailed::class);
+        } catch (\Exception $e) {
+            $this->assertTrue(false, 'Failed asserting that ConfigurationScraped event was dispatched. Exception: ' . $e->getMessage());
+        }
     }
 
     /**
@@ -116,7 +121,12 @@ class ConfigureScraperTest extends TestCase
         );
 
         $configureScraper->handle(new InvalidConfiguration(new ScrapeRequest($this->url, $this->type)));
-        Event::assertDispatched(Scraped::class);
+        
+        try {
+            Event::assertDispatched(Scraped::class);
+        } catch (\Exception $e) {
+            $this->assertTrue(false, 'Failed asserting that Configurator event was dispatched. Exception: ' . $e->getMessage());
+        }
 
         /** @var Scraped $event */
         $firedEvents = Event::dispatched(Scraped::class);
@@ -218,6 +228,11 @@ class ConfigureScraperTest extends TestCase
         );
         
         $configureScraper->handle(new InvalidConfiguration(new ScrapeRequest($this->url, $this->type)));
-        Event::assertDispatched(ScrapeFailed::class);
+        
+        try {
+            Event::assertDispatched(ScrapeFailed::class);
+        } catch (\Exception $e) {
+            $this->assertTrue(false, 'Failed asserting that Configurator event was dispatched. Exception: ' . $e->getMessage());
+        }
     }
 }

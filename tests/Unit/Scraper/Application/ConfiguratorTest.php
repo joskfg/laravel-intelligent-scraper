@@ -219,7 +219,11 @@ class ConfiguratorTest extends TestCase
             self::assertEquals('Field(s) ":field-1:" not found.', $e->getMessage());
         }
 
-        Event::assertDispatched(ConfigurationScraped::class);
+        try {
+            Event::assertDispatched(ConfigurationScraped::class);
+        } catch (\Exception $e) {
+            $this->assertTrue(false, 'Failed asserting that Configurator event was dispatched. Exception: ' . $e->getMessage());
+        }
     }
 
 
@@ -362,7 +366,11 @@ class ConfiguratorTest extends TestCase
             self::assertEquals('Field(s) ":field-1:" not found.', $e->getMessage());
         }
 
-        Event::assertDispatched(ConfigurationScraped::class);
+        try {
+            Event::assertDispatched(ConfigurationScraped::class);
+        } catch (\Exception $e) {
+            $this->assertTrue(false, 'Failed asserting that Configurator event was dispatched. Exception: ' . $e->getMessage());
+        }
     }
 
     /**
@@ -460,8 +468,12 @@ class ConfiguratorTest extends TestCase
         } catch (ConfigurationException $e) {
             self::assertEquals('Field(s) ":field-1:,:field-2:" not found.', $e->getMessage());
         }
-        
-        Event::assertDispatched(ConfigurationScraped::class);
+
+        try {
+            Event::assertDispatched(ConfigurationScraped::class);
+        } catch (\Exception $e) {
+            $this->assertTrue(false, 'Failed asserting that Configurator event was dispatched. Exception: ' . $e->getMessage());
+        }
     }
 
     /**
@@ -577,7 +589,12 @@ class ConfiguratorTest extends TestCase
             ->andReturn(10, 20, 30);
 
         $configurations = $this->configurator->configureFromDataset($posts);
-        Event::assertDispatched(ConfigurationScraped::class);
+        
+        try {
+            Event::assertDispatched(ConfigurationScraped::class);
+        } catch (\Exception $e) {
+            $this->assertTrue(false, 'Failed asserting that Configurator event was dispatched. Exception: ' . $e->getMessage());
+        }
 
         self::assertInstanceOf(ConfigurationModel::class, $configurations[0]);
         self::assertEquals(':field-1:', $configurations[0]['name']);
