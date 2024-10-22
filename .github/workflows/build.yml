@@ -4,7 +4,7 @@ on:
   push:
     branches: [ master ]
   pull_request:
-    branches: [ master ]
+    branches: [ Topic ]
 
 jobs:
   build:
@@ -16,12 +16,12 @@ jobs:
 
     - name: Validate composer.json and composer.lock
       run: composer validate --strict
-      
+
     - name: Set up PHP
       uses: shivammathur/setup-php@v2
-      with:
-        php-version: '8.3' # Specify the required PHP version
-        extensions: mbstring, xml, curl # Add any required extensions
+        with:
+          php-version: '8.3' # Specify the required PHP version
+          extensions: mbstring, xml, curl # Add any required extensions
 
     - name: Cache Composer packages
       id: composer-cache
