@@ -19,7 +19,7 @@ jobs:
 
     - name: Set up PHP
       uses: shivammathur/setup-php@v2
-        with:
+      with:
           php-version: '8.3' # Specify the required PHP version
           extensions: mbstring, xml, curl # Add any required extensions
 
