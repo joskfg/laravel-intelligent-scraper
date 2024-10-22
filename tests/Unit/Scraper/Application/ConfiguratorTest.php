@@ -215,9 +215,9 @@ class ConfiguratorTest extends TestCase
             
         try {
             $this->configurator->configureFromDataset($posts);
-            $this->fail('A ConfigurationException should be thrown');
-        } catch (ConfigurationException $e) {
             Event::assertDispatched(ConfigurationScraped::class);
+        } catch (ConfigurationException $e) {
+            $this->fail('A ConfigurationException should be thrown');
             self::assertEquals('Field(s) ":field-1:" not found.', $e->getMessage());
         }
     }
@@ -358,9 +358,9 @@ class ConfiguratorTest extends TestCase
             
         try {
             $this->configurator->configureFromDataset($posts);
-            $this->fail('A ConfigurationException should be thrown');
-        } catch (ConfigurationException $e) {
             Event::assertDispatched(ConfigurationScraped::class);
+        } catch (ConfigurationException $e) {
+            $this->fail('A ConfigurationException should be thrown');
             self::assertEquals('Field(s) ":field-1:" not found.', $e->getMessage());
         }
     }
@@ -457,9 +457,9 @@ class ConfiguratorTest extends TestCase
 
         try {
             $this->configurator->configureFromDataset($posts);
-            $this->fail('A ConfigurationException should be thrown');
-        } catch (ConfigurationException $e) {
             Event::assertDispatched(ConfigurationScraped::class);
+        } catch (ConfigurationException $e) {
+            $this->fail('A ConfigurationException should be thrown');
             self::assertEquals('Field(s) ":field-1:,:field-2:" not found.', $e->getMessage());
         }
     }
