@@ -15,13 +15,13 @@ class UpdateDatasetTest extends TestCase
 {
     use DatabaseMigrations;
 
-    private UpdateDataset $updateDataset;
+    private updateDataset $updateDataset;
 
     public function setUp(): void
     {
         parent::setUp();
 
-        $this->UpdateDataset = new UpdateDataset();
+        $this->updateDataset = new UpdateDataset();
     }
 
     /**
@@ -41,7 +41,7 @@ class UpdateDatasetTest extends TestCase
             ]
         );
 
-        $this->UpdateDataset->handle(
+        $this->updateDataset->handle(
             new Scraped(
                 new ScrapeRequest($dataset->url, ':type:'),
                 $scrapedData
@@ -79,7 +79,7 @@ class UpdateDatasetTest extends TestCase
             ]
         );
 
-        $this->UpdateDataset->handle(
+        $this->updateDataset->handle(
             new Scraped(
                 new ScrapeRequest($url, ':type:'),
                 $scrapedData
@@ -115,7 +115,7 @@ class UpdateDatasetTest extends TestCase
             ]
         );
        
-        $this->UpdateDataset->handle(
+        $this->updateDataset->handle(
             new Scraped(
                 new ScrapeRequest($url, $type),
                 $scrapedData
