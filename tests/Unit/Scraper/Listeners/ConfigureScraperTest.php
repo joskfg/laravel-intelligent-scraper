@@ -68,10 +68,10 @@ class ConfigureScraperTest extends TestCase
             Log::getFacadeRoot()
         );
 
-        Event::assertNotDispatched(ScrapeFailed::class);
-
+        
         $scrapeRequest = new ScrapeRequest($this->url, $this->type);
         $configureScraper->handle(new InvalidConfiguration($scrapeRequest));
+        Event::assertDispatched(ScrapeFailed::class);
     }
 
     /**
@@ -115,20 +115,15 @@ class ConfigureScraperTest extends TestCase
             Log::getFacadeRoot()
         );
 
-        // $this->expectsEvents(Scraped::class);
-        Event::assertNotDispatched(Scraped::class);
         $configureScraper->handle(new InvalidConfiguration(new ScrapeRequest($this->url, $this->type)));
+        Event::assertDispatched(Scraped::class);
 
         /** @var Scraped $event */
         $firedEvents = collect(Event::dispatched(Scraped::class));
-        $event = $firedEvents->each(function ($event) {
-            $class = Scraped::class;
-            return $event instanceof $class;
-        });
         
         self::assertSame(
             $scrapedData,
-            $event[0][0]->scrapedData
+            $firedEvents[0][0]->scrapedData
         );
 
         $this->assertDatabaseHas(
@@ -215,13 +210,13 @@ class ConfigureScraperTest extends TestCase
         Log::shouldReceive('error')
             ->with("Error scraping ':scrape-url:'", ['message' => ':error:']);
 
-        Event::assertNotDispatched(ScrapeFailed::class);
-
+            
         $configureScraper = new ConfigureScraper(
             $this->config,
             $this->xpathFinder,
             Log::getFacadeRoot()
         );
         $configureScraper->handle(new InvalidConfiguration(new ScrapeRequest($this->url, $this->type)));
+        Event::assertDispatched(ScrapeFailed::class);
     }
 }

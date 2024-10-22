@@ -212,11 +212,10 @@ class ConfiguratorTest extends TestCase
 
         Log::shouldReceive('warning')
             ->with("Field ':field-2:' with value ':value-2:' not found for ':scrape-url:'.");
-
-        Event::assertNotDispatched(ConfigurationScraped::class);
-
+            
         try {
             $this->configurator->configureFromDataset($posts);
+            Event::assertDispatched(ConfigurationScraped::class);
         } catch (ConfigurationException $e) {
             self::assertEquals('Field(s) ":field-1:" not found.', $e->getMessage());
         }
@@ -356,10 +355,10 @@ class ConfiguratorTest extends TestCase
         Log::shouldReceive('warning')
             ->with("Field ':field-2:' with value ':value-2:' not found for ':scrape-url:'.");
 
-        Event::assertNotDispatched(ConfigurationScraped::class);
-
+            
         try {
             $this->configurator->configureFromDataset($posts);
+            Event::assertDispatched(ConfigurationScraped::class);
         } catch (ConfigurationException $e) {
             self::assertEquals('Field(s) ":field-1:" not found.', $e->getMessage());
         }
@@ -455,10 +454,9 @@ class ConfiguratorTest extends TestCase
         Log::shouldReceive('warning')
             ->with("Field ':field-2:' with value ':value-2:' not found for ':scrape-url-1:'.");
 
-        Event::assertNotDispatched(ConfigurationScraped::class);
-
         try {
             $this->configurator->configureFromDataset($posts);
+            Event::assertDispatched(ConfigurationScraped::class);
         } catch (ConfigurationException $e) {
             self::assertEquals('Field(s) ":field-1:,:field-2:" not found.', $e->getMessage());
         }
@@ -576,9 +574,8 @@ class ConfiguratorTest extends TestCase
         $this->variantGenerator->shouldReceive('getId')
             ->andReturn(10, 20, 30);
 
-        Event::assertNotDispatched(ConfigurationScraped::class);
-
         $configurations = $this->configurator->configureFromDataset($posts);
+        Event::assertDispatched(ConfigurationScraped::class);
 
         self::assertInstanceOf(ConfigurationModel::class, $configurations[0]);
         self::assertEquals(':field-1:', $configurations[0]['name']);
