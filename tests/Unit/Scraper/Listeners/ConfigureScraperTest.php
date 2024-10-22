@@ -68,10 +68,10 @@ class ConfigureScraperTest extends TestCase
             Log::getFacadeRoot()
         );
 
-        
+
         $scrapeRequest = new ScrapeRequest($this->url, $this->type);
         $configureScraper->handle(new InvalidConfiguration($scrapeRequest));
-        
+
         Event::assertDispatched(ScrapeFailed::class);
     }
 
@@ -117,12 +117,12 @@ class ConfigureScraperTest extends TestCase
         );
 
         $configureScraper->handle(new InvalidConfiguration(new ScrapeRequest($this->url, $this->type)));
-        
+
         Event::assertDispatched(Scraped::class);
 
         /** @var Scraped $event */
         $firedEvents = Event::dispatched(Scraped::class);
-        
+
         self::assertSame(
             $scrapedData,
             $firedEvents[0][0]->scrapedData
@@ -218,9 +218,9 @@ class ConfigureScraperTest extends TestCase
             $this->xpathFinder,
             Log::getFacadeRoot()
         );
-        
+
         $configureScraper->handle(new InvalidConfiguration(new ScrapeRequest($this->url, $this->type)));
-        
+
         Event::assertDispatched(ScrapeFailed::class);
     }
 }

@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class ScrapedDataset extends Model
 {
     use HasFactory;
-    
+
     /**
      * Indicates if the IDs are auto-incrementing.
      *

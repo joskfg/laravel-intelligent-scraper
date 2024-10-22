@@ -68,7 +68,7 @@ class UpdateDatasetTest extends TestCase
             'variant' => ':variant-2:',
         ]);
 
-        $url  = ':scrape-url:';
+        $url = ':scrape-url:';
 
         $scrapedData = new ScrapedData(
             ':variant-1:',
@@ -104,8 +104,8 @@ class UpdateDatasetTest extends TestCase
             'type'    => $type,
             'variant' => ':variant:',
         ]);
-        
-        $url  = ':scrape-url:';
+
+        $url = ':scrape-url:';
 
         $scrapedData = new ScrapedData(
             ':variant:',
@@ -114,19 +114,19 @@ class UpdateDatasetTest extends TestCase
                 new Field(':field-2:', [':value-2:']),
             ]
         );
-       
+
         $this->updateDataset->handle(
             new Scraped(
                 new ScrapeRequest($url, $type),
                 $scrapedData
             )
         );
-        
+
         self::assertEquals(
             json_encode($scrapedData->getFields()),
             json_encode(ScrapedDataset::where('url', $url)->first()->toArray()['fields'])
         );
-        
+
         self::assertEquals(UpdateDataset::DATASET_AMOUNT_LIMIT, ScrapedDataset::withType($type)->count());
     }
 }

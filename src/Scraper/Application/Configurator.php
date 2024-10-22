@@ -2,7 +2,6 @@
 
 namespace Joskfg\LaravelIntelligentScraper\Scraper\Application;
 
-use Goutte\Client;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
 use Joskfg\LaravelIntelligentScraper\Scraper\Entities\Field;
@@ -14,6 +13,7 @@ use Joskfg\LaravelIntelligentScraper\Scraper\Models\Configuration;
 use Joskfg\LaravelIntelligentScraper\Scraper\Models\ScrapedDataset;
 use Joskfg\LaravelIntelligentScraper\Scraper\Repositories\Configuration as ConfigurationRepository;
 use JsonException;
+use Symfony\Component\BrowserKit\HttpBrowser;
 use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\HttpClient\Exception\TransportException;
 use Symfony\Contracts\HttpClient\Exception\HttpExceptionInterface;
@@ -21,7 +21,7 @@ use UnexpectedValueException;
 
 class Configurator
 {
-    private Client $client;
+    private HttpBrowser $client;
 
     private XpathBuilder $xpathBuilder;
 
@@ -30,7 +30,7 @@ class Configurator
     private ConfigurationRepository $configuration;
 
     public function __construct(
-        Client $client,
+        HttpBrowser $client,
         XpathBuilder $xpathBuilder,
         ConfigurationRepository $configuration,
         VariantGenerator $variantGenerator
@@ -118,11 +118,11 @@ class Configurator
                 }
                 $this->variantGenerator->addConfig($field->getKey(), $result[$field->getKey()]);
                 Log::info('Added found xpath to the config');
-            } catch (UnexpectedValueException $e) {
+            } catch (UnexpectedValueException) {
                 $this->variantGenerator->fieldNotFound();
                 try {
                     $value = is_array($field->getValue()) ? json_encode($field->getValue(), JSON_THROW_ON_ERROR) : $field->getValue();
-                } catch (JsonException $e) {
+                } catch (JsonException) {
                 }
                 Log::notice("Field '{$field->getKey()}' with value '{$value}' not found for '{$crawler->getUri()}'.");
             }

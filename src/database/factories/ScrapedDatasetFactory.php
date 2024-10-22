@@ -1,4 +1,6 @@
-<?php /** @noinspection ALL */
+<?php
+
+/** @noinspection ALL */
 
 namespace Database\Factories\Joskfg\LaravelIntelligentScraper\Scraper\Models;
 
@@ -11,7 +13,7 @@ class ScrapedDatasetFactory extends Factory
 
     public function definition()
     {
-        $url = $this->faker->url . $this->faker->randomDigit;
+        $url = $this->faker->url.$this->faker->randomDigit;
         return [
             'url_hash' => hash('sha256', $url),
             'url'      => $url,

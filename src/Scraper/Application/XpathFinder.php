@@ -2,13 +2,13 @@
 
 namespace Joskfg\LaravelIntelligentScraper\Scraper\Application;
 
-use Goutte\Client as GoutteClient;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
 use Joskfg\LaravelIntelligentScraper\Scraper\Entities\Field;
 use Joskfg\LaravelIntelligentScraper\Scraper\Entities\ScrapedData;
 use Joskfg\LaravelIntelligentScraper\Scraper\Exceptions\MissingXpathValueException;
 use Joskfg\LaravelIntelligentScraper\Scraper\Models\Configuration;
+use Symfony\Component\BrowserKit\HttpBrowser;
 use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\HttpClient\Exception\TransportException;
 use Symfony\Contracts\HttpClient\Exception\HttpExceptionInterface;
@@ -16,11 +16,11 @@ use UnexpectedValueException;
 
 class XpathFinder
 {
-    private GoutteClient $client;
+    private HttpBrowser $client;
 
     private VariantGenerator $variantGenerator;
 
-    public function __construct(GoutteClient $client, VariantGenerator $variantGenerator)
+    public function __construct(HttpBrowser $client, VariantGenerator $variantGenerator)
     {
         $this->client           = $client;
         $this->variantGenerator = $variantGenerator;
@@ -91,7 +91,7 @@ class XpathFinder
             if ($subcrawler->count()) {
                 Log::debug("Found xpath $xpath");
                 $this->variantGenerator->addConfig($config->getAttribute('name'), $xpath);
-                return $subcrawler->each(fn ($node) => $node->text());
+                return $subcrawler->each(fn($node) => $node->text());
             }
         }
 
