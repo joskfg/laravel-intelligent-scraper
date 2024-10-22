@@ -60,7 +60,7 @@ class ScrapeTest extends TestCase
             $this->xpathFinder,
             Log::getFacadeRoot()
         );
-        
+
         $scrape->handle($this->scrapeRequest);
         Event::assertDispatched(InvalidConfiguration::class);
     }
@@ -158,7 +158,7 @@ class ScrapeTest extends TestCase
         
         $scrape->handle($this->scrapeRequest);
         
-        $firedEvents = collect(Event::dispatched(Scraped::class));
+        $firedEvents = Event::dispatched(Scraped::class);
        
         self::assertSame(
             $scrapedData,

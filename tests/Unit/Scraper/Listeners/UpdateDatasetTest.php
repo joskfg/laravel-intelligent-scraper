@@ -90,6 +90,7 @@ class UpdateDatasetTest extends TestCase
             json_encode($scrapedData->getFields()),
             json_encode(ScrapedDataset::where('url', $url)->first()->toArray()['fields'])
         );
+
         self::assertEquals(101, ScrapedDataset::count());
     }
 
@@ -99,11 +100,11 @@ class UpdateDatasetTest extends TestCase
     public function whenDatasetDoesNotExistAndTheDatasetsLimitHasReachedItShouldDeleteTheExcess(): void
     {
         $type = ':type:';
-        ScrapedDataset::factory()->count(UpdateDataset::DATASET_AMOUNT_LIMIT)->create([
+        $test = ScrapedDataset::factory()->count(UpdateDataset::DATASET_AMOUNT_LIMIT + 10)->create([
             'type'    => $type,
             'variant' => ':variant:',
         ]);
-
+        
         $url  = ':scrape-url:';
 
         $scrapedData = new ScrapedData(
@@ -113,20 +114,19 @@ class UpdateDatasetTest extends TestCase
                 new Field(':field-2:', [':value-2:']),
             ]
         );
-
+       
         $this->UpdateDatasets->handle(
             new Scraped(
                 new ScrapeRequest($url, $type),
                 $scrapedData
             )
         );
-
+        
         self::assertEquals(
             json_encode($scrapedData->getFields()),
             json_encode(ScrapedDataset::where('url', $url)->first()->toArray()['fields'])
         );
+        
         self::assertEquals(UpdateDataset::DATASET_AMOUNT_LIMIT, ScrapedDataset::withType($type)->count());
     }
-
-
 }

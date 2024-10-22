@@ -119,7 +119,7 @@ class ConfigureScraperTest extends TestCase
         Event::assertDispatched(Scraped::class);
 
         /** @var Scraped $event */
-        $firedEvents = collect(Event::dispatched(Scraped::class));
+        $firedEvents = Event::dispatched(Scraped::class);
         
         self::assertSame(
             $scrapedData,
@@ -196,6 +196,7 @@ class ConfigureScraperTest extends TestCase
                 'type'   => ':type:',
             ]),
         ]);
+
         $this->config->shouldReceive('calculate')
             ->once()
             ->with($this->type)
@@ -210,12 +211,12 @@ class ConfigureScraperTest extends TestCase
         Log::shouldReceive('error')
             ->with("Error scraping ':scrape-url:'", ['message' => ':error:']);
 
-            
         $configureScraper = new ConfigureScraper(
             $this->config,
             $this->xpathFinder,
             Log::getFacadeRoot()
         );
+        
         $configureScraper->handle(new InvalidConfiguration(new ScrapeRequest($this->url, $this->type)));
         Event::assertDispatched(ScrapeFailed::class);
     }
