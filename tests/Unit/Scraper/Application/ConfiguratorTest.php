@@ -215,10 +215,11 @@ class ConfiguratorTest extends TestCase
             
         try {
             $this->configurator->configureFromDataset($posts);
-            Event::assertDispatched(ConfigurationScraped::class);
         } catch (ConfigurationException $e) {
             self::assertEquals('Field(s) ":field-1:" not found.', $e->getMessage());
         }
+
+        Event::assertDispatched(ConfigurationScraped::class);
     }
 
 
@@ -354,14 +355,14 @@ class ConfiguratorTest extends TestCase
 
         Log::shouldReceive('warning')
             ->with("Field ':field-2:' with value ':value-2:' not found for ':scrape-url:'.");
-
             
         try {
             $this->configurator->configureFromDataset($posts);
-            Event::assertDispatched(ConfigurationScraped::class);
         } catch (ConfigurationException $e) {
             self::assertEquals('Field(s) ":field-1:" not found.', $e->getMessage());
         }
+
+        Event::assertDispatched(ConfigurationScraped::class);
     }
 
     /**
@@ -456,10 +457,11 @@ class ConfiguratorTest extends TestCase
 
         try {
             $this->configurator->configureFromDataset($posts);
-            Event::assertDispatched(ConfigurationScraped::class);
         } catch (ConfigurationException $e) {
             self::assertEquals('Field(s) ":field-1:,:field-2:" not found.', $e->getMessage());
         }
+        
+        Event::assertDispatched(ConfigurationScraped::class);
     }
 
     /**
